@@ -9,10 +9,12 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader \
+    && php artisan storage:link
 
-RUN php artisan storage:link
+EXPOSE 80
 
-EXPOSE 8000
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
+ENTRYPOINT ["/docker-entrypoint.sh"]
