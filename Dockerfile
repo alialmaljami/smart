@@ -14,7 +14,4 @@ RUN composer install --no-dev --optimize-autoloader \
 
 EXPOSE 8080
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD php artisan serve --host=0.0.0.0 --port=8080
