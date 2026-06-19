@@ -12,7 +12,7 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader \
     && php artisan storage:link
 
-EXPOSE 80
+EXPOSE 8080
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
