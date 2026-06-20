@@ -7,9 +7,18 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
+
+# Copy composer files first so dependency installation is cached
+# independently of application code changes
+COPY composer.json composer.lock ./
+
+RUN composer install --no-dev --optimize-autoloader --no-scripts --no-autoloader
+
+# Copy the full application now that dependencies are installed
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader \
+# Generate the optimised autoloader and run post-install scripts
+RUN composer dump-autoload --no-dev --optimize \
     && php artisan storage:link
 
 EXPOSE 8080
