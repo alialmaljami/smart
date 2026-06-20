@@ -17,8 +17,9 @@ class DataTransfer extends Command
         $pgsql = DB::connection('pgsql');
 
         $rows = $sqlite->select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE '%migrations%' AND name != 'sqlite_sequence' ORDER BY name");
-        $tables = array_map(fn($r) => is_string($r) ? $r : $r->name, $rows);
+        $tables = array_values(array_filter(array_map(fn($r) => is_string($r) ? $r : $r->name, $rows), fn($n) => !str_contains($n, '__temp__')));
 
+        $pgsql->statement('DROP TABLE IF EXISTS "__temp__blog_posts"');
         $this->disableForeignKeys($pgsql);
 
         foreach ($tables as $name) {
@@ -37,10 +38,11 @@ class DataTransfer extends Command
             if ($data->isNotEmpty()) {
                 $chunks = $data->chunk(100);
                 foreach ($chunks as $chunk) {
-                    $pgsql->table($name)->insert($chunk->map(fn($row) => (array) $row)->toArray());
+                    $rows = $chunk->map(fn($row) => (array) $row)->toArray();
+                    $pgsql->table($name)->insert($rows);
                 }
                 $this->info("Transferred {$data->count()} rows to {$name}");
-                $this->resetSequence($pgsql, $name);
+                try { $this->resetSequence($pgsql, $name); } catch (\Exception $e) {}
             } else {
                 $this->warn("No data in {$name}");
             }
