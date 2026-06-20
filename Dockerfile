@@ -1,6 +1,6 @@
 FROM php:8.4-cli
 
-RUN echo "<?php http_response_code(200); echo 'ok';" > /app/index.php
+RUN mkdir -p /app && echo "<?php http_response_code(200); echo 'ok';" > /app/index.php
 
 EXPOSE 8080
 
