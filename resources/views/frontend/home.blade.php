@@ -53,7 +53,7 @@
 
 @if($hero)
 {{-- Hero with Multi-Image Slider --}}
-<section class="relative h-screen min-h-[650px] overflow-hidden"
+<section class="relative h-screen min-h-[500px] md:min-h-[650px] overflow-hidden"
     @if(count($heroImages) > 1)
     x-data="{
         current: 0,

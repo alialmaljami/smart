@@ -17,7 +17,7 @@
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="w-full admin-table">
                 <thead>
                     <tr class="bg-gradient-to-l from-gray-50 to-white border-b border-gray-200">
                         <th class="text-right px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">#</th>

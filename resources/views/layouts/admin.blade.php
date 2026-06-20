@@ -66,6 +66,18 @@
             --dark-text: #F0EDE8;
             --dark-text-secondary: #9C9C9C;
         }
+
+        @media (max-width: 768px) {
+            .admin-table { font-size: 0.75rem; }
+            .admin-table td, .admin-table th { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+            .admin-card-padding { padding: 1rem !important; }
+            .admin-header-text { font-size: 1.25rem !important; }
+        }
+
+        @media (max-width: 480px) {
+            .admin-action-btn { width: 2rem !important; height: 2rem !important; }
+            .admin-action-btn i { font-size: 0.625rem !important; }
+        }
     </style>
     <script>
         if (localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {

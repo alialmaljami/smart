@@ -351,6 +351,23 @@
 
         @media (max-width: 768px) {
             .section-title { font-size: 1.875rem; }
+            .hero-section { padding-top: 5rem !important; padding-bottom: 5rem !important; }
+            .section-padding { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+            .container-wide { padding-left: 1rem; padding-right: 1rem; }
+            section[class*="py-32"] { padding-top: 5rem !important; padding-bottom: 5rem !important; }
+            section[class*="py-20"]:not(.hero-section) { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+            section[class*="py-32"] { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+            section[class*="py-24"] { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+        }
+
+        /* Ensure cards stack properly on very small screens */
+        @media (max-width: 360px) {
+            .card-elegant .p-6 { padding: 1rem !important; }
+            .grid { gap: 0.75rem !important; }
         }
 
         .section-divider {
