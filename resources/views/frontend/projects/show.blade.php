@@ -46,7 +46,7 @@
 @section('content')
 
 {{-- Breadcrumb --}}
-<section class="pt-28 pb-4 bg-[var(--navy)]">
+<section class="pt-4 pb-4 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
         <nav class="flex items-center flex-wrap gap-x-1.5 gap-y-1 text-xs md:text-sm text-[var(--stone)]">
             <a href="{{ route('home') }}" class="text-[var(--text-muted)] hover:text-[var(--text-heading)] transition-colors whitespace-nowrap">{{ __('Home') }}</a>
@@ -59,14 +59,14 @@
 </section>
 
 {{-- Project Detail --}}
-<section class="py-12 bg-[var(--navy)]">
+<section class="py-8 md:py-12 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
-        <div class="grid lg:grid-cols-3 gap-8">
+        <div class="grid lg:grid-cols-3 gap-6 md:gap-8">
             {{-- Main Content --}}
             <div class="lg:col-span-2">
                 {{-- Image Slider/Gallery --}}
                 @if(count($images))
-                    <div x-data="{ activeImage: 0 }" class="mb-8">
+                    <div x-data="{ activeImage: 0, images: {{ json_encode($images) }} }" class="mb-8">
                         <div class="relative rounded-[var(--radius-lg)] overflow-hidden card-elegant h-64 md:h-96 mb-4">
                             <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-3 left-3 md:top-4 md:left-4 z-10" @@click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
                                 <button class="flex items-center gap-1 px-2 py-1 md:gap-1.5 md:px-3 md:py-1.5 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all">
@@ -74,24 +74,29 @@
                                     <span class="text-[10px] md:text-xs font-medium" x-text="count">0</span>
                                 </button>
                             </div>
-                            <img :src="images[activeImage]" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="eager">
                             <template x-for="(img, i) in images" :key="i">
-                                <div x-show="activeImage === i" x-cloak></div>
+                                <img x-show="activeImage === i" :src="img" alt="{{ $project->title }}" class="w-full h-full object-cover absolute inset-0" loading="eager">
                             </template>
                             @if(count($images) > 1)
-                                <button @click="activeImage = activeImage > 0 ? activeImage - 1 : images.length - 1" class="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 rounded-full bg-white/80 flex items-center justify-center text-[var(--gold)] hover:bg-white transition-all">
-                                    <i class="fas fa-chevron-right text-sm md:text-base"></i>
+                                <button @click="activeImage = activeImage > 0 ? activeImage - 1 : images.length - 1" class="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-all z-10">
+                                    <i class="fas fa-chevron-right text-sm md:text-lg"></i>
                                 </button>
-                                <button @click="activeImage = activeImage < images.length - 1 ? activeImage + 1 : 0" class="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 rounded-full bg-white/80 flex items-center justify-center text-[var(--gold)] hover:bg-white transition-all">
-                                    <i class="fas fa-chevron-left text-sm md:text-base"></i>
+                                <button @click="activeImage = activeImage < images.length - 1 ? activeImage + 1 : 0" class="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-all z-10">
+                                    <i class="fas fa-chevron-left text-sm md:text-lg"></i>
                                 </button>
+                                {{-- Dots indicator --}}
+                                <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                                    <template x-for="(img, i) in images" :key="i">
+                                        <button @click="activeImage = i" class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all" :class="activeImage === i ? 'bg-white w-4 md:w-6' : 'bg-white/40'"></button>
+                                    </template>
+                                </div>
                             @endif
                         </div>
                         @if(count($images) > 1)
-                            <div class="flex space-x-2 space-x-reverse overflow-x-auto pb-2 scrollbar-none">
+                            <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-none" dir="ltr">
                                 @foreach($images as $idx => $img)
-                                    <button @click="activeImage = {{ $idx }}" class="flex-shrink-0 w-16 h-12 md:w-20 md:h-16 rounded-lg overflow-hidden border-2 transition-all" :class="activeImage === {{ $idx }} ? 'border-[var(--gold)]/50' : 'border-transparent'">
-                                        <img src="{{ $img }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                                    <button @click="activeImage = {{ $idx }}" class="flex-shrink-0 w-14 h-10 md:w-20 md:h-16 rounded-lg overflow-hidden border-2 transition-all" :class="activeImage === {{ $idx }} ? 'border-[var(--gold)]' : 'border-transparent'">
+                                        <img src="{{ $img }}" alt="" class="w-full h-full object-cover" loading="lazy">
                                     </button>
                                 @endforeach
                             </div>
@@ -100,7 +105,7 @@
                 @endif
 
                 <h1 data-aos="fade-up" class="text-2xl sm:text-3xl md:text-4xl font-black text-[var(--text-heading)] mb-4">{{ $project->title }}</h1>
-                <div data-aos="fade-up" class="prose max-w-none text-sm md:text-base text-[var(--text-secondary)] leading-relaxed">
+                <div data-aos="fade-up" class="text-sm md:text-base text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
                     {{ $project->description }}
                 </div>
 
@@ -229,11 +234,5 @@
         </div>
     </div>
 </section>
-
-@if(count($images))
-    <script>
-        const images = @json($images);
-    </script>
-@endif
 
 @endsection

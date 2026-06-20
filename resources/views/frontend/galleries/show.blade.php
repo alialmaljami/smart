@@ -33,7 +33,7 @@
 @section('content')
 
 {{-- Breadcrumb --}}
-<section class="pt-28 pb-4 bg-[var(--cream)]">
+<section class="pt-4 pb-4 bg-[var(--cream)]">
     <div class="container mx-auto px-4">
         <nav class="flex items-center space-x-2 space-x-reverse text-sm text-[var(--stone)]">
             <a href="{{ route('home') }}" class="hover:text-[var(--gold)] transition-colors">{{ __('Home') }}</a>
