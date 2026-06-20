@@ -141,6 +141,7 @@
             <div class="p-6">
                 <p class="text-sm text-gray-500 mb-4">يمكنك إدارة الروابط الاجتماعية من <a href="{{ route('admin.social-links.index') }}" class="text-gold-600 hover:text-gold-700 font-medium">صفحة الروابط الاجتماعية</a></p>
                 <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="hidden" name="show_social_links" value="0">
                     <input type="checkbox" name="show_social_links" value="1"
                            {{ old('show_social_links', $settings['show_social_links'] ?? true) ? 'checked' : '' }}
                            class="sr-only peer">
