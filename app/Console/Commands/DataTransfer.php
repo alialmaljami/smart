@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 
 class DataTransfer extends Command
 {
-    protected $signature = 'data:transfer';
+    protected $signature = 'data:transfer {--force : Overwrite existing data}';
     protected $description = 'Transfer data from SQLite to PostgreSQL';
 
     public function handle()
@@ -16,15 +16,23 @@ class DataTransfer extends Command
         $sqlite = DB::connection('sqlite');
         $pgsql = DB::connection('pgsql');
 
-        $tables = $sqlite->select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE '%migrations%' ORDER BY name");
+        $rows = $sqlite->select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE '%migrations%' AND name != 'sqlite_sequence' ORDER BY name");
+        $tables = array_map(fn($r) => is_string($r) ? $r : $r->name, $rows);
 
         $this->disableForeignKeys($pgsql);
 
-        foreach ($tables as $table) {
-            $name = $table->name;
-            $data = $sqlite->table($name)->get();
+        foreach ($tables as $name) {
+            $pgCount = $pgsql->table($name)->count();
+            if ($pgCount > 0 && !$this->option('force')) {
+                $this->warn("Skipping {$name} - {$pgCount} rows already exist");
+                continue;
+            }
 
-            $pgsql->table($name)->truncate();
+            if ($this->option('force') && $pgCount > 0) {
+                $pgsql->table($name)->truncate();
+            }
+
+            $data = $sqlite->table($name)->get();
 
             if ($data->isNotEmpty()) {
                 $chunks = $data->chunk(100);
@@ -32,11 +40,10 @@ class DataTransfer extends Command
                     $pgsql->table($name)->insert($chunk->map(fn($row) => (array) $row)->toArray());
                 }
                 $this->info("Transferred {$data->count()} rows to {$name}");
+                $this->resetSequence($pgsql, $name);
             } else {
                 $this->warn("No data in {$name}");
             }
-
-            $this->resetSequence($pgsql, $name);
         }
 
         $this->enableForeignKeys($pgsql);
