@@ -26,14 +26,18 @@ class Material extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
+        'canonical_url',
+        'is_indexed',
     ];
 
-    protected $casts = [
-        'images' => 'array',
-        'videos' => 'array',
-        'is_active' => 'boolean',
-        'sort_order' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'images' => 'array',
+            'is_active' => 'boolean',
+            'is_indexed' => 'boolean',
+        ];
+    }
 
     public function category(): BelongsTo
     {

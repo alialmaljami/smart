@@ -22,7 +22,7 @@ class MaterialController extends Controller
             $query->where('material_category_id', $request->category_id);
         }
 
-        $materials = $query->orderBy('name')->get();
+        $materials = $query->orderBy('name')->paginate(20);
         return view('admin.materials.index', compact('materials', 'categories'));
     }
 
@@ -55,6 +55,10 @@ class MaterialController extends Controller
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'materials');
+        }
+
+        if ($request->hasFile('images')) {
+            $validated['images'] = $this->uploadImagesArray($request->file('images'), 'materials');
         }
 
         Material::create($validated);
@@ -92,6 +96,11 @@ class MaterialController extends Controller
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'materials', $material->image);
+        }
+
+        if ($request->hasFile('images')) {
+            $oldImages = $material->images ?? [];
+            $validated['images'] = $this->uploadImagesArray($request->file('images'), 'materials', $oldImages);
         }
 
         $material->update($validated);

@@ -55,6 +55,19 @@
         </div>
 
         <div>
+                <label for="slug" class="block text-sm font-medium text-gray-700 mb-1.5">الرابط المختصر</label>
+                <input type="text" name="slug" id="slug"
+                       value="{{ old('slug', $material->slug ?? '') }}"
+                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm @error('slug') border-red-400 bg-red-50 @enderror"
+                       placeholder="auto-generated-slug">
+                @error('slug')
+                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6">
+            <div>
             <label for="description" class="block text-sm font-medium text-gray-700 mb-1">الوصف</label>
             <textarea name="description" id="description" rows="4"
                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none transition-colors text-sm">{{ old('description', $material->description ?? '') }}</textarea>
@@ -166,3 +179,23 @@
         </div>
     </form>
 </div>
+
+@push('scripts')
+<script>
+    document.getElementById('name')?.addEventListener('input', function() {
+        const slug = document.getElementById('slug');
+        if (slug && !slug.dataset.manuallyEdited) {
+            slug.value = this.value
+                .trim()
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+        }
+    });
+    document.getElementById('slug')?.addEventListener('input', function() {
+        this.dataset.manuallyEdited = 'true';
+    });
+</script>
+@endpush
