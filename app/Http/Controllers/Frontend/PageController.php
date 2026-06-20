@@ -162,8 +162,7 @@ class PageController extends Controller
         $services = Service::where('is_active', true)
             ->where(function ($q) use ($tag) {
                 $q->where('name', 'like', "%{$tag}%")
-                  ->orWhere('description', 'like', "%{$tag}%")
-                  ->orWhere('tags', 'like', "%{$tag}%");
+                  ->orWhere('description', 'like', "%{$tag}%");
             })->get();
 
         $projects = Project::where('is_active', true)
