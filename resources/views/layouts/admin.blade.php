@@ -59,6 +59,8 @@
         .dark .hover\:bg-gray-50\/50:hover { background-color: rgba(11,22,51,0.5); }
         .dark .divide-gray-100 { border-color: rgba(255,255,255,0.06); }
 
+        [x-cloak] { display: none !important; }
+
         .dark {
             --dark-bg: #080C18;
             --dark-card: #111A2A;
@@ -72,6 +74,9 @@
             .admin-table td, .admin-table th { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
             .admin-card-padding { padding: 1rem !important; }
             .admin-header-text { font-size: 1.25rem !important; }
+                .admin-sidebar { width: 100% !important; max-width: 320px !important; }
+            .admin-topbar { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+            .admin-topbar h1 { font-size: 1.1rem !important; }
         }
 
         @media (max-width: 480px) {
@@ -101,7 +106,7 @@
     <aside x-show="sidebarOpen || mobileSidebar"
            x-cloak
            :class="mobileSidebar ? 'translate-x-0 fixed' : ''"
-           class="fixed inset-y-0 right-0 z-50 w-72 bg-gradient-to-b from-[#0F1A2E] via-[#0F1A2E] to-[#070C14] text-white shadow-2xl lg:relative lg:translate-x-0 lg:flex lg:flex-col lg:shrink-0 transition-all duration-300">
+           class="admin-sidebar fixed inset-y-0 right-0 z-50 w-72 bg-gradient-to-b from-[#0F1A2E] via-[#0F1A2E] to-[#070C14] text-white shadow-2xl lg:relative lg:translate-x-0 lg:flex lg:flex-col lg:shrink-0 transition-all duration-300">
 
         {{-- Brand --}}
         <div class="flex items-center justify-between h-16 px-5 border-b border-white/[0.06]">
