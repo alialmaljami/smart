@@ -14,4 +14,6 @@ RUN composer install --no-dev --optimize-autoloader \
 
 EXPOSE 8080
 
-CMD php -S 0.0.0.0:8080 -t public server.php
+RUN chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]
