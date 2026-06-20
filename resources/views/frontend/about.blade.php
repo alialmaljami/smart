@@ -17,10 +17,10 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="relative py-32 flex items-center justify-center overflow-hidden bg-gradient-to-br from-[var(--navy)] to-[var(--navy)]">
+<section class="relative py-24 md:py-32 flex items-center justify-center overflow-hidden bg-gradient-to-br from-[var(--navy)] to-[var(--navy)]">
     <div class="absolute inset-0 opacity-10" style="background: radial-gradient(circle at 30% 50%, var(--stone) 0%, transparent 50%), radial-gradient(circle at 70% 50%, var(--stone) 0%, transparent 50%);"></div>
     <div class="relative z-10 text-center px-4">
-        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ $settings['about_title'] ?? __('About Us') }}</h1>
+        <h1 data-aos="fade-up" class="text-3xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ $settings['about_title'] ?? __('About Us') }}</h1>
         @if(!empty($settings['about_subtitle']))
             <p data-aos="fade-up" data-aos-delay="50" class="text-[var(--gold)] text-lg font-medium mb-2">{{ $settings['about_subtitle'] }}</p>
         @endif
@@ -30,12 +30,12 @@
 </section>
 
 {{-- Company Story --}}
-<section class="py-20 relative z-10">
+<section class="py-12 md:py-20 relative z-10">
     <div class="container mx-auto px-4">
-        <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
             <div data-aos="fade-left">
                 <span class="section-label">{{ $settings['about_story_label'] ?? __('Our Story') }}</span>
-                <h2 class="text-4xl md:text-5xl font-black text-[var(--gold)] mt-2 mb-6">{{ __('Who We Are') }}</h2>
+                <h2 class="text-3xl md:text-5xl font-black text-[var(--gold)] mt-2 mb-6">{{ __('Who We Are') }}</h2>
                 <div class="section-divider mb-6"></div>
                 @if(!empty($settings['about_story_1']))
                     <p class="text-[var(--text-light)] leading-relaxed mb-4">{{ $settings['about_story_1'] }}</p>
@@ -48,7 +48,7 @@
                 @endif
             </div>
             <div data-aos="fade-right" class="relative">
-                <div class="rounded-2xl overflow-hidden h-96 border border-[var(--stone)]/20">
+                <div class="rounded-2xl overflow-hidden h-64 md:h-96 border border-[var(--stone)]/20">
                     @if(!empty($settings['about_image']))
                         <img src="{{ asset('storage/' . $settings['about_image']) }}" alt="{{ $settings['about_title'] ?? __('About Us') }}" class="w-full h-full object-cover" loading="lazy">
                     @else
@@ -61,43 +61,43 @@
                         </div>
                     @endif
                 </div>
-                <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-[var(--gold)] rounded-2xl -z-10"></div>
+                <div class="absolute -bottom-4 -left-4 w-24 h-24 md:w-32 md:h-32 bg-[var(--gold)] rounded-2xl -z-10"></div>
             </div>
         </div>
     </div>
 </section>
 
 {{-- Vision, Mission, Values --}}
-<section class="py-20 relative z-10 border-y border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-sm">
+<section class="py-12 md:py-20 relative z-10 border-y border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-sm">
     <div class="container mx-auto px-4">
-        <div class="grid md:grid-cols-3 gap-8">
-            <div data-aos="fade-up" class="card-elegant p-8 text-center">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-[var(--gold)]/10 flex items-center justify-center">
-                    <x-icon name="star" class="w-10 h-10 text-[var(--gold)]" />
+        <div class="grid md:grid-cols-3 gap-6 md:gap-8">
+            <div data-aos="fade-up" class="card-elegant p-5 md:p-8 text-center">
+                <div class="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-full bg-[var(--gold)]/10 flex items-center justify-center">
+                    <x-icon name="star" class="w-8 h-8 md:w-10 md:h-10 text-[var(--gold)]" />
                 </div>
-                <h3 class="text-2xl font-bold text-[var(--gold)] mb-4">{{ $settings['about_vision_title'] ?? __('Our Vision') }}</h3>
-                <p class="text-[var(--text-light)] leading-relaxed">{{ $settings['about_vision_text'] ?? '' }}</p>
+                <h3 class="text-xl md:text-2xl font-bold text-[var(--gold)] mb-3 md:mb-4">{{ $settings['about_vision_title'] ?? __('Our Vision') }}</h3>
+                <p class="text-sm md:text-base text-[var(--text-light)] leading-relaxed">{{ $settings['about_vision_text'] ?? '' }}</p>
             </div>
-            <div data-aos="fade-up" data-aos-delay="100" class="card-elegant p-8 text-center">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-[var(--gold)]/10 flex items-center justify-center">
-                    <x-icon name="check" class="w-10 h-10 text-[var(--gold)]" />
+            <div data-aos="fade-up" data-aos-delay="100" class="card-elegant p-5 md:p-8 text-center">
+                <div class="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-full bg-[var(--gold)]/10 flex items-center justify-center">
+                    <x-icon name="check" class="w-8 h-8 md:w-10 md:h-10 text-[var(--gold)]" />
                 </div>
-                <h3 class="text-2xl font-bold text-[var(--gold)] mb-4">{{ $settings['about_mission_title'] ?? __('Our Mission') }}</h3>
-                <p class="text-[var(--text-light)] leading-relaxed">{{ $settings['about_mission_text'] ?? '' }}</p>
+                <h3 class="text-xl md:text-2xl font-bold text-[var(--gold)] mb-3 md:mb-4">{{ $settings['about_mission_title'] ?? __('Our Mission') }}</h3>
+                <p class="text-sm md:text-base text-[var(--text-light)] leading-relaxed">{{ $settings['about_mission_text'] ?? '' }}</p>
             </div>
-            <div data-aos="fade-up" data-aos-delay="200" class="card-elegant p-8 text-center">
-                <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-[var(--gold)]/10 flex items-center justify-center">
-                    <x-icon name="heart" class="w-10 h-10 text-[var(--gold)]" />
+            <div data-aos="fade-up" data-aos-delay="200" class="card-elegant p-5 md:p-8 text-center">
+                <div class="w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 rounded-full bg-[var(--gold)]/10 flex items-center justify-center">
+                    <x-icon name="heart" class="w-8 h-8 md:w-10 md:h-10 text-[var(--gold)]" />
                 </div>
-                <h3 class="text-2xl font-bold text-[var(--gold)] mb-4">{{ $settings['about_values_title'] ?? __('Our Values') }}</h3>
-                <p class="text-[var(--text-light)] leading-relaxed">{{ $settings['about_values_text'] ?? '' }}</p>
+                <h3 class="text-xl md:text-2xl font-bold text-[var(--gold)] mb-3 md:mb-4">{{ $settings['about_values_title'] ?? __('Our Values') }}</h3>
+                <p class="text-sm md:text-base text-[var(--text-light)] leading-relaxed">{{ $settings['about_values_text'] ?? '' }}</p>
             </div>
         </div>
     </div>
 </section>
 
 {{-- Stats --}}
-<section class="py-20 relative overflow-hidden bg-gradient-to-br from-[var(--navy)] to-[var(--navy)]">
+<section class="py-12 md:py-20 relative overflow-hidden bg-gradient-to-br from-[var(--navy)] to-[var(--navy)]">
     <div class="absolute inset-0 opacity-5" style="background: radial-gradient(circle at 20% 50%, var(--stone) 0%, transparent 50%), radial-gradient(circle at 80% 50%, var(--stone) 0%, transparent 50%);"></div>
     <div class="container mx-auto px-4 relative z-10">
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">

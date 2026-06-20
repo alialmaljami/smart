@@ -25,51 +25,51 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="relative py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
+<section class="relative py-24 md:py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
     <div class="overlay-gradient"></div>
     <div class="relative z-10 text-center px-4">
-        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Contact Us') }}</h1>
+        <h1 data-aos="fade-up" class="text-3xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Contact Us') }}</h1>
         <div class="section-divider"></div>
         <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-muted)] text-lg max-w-2xl mx-auto">{{ __('Get in Touch') }}</p>
     </div>
 </section>
 
 {{-- Contact Info Cards --}}
-<section class="py-16 -mt-16 relative z-20">
+<section class="py-12 md:py-16 -mt-12 md:-mt-16 relative z-20">
     <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <a href="{{ $mapUrl ?: 'https://www.google.com/maps?q=' . urlencode($address) }}" target="_blank" rel="noopener noreferrer" class="card-elegant p-8 text-center block hover:scale-[1.02] transition-all duration-300">
-                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--gold)]/10 flex items-center justify-center">
-                    <x-icon name="location" class="w-8 h-8 text-[var(--gold)]" />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <a href="{{ $mapUrl ?: 'https://www.google.com/maps?q=' . urlencode($address) }}" target="_blank" rel="noopener noreferrer" class="card-elegant p-5 md:p-8 text-center block hover:scale-[1.02] transition-all duration-300">
+                <div class="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-2xl bg-[var(--gold)]/10 flex items-center justify-center">
+                    <x-icon name="location" class="w-6 h-6 md:w-8 md:h-8 text-[var(--gold)]" />
                 </div>
-                <h3 class="text-lg font-bold text-[var(--gold)] mb-2">{{ __('Address') }}</h3>
-                <p class="text-[var(--text-light)]">{{ $address }}</p>
+                <h3 class="text-base md:text-lg font-bold text-[var(--gold)] mb-1 md:mb-2">{{ __('Address') }}</h3>
+                <p class="text-sm md:text-base text-[var(--text-light)]">{{ $address }}</p>
             </a>
-            <a href="mailto:{{ $email }}" target="_blank" rel="noopener noreferrer" class="card-elegant p-8 text-center block hover:scale-[1.02] transition-all duration-300">
-                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--gold)]/10 flex items-center justify-center">
-                    <x-icon name="email" class="w-8 h-8 text-[var(--gold)]" />
+            <a href="mailto:{{ $email }}" target="_blank" rel="noopener noreferrer" class="card-elegant p-5 md:p-8 text-center block hover:scale-[1.02] transition-all duration-300">
+                <div class="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-2xl bg-[var(--gold)]/10 flex items-center justify-center">
+                    <x-icon name="email" class="w-6 h-6 md:w-8 md:h-8 text-[var(--gold)]" />
                 </div>
-                <h3 class="text-lg font-bold text-[var(--gold)] mb-2">{{ __('Email') }}</h3>
-                <p class="text-[var(--text-light)]" dir="ltr">{{ $email }}</p>
+                <h3 class="text-base md:text-lg font-bold text-[var(--gold)] mb-1 md:mb-2">{{ __('Email') }}</h3>
+                <p class="text-sm md:text-base text-[var(--text-light)]" dir="ltr">{{ $email }}</p>
             </a>
-            <a href="tel:{{ preg_replace('/[^0-9+]/', '', $phone) }}" target="_blank" rel="noopener noreferrer" class="card-elegant p-8 text-center block hover:scale-[1.02] transition-all duration-300">
-                <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--gold)]/10 flex items-center justify-center">
-                    <x-icon name="phone" class="w-8 h-8 text-[var(--gold)]" />
+            <a href="tel:{{ preg_replace('/[^0-9+]/', '', $phone) }}" target="_blank" rel="noopener noreferrer" class="card-elegant p-5 md:p-8 text-center block hover:scale-[1.02] transition-all duration-300">
+                <div class="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-2xl bg-[var(--gold)]/10 flex items-center justify-center">
+                    <x-icon name="phone" class="w-6 h-6 md:w-8 md:h-8 text-[var(--gold)]" />
                 </div>
-                <h3 class="text-lg font-bold text-[var(--gold)] mb-2">{{ __('Phone Number') }}</h3>
-                <p class="text-[var(--text-light)]" dir="ltr">{{ $phone }}</p>
+                <h3 class="text-base md:text-lg font-bold text-[var(--gold)] mb-1 md:mb-2">{{ __('Phone Number') }}</h3>
+                <p class="text-sm md:text-base text-[var(--text-light)]" dir="ltr">{{ $phone }}</p>
             </a>
         </div>
     </div>
 </section>
 
 {{-- Contact Form + Map --}}
-<section class="py-16 relative z-10">
+<section class="py-12 md:py-16 relative z-10">
     <div class="container mx-auto px-4">
-        <div class="grid lg:grid-cols-2 gap-12">
+        <div class="grid lg:grid-cols-2 gap-8 md:gap-12">
             {{-- Form --}}
             <div data-aos="fade-left">
-                <h2 class="text-3xl font-black text-[var(--gold)] mb-2">{{ __('Send Us a Message') }}</h2>
+                <h2 class="text-2xl md:text-3xl font-black text-[var(--gold)] mb-2">{{ __('Send Us a Message') }}</h2>
                 <div class="section-divider mb-6"></div>
                 <form action="{{ route('contact.send') }}" method="POST" class="space-y-5">
                     @csrf
@@ -100,11 +100,11 @@
                 <h2 class="text-3xl font-black text-[var(--gold)] mb-2">{{ __('Our Location') }}</h2>
                 <div class="section-divider mb-6"></div>
                 @if($mapEmbedSrc)
-                    <div class="rounded-2xl overflow-hidden h-96">
+                    <div class="rounded-2xl overflow-hidden h-64 md:h-96">
                         <iframe src="{{ $mapEmbedSrc }}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                     </div>
                 @else
-                    <div class="rounded-2xl overflow-hidden h-96 flex items-center justify-center bg-[var(--stone)]">
+                    <div class="rounded-2xl overflow-hidden h-64 md:h-96 flex items-center justify-center bg-[var(--stone)]">
                         <div class="text-center">
                             <x-icon name="map_marked" class="w-16 h-16 text-[var(--text-muted)] inline-block mb-4" />
                             <p class="text-[var(--text-light)]">{{ __('Map not available') }}</p>
@@ -117,13 +117,13 @@
 </section>
 
 {{-- Social Media --}}
-<section class="py-16 relative z-10 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-sm">
+<section class="py-12 md:py-16 relative z-10 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-sm">
     <div class="container mx-auto px-4 text-center">
         <div data-aos="fade-up">
-            <h2 class="text-3xl font-black text-[var(--gold)] mb-2">{{ __('Follow us on social media') }}</h2>
-            <div class="section-divider mb-6"></div>
-            <p class="text-[var(--text-light)] mb-8">{{ __('Stay updated with our latest work') }}</p>
-            <div class="flex justify-center space-x-4 space-x-reverse flex-wrap gap-4">
+            <h2 class="text-2xl md:text-3xl font-black text-[var(--gold)] mb-2">{{ __('Follow us on social media') }}</h2>
+            <div class="section-divider mb-4 md:mb-6"></div>
+            <p class="text-sm md:text-base text-[var(--text-light)] mb-6 md:mb-8">{{ __('Stay updated with our latest work') }}</p>
+            <div class="flex justify-center flex-wrap gap-3">
                 @include('partials.social-icons', ['socialLinks' => $socialLinks])
             </div>
         </div>
