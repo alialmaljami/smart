@@ -1,0 +1,176 @@
+@extends('layouts.app')
+
+@push('meta')
+<meta name="description" content="أفضل خدمات الديكور والتصميم الداخلي في مكة المكرمة - المصمم الذكي للديكور. ديكورات منازل، فلل، شقق، مجالس، ومكاتب بأعلى جودة">
+<meta name="keywords" content="ديكور مكة, تصميم داخلي مكة, ديكور منازل مكة, ديكور فلل مكة, مصمم ديكور مكة, أفضل شركة ديكور مكة">
+<meta property="og:title" content="ديكورات مكة - المصمم الذكي للديكور">
+<meta property="og:description" content="أفضل خدمات الديكور والتصميم الداخلي في مكة المكرمة">
+@endpush
+
+@section('title', 'ديكورات مكة - ' . __('Smart Designer Decorations'))
+
+@section('content')
+
+<section class="relative pt-40 pb-24 overflow-hidden bg-gradient-to-br from-[var(--navy)] via-[var(--navy)]/95 to-[var(--navy)]">
+    <div class="absolute inset-0 hero-gradient"></div>
+    <div class="absolute inset-0 opacity-[0.07]" style="background: radial-gradient(circle at 30% 50%, var(--gold) 0%, transparent 50%), radial-gradient(circle at 70% 50%, var(--gold) 0%, transparent 50%);"></div>
+    <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-l from-transparent via-[var(--gold)] to-transparent"></div>
+    <div class="container mx-auto px-4 relative z-10">
+        <div data-aos="fade-up" class="text-center max-w-3xl mx-auto">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-[var(--gold)]/10 flex items-center justify-center">
+                <i class="fas fa-mosque text-3xl text-[var(--gold)]"></i>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black text-[var(--text-heading)] mt-3 mb-4">ديكورات مكة</h1>
+            <p class="text-[var(--text-light)] text-lg">أفضل خدمات التصميم الداخلي والديكور في مكة المكرمة - المصمم الذكي للديكور</p>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 bg-[var(--cream)]">
+    <div class="container mx-auto px-4 max-w-5xl">
+        <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+            <div data-aos="fade-left">
+                <span class="section-label">ديكورات مكة</span>
+                <h2 class="text-3xl font-black text-[var(--text-heading)] mt-3 mb-4">شركة المصمم الذكي للديكور في مكة المكرمة</h2>
+                <p class="text-[var(--text-light)] leading-relaxed mb-6">
+                    نقدم في شركة المصمم الذكي للديكور أفضل خدمات التصميم الداخلي والديكور في مكة المكرمة.
+                    لدينا فريق متخصص في تنفيذ ديكورات المنازل والفلل والشقق في مكة بأحدث التصاميم 
+                    وأعلى معايير الجودة. نحرص على تلبية احتياجات عملائنا في مكة بأسعار تنافسية.
+                </p>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)]"><i class="fas fa-check"></i></div>
+                        <span class="text-[var(--text-light)]">تصميم داخلي للمنازل والفلل بمكة</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)]"><i class="fas fa-check"></i></div>
+                        <span class="text-[var(--text-light)]">ديكورات مجالس وغرف استقبال فاخرة</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)]"><i class="fas fa-check"></i></div>
+                        <span class="text-[var(--text-light)]">تشطيب وديكور الشقق السكنية</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)]"><i class="fas fa-check"></i></div>
+                        <span class="text-[var(--text-light)]">ديكورات مطابخ وحمامات عصرية</span>
+                    </div>
+                </div>
+            </div>
+            <div data-aos="fade-right" class="rounded-2xl overflow-hidden h-96 bg-gradient-to-br from-[var(--navy)] to-[var(--navy)] flex items-center justify-center">
+                <div class="text-center p-8">
+                    <i class="fas fa-mosque text-6xl text-[var(--gold)]/30 mb-4"></i>
+                    <p class="text-white/40 text-lg">مكة المكرمة - المملكة العربية السعودية</p>
+                </div>
+            </div>
+        </div>
+
+        <div data-aos="fade-up" class="text-center bg-white rounded-2xl p-10 shadow-sm border border-[var(--stone)]">
+            <h3 class="text-2xl font-bold text-[var(--text-heading)] mb-4">احصل على استشارة مجانية في مكة</h3>
+            <p class="text-[var(--text-light)] mb-8 max-w-xl mx-auto">تواصل معنا اليوم للحصول على استشارة مجانية لمشروعك في مكة المكرمة</p>
+            <a href="{{ route('contact') }}" class="btn-primary px-8 py-3">تواصل معنا</a>
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-[var(--white)]">
+    <div class="container mx-auto px-4 max-w-5xl">
+        <div data-aos="fade-up" class="text-center mb-12">
+            <h2 class="section-title text-[var(--text-heading)]">خدماتنا في مكة</h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="card-elegant p-6 text-center">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-[var(--gold)]/10 flex items-center justify-center"><i class="fas fa-home text-xl text-[var(--gold)]"></i></div>
+                <h3 class="font-bold text-[var(--text-heading)] mb-2">ديكورات منازل</h3>
+                <p class="text-[var(--text-light)] text-sm">تصميم داخلي عصري للمنازل بمكة المكرمة</p>
+            </div>
+            <div class="card-elegant p-6 text-center">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-[var(--gold)]/10 flex items-center justify-center"><i class="fas fa-building text-xl text-[var(--gold)]"></i></div>
+                <h3 class="font-bold text-[var(--text-heading)] mb-2">ديكورات فلل</h3>
+                <p class="text-[var(--text-light)] text-sm">تصاميم فاخرة للفلل والقصور بمكة</p>
+            </div>
+            <div class="card-elegant p-6 text-center">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-[var(--gold)]/10 flex items-center justify-center"><i class="fas fa-briefcase text-xl text-[var(--gold)]"></i></div>
+                <h3 class="font-bold text-[var(--text-heading)] mb-2">ديكورات شقق</h3>
+                <p class="text-[var(--text-light)] text-sm">تشطيب وديكور الشقق السكنية بمكة</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if($services->count())
+<section class="py-16 bg-[var(--white)]">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <div data-aos="fade-up" class="text-center mb-12">
+            <h2 class="section-title text-[var(--text-heading)]">{{ __('Services') }}</h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($services as $s)
+                <a href="{{ route('service.show', $s->slug) }}" class="card-elegant p-6 text-center group hover:shadow-lg transition-all">
+                    <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-[var(--gold)]/10 flex items-center justify-center group-hover:bg-[var(--gold)] group-hover:text-white transition-all">
+                        <i class="{{ $s->icon ?: 'fas fa-paint-roller' }} text-xl text-[var(--gold)] group-hover:text-white"></i>
+                    </div>
+                    <h3 class="font-bold text-[var(--text-heading)] mb-2">{{ $s->name }}</h3>
+                    <p class="text-[var(--text-secondary)] text-sm">{{ Str::limit($s->description, 80) }}</p>
+                </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+@if($galleries->count())
+<section class="py-16 bg-[var(--cream)]">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <div data-aos="fade-up" class="text-center mb-12">
+            <h2 class="section-title text-[var(--text-heading)]">{{ __('Gallery') }}</h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            @foreach($galleries as $g)
+                <a href="{{ route('gallery.show', [$g->id, $g->slug]) }}" class="group aspect-square overflow-hidden rounded-xl">
+                    <img src="{{ asset('storage/' . $g->image) }}" alt="{{ $g->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy">
+                </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+@if($projects->count())
+<section class="py-16 bg-[var(--white)]">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <div data-aos="fade-up" class="text-center mb-12">
+            <h2 class="section-title text-[var(--text-heading)]">{{ __('Recent Projects') }}</h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @foreach($projects as $p)
+                <a href="{{ route('project.show', $p->slug) }}" class="card-elegant group overflow-hidden">
+                    @if($p->image)
+                        <div class="aspect-[16/10] overflow-hidden">
+                            <img src="{{ asset('storage/' . $p->image) }}" alt="{{ $p->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+                        </div>
+                    @endif
+                    <div class="p-5">
+                        <h3 class="font-bold text-[var(--text-heading)]">{{ $p->title }}</h3>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+<section class="py-16 bg-[var(--cream)]">
+    <div class="container mx-auto px-4 text-center">
+        <div data-aos="fade-up">
+            <h2 class="section-title text-[var(--text-heading)] mb-4">{{ __('Contact Us') }}</h2>
+            <div class="section-divider mb-8"></div>
+            <a href="{{ route('contact') }}" class="btn-primary px-8 py-3">{{ __('Contact Us') }}</a>
+        </div>
+    </div>
+</section>
+
+@endsection

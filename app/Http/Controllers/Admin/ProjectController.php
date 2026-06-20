@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Project;
 use App\Models\Service;
+use App\Traits\ImageUploadHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
+    use ImageUploadHelper;
     public function index(): View
     {
         $services = Service::where('is_active', true)->orderBy('sort_order')->get();
@@ -44,6 +46,8 @@ class ProjectController extends Controller
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string'],
             'meta_keywords' => ['nullable', 'string'],
+            'canonical_url' => ['nullable', 'url', 'max:255'],
+            'is_indexed' => ['boolean'],
             'service_ids' => ['nullable', 'array'],
             'service_ids.*' => ['exists:services,id'],
             'material_category_ids' => ['nullable', 'array'],
@@ -51,15 +55,16 @@ class ProjectController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['is_indexed'] = $request->boolean('is_indexed', true);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('projects', 'public');
+            $validated['image'] = $this->uploadImage($request->file('image'), 'projects');
         }
 
         if ($request->hasFile('images')) {
             $paths = [];
             foreach ($request->file('images') as $file) {
-                $paths[] = $file->store('projects/gallery', 'public');
+                $paths[] = $this->uploadImage($file, 'projects/gallery');
             }
             $validated['images'] = $paths;
         }
@@ -106,6 +111,8 @@ class ProjectController extends Controller
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string'],
             'meta_keywords' => ['nullable', 'string'],
+            'canonical_url' => ['nullable', 'url', 'max:255'],
+            'is_indexed' => ['boolean'],
             'service_ids' => ['nullable', 'array'],
             'service_ids.*' => ['exists:services,id'],
             'material_category_ids' => ['nullable', 'array'],
@@ -113,15 +120,16 @@ class ProjectController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['is_indexed'] = $request->boolean('is_indexed', true);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('projects', 'public');
+            $validated['image'] = $this->uploadImage($request->file('image'), 'projects', $project->image);
         }
 
         if ($request->hasFile('images')) {
             $paths = $project->images ?? [];
             foreach ($request->file('images') as $file) {
-                $paths[] = $file->store('projects/gallery', 'public');
+                $paths[] = $this->uploadImage($file, 'projects/gallery');
             }
             $validated['images'] = $paths;
         }
@@ -146,6 +154,7 @@ class ProjectController extends Controller
 
     public function destroy(Project $project): RedirectResponse
     {
+        if ($project->image) $this->deleteImageFiles($project->image, 'projects');
         $project->delete();
         return redirect()->route('admin.projects.index')->with('success', 'تم حذف المشروع بنجاح');
     }

@@ -2,8 +2,8 @@
     $socialLinks = App\Models\SocialLink::where('is_active', true)->orderBy('sort_order')->get();
     $settings = [
         'email' => App\Models\Setting::getValue('contact_email', 'Smartdecorat1@gmail.com'),
-        'phone' => App\Models\Setting::getValue('contact_phone', '+966 50 000 0000'),
-        'address' => App\Models\Setting::getValue('contact_address', 'الرياض، المملكة العربية السعودية'),
+        'phone' => App\Models\Setting::getValue('contact_phone', '+966 54 123 2717'),
+        'address' => App\Models\Setting::getValue('contact_address', 'الزاهر 1 – الضيافة، مكة المكرمة'),
         'copyright' => App\Models\Setting::getValue('copyright_text', '© 2026 ديكورات المصمم الذكي. جميع الحقوق محفوظة.'),
         'map_url' => App\Models\Setting::getValue('map_url', 'https://maps.app.goo.gl/w8TwGiDcEgCCXHmL9'),
     ];
@@ -11,23 +11,90 @@
     $materialCategories = App\Models\Category::where('type', 'material')->where('is_active', true)->orderBy('sort_order')->get();
 @endphp
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="{{ app()->getLocale() === 'ar' ? 'ar' : 'en' }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     @stack('meta')
-    <title>@yield('title', 'ديكورات المصمم الذكي')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', __('Smart Designer Decorations'))</title>
+    <meta name="description" content="@yield('description', __('Smart Designer Decorations - Professional interior design and decoration services in Saudi Arabia'))" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
+    {{-- Canonical --}}
+    <link rel="canonical" href="{{ url()->current() }}" />
+
+    {{-- Hreflang --}}
+    @php
+        $locale = app()->getLocale();
+        $otherLocale = $locale === 'ar' ? 'en' : 'ar';
+        $route = request()->route();
+        $routeName = $route?->getName();
+        $routeParams = $route?->parameters() ?? [];
+        $otherUrl = url()->current();
+        if ($routeName && !str_contains($routeName, 'admin.')) {
+            try {
+                $otherUrl = route($routeName, array_merge($routeParams, ['_locale' => $otherLocale]));
+            } catch (\Exception $e) {}
+        }
+    @endphp
+    <link rel="alternate" hreflang="ar" href="{{ $locale === 'ar' ? url()->current() : $otherUrl }}" />
+    <link rel="alternate" hreflang="en" href="{{ $locale === 'en' ? url()->current() : $otherUrl }}" />
+    <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}" />
+
+    {{-- Open Graph --}}
+    <meta property="og:site_name" content="{{ __('Smart Designer Decorations') }}" />
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:title" content="@yield('title', __('Smart Designer Decorations'))" />
+    <meta property="og:description" content="@yield('description', __('Smart Designer Decorations - Professional interior design and decoration services in Saudi Arabia'))" />
+    <meta property="og:image" content="@yield('image', url('/storage/settings/og-default.jpg'))" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="@yield('og_type', 'website')" />
+    <meta property="og:locale" content="{{ $locale === 'ar' ? 'ar_AR' : 'en_US' }}" />
+
+    {{-- Twitter Cards --}}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@yield('title', __('Smart Designer Decorations'))" />
+    <meta name="twitter:description" content="@yield('description', __('Smart Designer Decorations - Professional interior design and decoration services in Saudi Arabia'))" />
+    <meta name="twitter:image" content="@yield('image', url('/storage/settings/og-default.jpg'))" />
+
+    {{-- Preload critical fonts --}}
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" />
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+
+    {{-- Preload hero image if on home page --}}
+    @if(request()->routeIs('home'))
+        @php $heroImgs = []; @endphp
+        @isset($heroImages)
+            @foreach(array_slice($heroImages, 0, 1) as $hero)
+                <link rel="preload" as="image" href="{{ $hero }}" fetchpriority="high" />
+            @endforeach
+        @endisset
+    @endif
+
+    {{-- Google Search Console --}}
+    @php $gsc = App\Models\Setting::getValue('google_search_console', ''); @endphp
+    @if($gsc)
+        <meta name="google-site-verification" content="{{ $gsc }}" />
+    @endif
+
+    {{-- Schema.org structured data --}}
+    @stack('schema')
     <script>
-        if (localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        // Force dark mode for Cyber-Glassmorphism unless explicitly disabled
+        if (localStorage.getItem('darkMode') === 'false') {
+            document.documentElement.classList.remove('dark');
+        } else {
             document.documentElement.classList.add('dark');
+            localStorage.setItem('darkMode', 'true');
         }
     </script>
 
@@ -35,41 +102,75 @@
 
     <style>
         :root {
-            --cream: #F7F3E9;
-            --navy: #0D1B3D;
-            --gold: #D4AF37;
-            --stone: #E8E6E1;
-            --white: #FFFFFF;
-            --text-secondary: #4A4A4A;
-            --text-muted: #9C9C9C;
-            --text-heading: var(--navy);
-            --shadow-sm: 0 2px 16px rgba(13,27,61,0.04);
-            --shadow-md: 0 8px 32px rgba(13,27,61,0.06);
-            --shadow-lg: 0 16px 48px rgba(13,27,61,0.08);
+            --navy-dark: #F8FAFC;
+            --navy: #FFFFFF;
+            --gold: #EAB308;
+            --gold-glow: rgba(234, 179, 8, 0.2);
+            --gold-light: #FEF08A;
+            --white: #000000;
+            --text-heading: #0F172A;
+            --text-secondary: #334155;
+            --text-muted: #64748B;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(0, 0, 0, 0.08);
+            --glass-border-hover: rgba(234, 179, 8, 0.4);
             --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --cream: var(--navy-dark);
+            --stone: rgba(0, 0, 0, 0.05);
+            --text-light: var(--text-secondary);
         }
 
         .dark {
-            --cream: #0A0F1E;
-            --navy: #0D1B3D;
-            --gold: #D4AF37;
-            --stone: #1E2744;
-            --white: #131B2E;
-            --text-secondary: #9C9C9C;
-            --text-muted: #6B7280;
-            --text-heading: #E8E6E1;
-            --shadow-sm: 0 2px 16px rgba(0,0,0,0.2);
-            --shadow-md: 0 8px 32px rgba(0,0,0,0.3);
-            --shadow-lg: 0 16px 48px rgba(0,0,0,0.4);
+            --navy-dark: #030712;
+            --navy: #0F172A;
+            --gold: #EAB308;
+            --gold-glow: rgba(234, 179, 8, 0.4);
+            --gold-light: #FEF08A;
+            --white: #FFFFFF;
+            --text-heading: #F8FAFC;
+            --text-secondary: #CBD5E1;
+            --text-muted: #64748B;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-hover: rgba(234, 179, 8, 0.4);
+            --cream: var(--navy-dark);
+            --stone: rgba(255, 255, 255, 0.05);
+            --text-light: var(--text-secondary);
         }
+
+        /* Light Mode Overrides for Hardcoded White Classes on light backgrounds */
+        html:not(.dark) .bg-white\/5,
+        html:not(.dark) .bg-white\/\[0\.02\],
+        html:not(.dark) .bg-white\/\[0\.03\],
+        html:not(.dark) .bg-white\/\[0\.04\] { background-color: rgba(0, 0, 0, 0.05) !important; }
+        html:not(.dark) .bg-white\/10,
+        html:not(.dark) .bg-white\/20 { background-color: rgba(0, 0, 0, 0.1) !important; }
+        
+        html:not(.dark) .border-white,
+        html:not(.dark) .border-white\/5,
+        html:not(.dark) .border-white\/10,
+        html:not(.dark) .border-white\/20 { border-color: rgba(0, 0, 0, 0.1) !important; }
+
+        /* Light mode footer text — footer bg is light, so white text is invisible */
+        html:not(.dark) .footer { color: var(--text-secondary) !important; }
+        html:not(.dark) .footer .text-white\/20,
+        html:not(.dark) .footer .text-white\/30,
+        html:not(.dark) .footer .text-white\/40,
+        html:not(.dark) .footer .text-white\/50,
+        html:not(.dark) .footer .text-white\/80 { color: inherit !important; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', 'Poppins', 'Cairo', sans-serif;
-            background: var(--cream);
+            font-family: 'Tajawal', 'Outfit', sans-serif;
+            background-color: var(--navy-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(234, 179, 8, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(234, 179, 8, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, var(--navy) 0%, var(--navy-dark) 100%);
+            background-attachment: fixed;
             color: var(--text-secondary);
             overflow-x: hidden;
             scroll-behavior: smooth;
@@ -78,65 +179,88 @@
         }
 
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Playfair Display', 'Cairo', serif;
-            font-weight: 700;
+            font-family: 'Tajawal', 'Playfair Display', serif;
+            font-weight: 800;
             line-height: 1.2;
             color: var(--text-heading);
-            letter-spacing: -0.02em;
+            letter-spacing: -0.01em;
         }
 
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--cream); }
-        ::-webkit-scrollbar-thumb { background: var(--stone); border-radius: 3px; }
+        ::-webkit-scrollbar-track { background: var(--navy-dark); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
+        /* Neon Glass Buttons */
         .btn-primary {
-            background: var(--gold);
-            color: var(--text-heading);
-            padding: 0.875rem 2.25rem;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            font-size: 0.8125rem;
+            background: rgba(234, 179, 8, 0.1);
+            color: var(--gold);
+            padding: 0.875rem 2.5rem;
+            border-radius: var(--radius-lg);
+            font-weight: 800;
+            font-size: 0.875rem;
             letter-spacing: 0.05em;
-            text-transform: uppercase;
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: inline-flex;
             align-items: center;
             gap: 0.625rem;
-            border: none;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            transform: translateX(100%);
         }
 
         .btn-primary:hover {
-            background: #C9A22F;
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(212, 175, 55, 0.35);
+            background: rgba(234, 179, 8, 0.2);
+            border-color: var(--gold);
+            box-shadow: 0 0 25px rgba(234, 179, 8, 0.3), inset 0 0 10px rgba(234, 179, 8, 0.2);
+            color: var(--gold-light);
         }
 
         .btn-outline {
-            border: 1.5px solid var(--gold);
-            color: var(--gold);
-            padding: 0.875rem 2.25rem;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            font-size: 0.8125rem;
+            border: 1px solid var(--glass-border);
+            color: var(--text-heading);
+            padding: 0.875rem 2.5rem;
+            border-radius: var(--radius-lg);
+            font-weight: 800;
+            font-size: 0.875rem;
             letter-spacing: 0.05em;
-            text-transform: uppercase;
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: inline-flex;
             align-items: center;
             gap: 0.625rem;
-            background: transparent;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .btn-outline:hover {
-            background: var(--gold);
-            color: var(--text-heading);
+            border-color: var(--gold);
+            color: var(--gold);
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(212, 175, 55, 0.25);
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.15);
+            background: rgba(234, 179, 8, 0.05);
         }
 
         .btn-light {
-            background: var(--white);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
             color: var(--text-heading);
             padding: 0.875rem 2.25rem;
             border-radius: var(--radius-md);
@@ -144,31 +268,55 @@
             font-size: 0.8125rem;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.625rem;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .btn-light:hover {
-            background: var(--white);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(13, 27, 61, 0.1);
+            background: rgba(255,255,255,0.05);
+            border-color: var(--gold);
+            color: var(--gold);
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);
         }
 
+        /* Glassmorphism Cards */
         .card-elegant {
-            background: var(--white);
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: var(--radius-lg);
             overflow: hidden;
             transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--stone);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-elegant::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-lg);
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent, transparent, rgba(234, 179, 8, 0.5));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.5;
+            transition: opacity 0.5s ease, background 0.5s ease;
+            pointer-events: none;
+        }
+
+        .card-elegant:hover::before {
+            opacity: 1;
+            background: linear-gradient(135deg, var(--gold), transparent, transparent, var(--gold));
         }
 
         .card-elegant:hover {
             transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-            border-color: rgba(212, 175, 55, 0.2);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 20px rgba(234, 179, 8, 0.1);
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .img-zoom { overflow: hidden; }
@@ -176,11 +324,11 @@
         .img-zoom:hover img { transform: scale(1.06); }
 
         .overlay-gradient {
-            background: linear-gradient(to top, rgba(13,27,61,0.9) 0%, rgba(13,27,61,0.05) 60%, transparent 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 60%);
         }
 
         .navy-gradient {
-            background: linear-gradient(135deg, rgba(13,27,61,0.95) 0%, rgba(13,27,61,0.7) 50%, rgba(13,27,61,0.9) 100%);
+            background: linear-gradient(135deg, rgba(3,7,18,0.9) 0%, rgba(15,23,42,0.8) 50%, rgba(3,7,18,0.9) 100%);
         }
 
         .section-label {
@@ -191,12 +339,14 @@
             text-transform: uppercase;
             color: var(--gold);
             margin-bottom: 0.75rem;
+            text-shadow: 0 0 10px rgba(234, 179, 8, 0.3);
         }
 
         .section-title {
             font-size: 2.75rem;
             margin-bottom: 1rem;
             color: var(--text-heading);
+            text-shadow: 0 0 30px rgba(255,255,255,0.1);
         }
 
         @media (max-width: 768px) {
@@ -208,6 +358,7 @@
             height: 2px;
             background: var(--gold);
             margin: 1.25rem auto;
+            box-shadow: 0 0 10px var(--gold);
         }
 
         .section-divider-start {
@@ -215,9 +366,58 @@
             height: 2px;
             background: var(--gold);
             margin: 1.25rem 0;
+            box-shadow: 0 0 10px var(--gold);
         }
 
-        .sticky-header { transition: all 0.4s ease; }
+/* Glass Header */
+.sticky-header { transition: all 0.4s ease; }
+
+@keyframes logo-spin {
+    to { transform: rotate(360deg); }
+}
+
+@property --logo-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes logo-spin-angle {
+    to { --logo-angle: 360deg; }
+}
+
+@keyframes logo-glow {
+    0%, 100% { box-shadow: 0 0 14px rgba(234, 179, 8, 0.05); }
+    50% { box-shadow: 0 0 28px rgba(234, 179, 8, 0.3); }
+}
+
+.logo-frame {
+    position: relative;
+    border-radius: 60px;
+    padding: 2px;
+    isolation: isolate;
+    animation: logo-glow 2.6s ease-in-out infinite;
+}
+
+.logo-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 60px;
+    padding: 2px;
+    background: conic-gradient(from var(--logo-angle, 0deg), var(--gold) 0%, var(--gold) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: logo-spin-angle 4s linear infinite;
+}
+
+.logo-inner {
+    position: relative;
+    border-radius: 58px;
+    background: var(--navy);
+    z-index: 0;
+}
 
         .nav-link {
             position: relative;
@@ -231,7 +431,8 @@
 
         .nav-link:hover,
         .nav-link.active {
-            color: var(--gold);
+            color: var(--text-heading);
+            text-shadow: 0 0 8px rgba(255,255,255,0.3);
         }
 
         .nav-link::after {
@@ -241,9 +442,10 @@
             right: 50%;
             transform: translateX(50%);
             width: 0;
-            height: 1.5px;
+            height: 2px;
             background: var(--gold);
             transition: width 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 0 10px var(--gold);
         }
 
         .nav-link:hover::after,
@@ -251,21 +453,24 @@
             width: 60%;
         }
 
+        /* Glass Inputs */
         .input-elegant {
             width: 100%;
             padding: 0.875rem 1.125rem;
-            border: 1px solid var(--stone);
+            border: 1px solid var(--glass-border);
             border-radius: var(--radius-md);
-            background: var(--white);
+            background: rgba(0,0,0,0.2);
             color: var(--text-heading);
             font-size: 0.875rem;
             transition: all 0.3s ease;
             outline: none;
+            backdrop-filter: blur(10px);
         }
 
         .input-elegant:focus {
             border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);
+            background: rgba(0,0,0,0.4);
         }
 
         .input-elegant::placeholder {
@@ -275,9 +480,10 @@
         .stat-number {
             font-size: 3.25rem;
             font-weight: 800;
-            color: var(--gold);
+            color: var(--text-heading);
             font-family: 'Playfair Display', serif;
             line-height: 1;
+            text-shadow: 0 0 20px rgba(255,255,255,0.2);
         }
 
         @media (max-width: 768px) {
@@ -292,18 +498,23 @@
             width: 52px;
             height: 52px;
             border-radius: 50%;
-            background: #25D366;
-            color: white;
+            background: rgba(37, 211, 102, 0.2);
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            color: #25D366;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 24px rgba(37, 211, 102, 0.35);
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.2);
+            backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
 
         .whatsapp-float:hover {
             transform: scale(1.1);
-            box-shadow: 0 8px 36px rgba(37, 211, 102, 0.45);
+            background: rgba(37, 211, 102, 0.9);
+            color: white;
+            box-shadow: 0 0 30px rgba(37, 211, 102, 0.5);
+            border-color: transparent;
         }
 
         @keyframes fadeInUp {
@@ -312,17 +523,18 @@
         }
 
         @keyframes goldPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.2); }
-            50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.4); }
+            0%, 100% { box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(234, 179, 8, 0.4); }
         }
 
         .gold-pulse { animation: goldPulse 2s infinite; }
 
         .gold-text-gradient {
-            background: linear-gradient(135deg, var(--gold), #E8C84A);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-shadow: 0 0 20px rgba(234, 179, 8, 0.2);
         }
 
         [x-cloak] { display: none !important; }
@@ -333,7 +545,10 @@
             right: -320px;
             width: 320px;
             height: 100vh;
-            background: var(--navy);
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid var(--glass-border);
             z-index: 9999;
             transition: right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
             overflow-y: auto;
@@ -345,7 +560,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(13, 27, 61, 0.7);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 9998;
             opacity: 0;
             visibility: hidden;
@@ -356,15 +571,28 @@
         .sidebar-overlay.open { opacity: 1; visibility: visible; }
 
         .footer {
-            background: var(--navy);
+            background: var(--navy-dark);
+            border-top: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 100%; height: 1px;
+            background: radial-gradient(circle, var(--gold-glow), transparent 60%);
         }
 
         .footer a { transition: all 0.3s ease; }
-        .footer a:hover { color: var(--gold) !important; }
+        .footer a:hover { color: var(--gold) !important; text-shadow: 0 0 10px rgba(234, 179, 8, 0.3); }
 
         .hero-title {
             font-size: clamp(2.5rem, 6vw, 5rem);
             line-height: 1.08;
+            text-shadow: 0 0 40px rgba(255,255,255,0.1);
         }
 
         .container-wide {
@@ -378,13 +606,30 @@
         }
 
         .gold-shadow {
-            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.15);
         }
 
         .gold-border-bottom {
-            border-bottom: 2px solid var(--gold);
+            border-bottom: 1px solid var(--gold);
+            box-shadow: 0 2px 10px rgba(234, 179, 8, 0.2);
+        }
+
+        @keyframes heroProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
         }
     </style>
+    {{-- Google Analytics --}}
+    @php $gaId = App\Models\Setting::getValue('google_analytics_id', ''); @endphp
+    @if($gaId)
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{ $gaId }}');
+        </script>
+    @endif
 </head>
 <body>
 
@@ -397,23 +642,27 @@
         <div class="sidebar-menu" :class="{ 'open': mobileMenu }">
             <div class="p-10">
                 <div class="flex justify-between items-center mb-12">
-                    <span class="text-xl font-bold text-[var(--gold)]" style="font-family: 'Playfair Display', serif;">المصمم الذكي</span>
+                    <span class="text-xl font-bold text-[var(--gold)]" style="font-family: 'Playfair Display', serif;">{{ __('Smart Designer') }}</span>
                     <button @click="mobileMenu = false" class="text-white/40 hover:text-[var(--gold)] transition-colors">
                         <x-icon name="times" class="w-5 h-5" />
                     </button>
                 </div>
                 <nav class="flex flex-col space-y-1">
-                    <a href="{{ route('home') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">الرئيسية</a>
-                    <a href="{{ route('about') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">عن الشركة</a>
-                    <a href="{{ route('services') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">خدماتنا</a>
-                    <a href="{{ route('projects') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">مشاريعنا</a>
-                    <a href="{{ route('gallery') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">معرض الصور</a>
-                    <a href="{{ route('materials') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">مواد الديكور</a>
-                    <a href="{{ route('blog') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">المدونة</a>
-                    <a href="{{ route('contact') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">اتصل بنا</a>
+                    <a href="{{ route('home') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Home') }}</a>
+                    <a href="{{ route('about') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('About Us') }}</a>
+                    <a href="{{ route('services') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Our Services') }}</a>
+                    <a href="{{ route('projects') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Our Projects') }}</a>
+                    <a href="{{ route('gallery') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Gallery') }}</a>
+                    <a href="{{ route('materials') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Decoration Materials') }}</a>
+                    <a href="{{ route('blog') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Blog') }}</a>
+                    <a href="{{ route('contact') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Contact Us') }}</a>
+                    <a href="{{ route('faq') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('FAQ') }}</a>
+                    <a href="{{ route('most-viewed') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Most Viewed') }}</a>
+                    <a href="{{ route('questions') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Questions & Answers') }}</a>
+                    <a href="{{ route('areas.we.serve') }}" class="text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-base font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Areas We Serve') }}</a>
                 </nav>
                 <div class="mt-12 pt-8 border-t border-white/5">
-                    <p class="text-white/30 text-xs mb-4 tracking-wider uppercase">تابعنا على</p>
+                    <p class="text-white/30 text-xs mb-4 tracking-wider uppercase">{{ __('Follow Us') }}</p>
                     <div class="flex space-x-3 space-x-reverse" dir="ltr">
                         @include('partials.social-icons', ['socialLinks' => $socialLinks])
                     </div>
@@ -421,63 +670,55 @@
             </div>
         </div>
 
-        {{-- Top Bar --}}
-        <div class="hidden lg:block bg-[var(--cream)] border-b border-[var(--stone)]">
-            <div class="container-wide">
-                <div class="flex items-center justify-between h-9">
-                    <div class="flex items-center gap-4">
-                        <a href="tel:{{ preg_replace('/[^0-9]/', '', $settings['phone']) }}" class="flex items-center gap-1.5 text-[var(--text-muted)] hover:text-[var(--gold)] text-[11px] transition-colors">
-                            <x-icon name="phone" class="w-3 h-3" />
-                            <span dir="ltr">{{ $settings['phone'] }}</span>
-                        </a>
-                        <span class="text-[var(--stone)]">|</span>
-                        <a href="mailto:{{ $settings['email'] }}" class="flex items-center gap-1.5 text-[var(--text-muted)] hover:text-[var(--gold)] text-[11px] transition-colors">
-                            <x-icon name="email" class="w-3 h-3" />
-                            <span>{{ $settings['email'] }}</span>
-                        </a>
-                    </div>
-                    <div class="flex items-center gap-2" dir="ltr">
-                        @include('partials.social-icons', ['socialLinks' => $socialLinks])
-                        <button type="button" @click="document.documentElement.classList.toggle('dark'); localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'))" class="mr-3 w-7 h-7 flex items-center justify-center rounded-lg text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--stone)] transition-all" title="الوضع الليلي">
-                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         {{-- Header --}}
-        <header class="sticky-header fixed w-full top-0 lg:top-9 z-50 transition-all duration-500" x-data="{ scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 60)">
-            <div class="bg-[var(--white)]/95 backdrop-blur-md border-b border-[var(--stone)]/30" :class="{ 'shadow-sm shadow-[var(--navy)]/[0.05]': scrolled }">
+        <header class="sticky-header fixed w-full top-0 z-50 transition-all duration-500" x-data="{ scrolled: false }" @scroll.window="scrolled = (window.pageYOffset > 60)">
+            <div class="bg-[var(--navy)]/60 backdrop-blur-xl border-b border-[var(--glass-border)]" :class="{ 'shadow-[0_4px_30px_rgba(0,0,0,0.5)]': scrolled }">
                 <div class="container-wide">
                     <div class="flex items-center justify-between h-20 lg:h-24">
                         {{-- Logo --}}
                         <a href="{{ route('home') }}" class="flex items-center gap-3">
-                            <div class="text-right">
-                                <span class="block text-xl font-black text-[var(--text-heading)] leading-tight" style="font-family: 'Playfair Display', serif;">المصمم الذكي</span>
-                                <span class="block text-[10px] font-medium tracking-[0.25em] text-[var(--gold)]">SMART DESIGNER</span>
+                            <div class="logo-frame">
+                                <div class="logo-inner text-right px-3 py-2">
+                                    <span class="block text-xl font-black text-[var(--text-heading)] leading-tight" style="font-family: 'Playfair Display', serif;">{{ __('Smart Designer') }}</span>
+                                    <span class="block text-[10px] font-medium tracking-[0.25em] text-[var(--gold)]">SMART DESIGNER</span>
+                                </div>
                             </div>
                         </a>
 
                         {{-- Desktop Nav --}}
                         <nav class="hidden lg:flex items-center gap-1">
-                            <a href="{{ route('home') }}" class="nav-link">الرئيسية</a>
-                            <a href="{{ route('about') }}" class="nav-link">عن الشركة</a>
-                            <a href="{{ route('services') }}" class="nav-link">خدماتنا</a>
-                            <a href="{{ route('projects') }}" class="nav-link">مشاريعنا</a>
-                            <a href="{{ route('gallery') }}" class="nav-link">معرض الصور</a>
-                            <a href="{{ route('materials') }}" class="nav-link">مواد الديكور</a>
-                            <a href="{{ route('blog') }}" class="nav-link">المدونة</a>
+                            <a href="{{ route('home') }}" class="nav-link">{{ __('Home') }}</a>
+                            <a href="{{ route('about') }}" class="nav-link">{{ __('About Us') }}</a>
+                            <a href="{{ route('services') }}" class="nav-link">{{ __('Our Services') }}</a>
+                            <a href="{{ route('projects') }}" class="nav-link">{{ __('Our Projects') }}</a>
+                            <a href="{{ route('gallery') }}" class="nav-link">{{ __('Gallery') }}</a>
+                            <a href="{{ route('materials') }}" class="nav-link">{{ __('Decoration Materials') }}</a>
+                            <a href="{{ route('blog') }}" class="nav-link">{{ __('Blog') }}</a>
+                            <a href="{{ route('faq') }}" class="nav-link">{{ __('FAQ') }}</a>
                         </nav>
 
                         <div class="flex items-center gap-4">
+                            <div class="hidden xl:flex items-center gap-2" dir="ltr">
+                                @include('partials.social-icons', ['socialLinks' => $socialLinks])
+                                <a href="{{ route('lang.switch', app()->getLocale() === 'ar' ? 'en' : 'ar') }}" class="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--stone)] transition-all text-xs font-bold" title="{{ app()->getLocale() === 'ar' ? __('English') : __('Arabic') }}">
+                                    {{ app()->getLocale() === 'ar' ? 'EN' : 'AR' }}
+                                </a>
+                                <button type="button" @click="document.documentElement.classList.toggle('dark'); localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'))" class="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--stone)] transition-all" title="{{ __('Dark Mode') }}">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                                </button>
+                                <a href="{{ route('admin.dashboard') }}" class="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--stone)] transition-all" title="لوحة التحكم">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                </a>
+                            </div>
+                            <div class="w-px h-6 bg-[var(--glass-border)] hidden xl:block"></div>
+
                             {{-- Search --}}
-                            <button type="button" @@click="searchOpen = true" class="w-9 h-9 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--gold)] hover:bg-[var(--cream)] rounded-xl transition-all" title="بحث">
+                            <button type="button" @@click="searchOpen = true" class="w-9 h-9 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--gold)] hover:bg-[var(--cream)] rounded-xl transition-all" title="{{ __('Search') }}">
                                 <x-icon name="search" class="w-4 h-4" />
                             </button>
                             {{-- Contact Button --}}
                             <a href="{{ route('contact') }}" class="btn-primary hidden sm:inline-flex px-5 py-2.5 text-xs">
-                                اتصل بنا
+                                {{ __('Contact Us') }}
                             </a>
                             {{-- Mobile Toggle --}}
                             <button @click="mobileMenu = !mobileMenu" class="lg:hidden text-[var(--text-secondary)] hover:text-[var(--text-heading)] p-2 transition-colors">
@@ -495,8 +736,8 @@
             <div class="relative h-full flex items-start justify-center pt-32 px-4">
                 <div class="w-full max-w-xl" @@click.outside="searchOpen = false" x-data="{ query: '' }">
                     <form action="{{ route('search') }}" method="GET" class="relative">
-                        <input type="text" name="q" x-model="query" placeholder="ابحث عن خدمات، مشاريع، مواد، مقالات..."
-                               class="w-full px-6 py-4 pr-14 text-base bg-[var(--white)] rounded-2xl shadow-xl border border-[var(--stone)] outline-none text-[var(--text-heading)] placeholder-[var(--text-muted)]">
+                        <input type="text" name="q" x-model="query" placeholder="{{ __('Search for services, projects, materials, articles...') }}"
+                               class="input-elegant w-full px-6 py-4 pr-14 text-base shadow-[0_0_30px_rgba(234,179,8,0.1)]">
                         <button type="submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--gold)] hover:text-[var(--text-heading)] transition-colors">
                             <x-icon name="search" class="w-5 h-5" />
                         </button>
@@ -520,11 +761,11 @@
                     {{-- Column 1 --}}
                     <div class="lg:col-span-1">
                         <div class="mb-6">
-                            <span class="block text-2xl font-black text-[var(--gold)] leading-tight" style="font-family: 'Playfair Display', serif;">المصمم الذكي</span>
+                            <span class="block text-2xl font-black text-[var(--gold)] leading-tight" style="font-family: 'Playfair Display', serif;">{{ __('Smart Designer') }}</span>
                             <span class="block text-[11px] font-medium text-white/30 tracking-[0.25em] mt-1">SMART DESIGNER</span>
                         </div>
                         <p class="text-white/40 text-sm leading-relaxed mb-6 max-w-xs">
-                            شركة رائدة في التصميم الداخلي والديكور، نجمع بين الأناقة العصرية واللمسات العربية الأصيلة.
+                            {{ __('We are a leading interior design and decoration company, combining modern elegance with authentic Arabic touches.') }}
                         </p>
                         <div class="flex gap-2" dir="ltr">
                             @include('partials.social-icons', ['socialLinks' => $socialLinks])
@@ -533,21 +774,30 @@
 
                     {{-- Column 2 --}}
                     <div>
-                        <h3 class="text-xs font-bold mb-6 text-white/50 tracking-[0.2em] uppercase">روابط سريعة</h3>
+                        <h3 class="text-xs font-bold mb-6 text-white/50 tracking-[0.2em] uppercase">{{ __('Quick Links') }}</h3>
                         <ul class="space-y-3">
-                            <li><a href="{{ route('home') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">الرئيسية</a></li>
-                            <li><a href="{{ route('about') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">عن الشركة</a></li>
-                            <li><a href="{{ route('services') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">خدماتنا</a></li>
-                            <li><a href="{{ route('projects') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">مشاريعنا</a></li>
-                            <li><a href="{{ route('materials') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">مواد الديكور</a></li>
-                            <li><a href="{{ route('blog') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">المدونة</a></li>
-                            <li><a href="{{ route('contact') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">اتصل بنا</a></li>
+                            <li><a href="{{ route('home') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Home') }}</a></li>
+                            <li><a href="{{ route('about') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('About Us') }}</a></li>
+                            <li><a href="{{ route('services') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Our Services') }}</a></li>
+                            <li><a href="{{ route('projects') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Our Projects') }}</a></li>
+                            <li><a href="{{ route('gallery') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Gallery') }}</a></li>
+                            <li><a href="{{ route('materials') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Decoration Materials') }}</a></li>
+                            <li><a href="{{ route('blog') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Blog') }}</a></li>
+                            <li><a href="{{ route('contact') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Contact Us') }}</a></li>
+                            <li><a href="{{ route('faq') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('FAQ') }}</a></li>
+                            <li><a href="{{ route('most-viewed') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Most Viewed') }}</a></li>
+                            <li><a href="{{ route('privacy') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Privacy Policy') }}</a></li>
+                            <li><a href="{{ route('terms') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Terms & Conditions') }}</a></li>
+                            <li><a href="{{ route('city.jeddah') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Jeddah Decorations') }}</a></li>
+                            <li><a href="{{ route('city.mecca') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Mecca Decorations') }}</a></li>
+                            <li><a href="{{ route('questions') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Questions & Answers') }}</a></li>
+                            <li><a href="{{ route('areas.we.serve') }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ __('Areas We Serve') }}</a></li>
                         </ul>
                     </div>
 
                     {{-- Column 3 --}}
                     <div>
-                        <h3 class="text-xs font-bold mb-6 text-white/50 tracking-[0.2em] uppercase">خدماتنا</h3>
+                        <h3 class="text-xs font-bold mb-6 text-white/50 tracking-[0.2em] uppercase">{{ __('Our Services') }}</h3>
                         <ul class="space-y-3">
                             @foreach($services as $service)
                                 <li><a href="{{ route('service.show', $service->slug) }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ $service->name }}</a></li>
@@ -557,7 +807,7 @@
 
                     {{-- Column 4 --}}
                     <div>
-                        <h3 class="text-xs font-bold mb-6 text-white/50 tracking-[0.2em] uppercase">مواد الديكور</h3>
+                        <h3 class="text-xs font-bold mb-6 text-white/50 tracking-[0.2em] uppercase">{{ __('Decoration Materials') }}</h3>
                         <ul class="space-y-3">
                             @foreach($materialCategories as $category)
                                 <li><a href="{{ route('material.category.show', $category->slug) }}" class="text-white/40 hover:text-[var(--gold)] text-sm transition-colors">{{ $category->name }}</a></li>
@@ -567,19 +817,25 @@
 
                     {{-- Column 5 --}}
                     <div>
-                        <h3 class="text-xs font-bold mb-6 text-white/50 tracking-[0.2em] uppercase">اتصل بنا</h3>
+                        <h3 class="text-xs font-bold mb-6 text-white/50 tracking-[0.2em] uppercase">{{ __('Contact Us') }}</h3>
                         <ul class="space-y-4 text-sm text-white/40">
-                            <li class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center"><x-icon name="location" class="w-4 h-4 text-[var(--gold)]" /></span>
-                                <span class="mt-1.5">{{ $settings['address'] }}</span>
+                            <li class="flex items-start">
+                                <a href="{{ $settings['map_url'] }}" target="_blank" class="flex items-start gap-3 hover:text-[var(--gold)] transition-colors group w-full">
+                                    <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg" style="background: #E07A5F; color: white;"><x-icon name="location" class="w-3.5 h-3.5" /></span>
+                                    <span class="mt-1.5">{{ $settings['address'] }}</span>
+                                </a>
                             </li>
-                            <li class="flex items-center gap-3">
-                                <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center"><x-icon name="phone" class="w-4 h-4 text-[var(--gold)]" /></span>
-                                <span dir="ltr">{{ $settings['phone'] }}</span>
+                            <li class="flex items-center">
+                                <a href="tel:{{ str_replace(' ', '', $settings['phone']) }}" class="flex items-center gap-3 hover:text-[var(--gold)] transition-colors group w-full">
+                                    <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg" style="background: #34A853; color: white;"><x-icon name="phone" class="w-3.5 h-3.5" /></span>
+                                    <span dir="ltr">{{ $settings['phone'] }}</span>
+                                </a>
                             </li>
-                            <li class="flex items-center gap-3">
-                                <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center"><x-icon name="email" class="w-4 h-4 text-[var(--gold)]" /></span>
-                                <span>{{ $settings['email'] }}</span>
+                            <li class="flex items-center">
+                                <a href="mailto:{{ $settings['email'] }}" class="flex items-center gap-3 hover:text-[var(--gold)] transition-colors group w-full">
+                                    <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg" style="background: #EA4335; color: white;"><x-icon name="email" class="w-3.5 h-3.5" /></span>
+                                    <span>{{ $settings['email'] }}</span>
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -587,9 +843,8 @@
 
                 <div class="border-t border-white/[0.04] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p class="text-white/30 text-xs">{{ $settings['copyright'] }}</p>
-                    <div class="flex items-center gap-4 text-xs text-white/30">
-                        <span>تصميم بواسطة <span class="text-[var(--gold)]">المصمم الذكي</span></span>
-                    </div>
+                <div class="mt-2 text-center">
+                    <p class="text-white/20 text-[10px]">تم تصميم الموقع بواسطة <a href="https://wa.me/967773981857" target="_blank" class="text-[var(--gold)] hover:underline">دكتور ويب</a> +967773981857</p>
                 </div>
             </div>
         </footer>

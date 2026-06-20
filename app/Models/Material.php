@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\TracksViews;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Material extends Model
 {
+    use TracksViews;
+
     protected $fillable = [
         'material_category_id',
         'name',
@@ -18,6 +21,7 @@ class Material extends Model
         'price',
         'specifications',
         'tags',
+        'views',
         'is_active',
         'meta_title',
         'meta_description',

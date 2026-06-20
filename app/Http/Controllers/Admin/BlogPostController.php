@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BlogPost;
+use App\Traits\ImageUploadHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class BlogPostController extends Controller
 {
+    use ImageUploadHelper;
     public function index(): View
     {
         $posts = BlogPost::latest()->paginate(15);
@@ -41,13 +43,13 @@ class BlogPostController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('blog', 'public');
+            $validated['image'] = $this->uploadImage($request->file('image'), 'blog');
         }
 
         if ($request->hasFile('images')) {
             $paths = [];
             foreach ($request->file('images') as $file) {
-                $paths[] = $file->store('blog/gallery', 'public');
+                $paths[] = $this->uploadImage($file, 'blog/gallery');
             }
             $validated['images'] = $paths;
         }
@@ -82,13 +84,13 @@ class BlogPostController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('blog', 'public');
+            $validated['image'] = $this->uploadImage($request->file('image'), 'blog', $blogPost->image);
         }
 
         if ($request->hasFile('images')) {
             $paths = $blogPost->images ?? [];
             foreach ($request->file('images') as $file) {
-                $paths[] = $file->store('blog/gallery', 'public');
+                $paths[] = $this->uploadImage($file, 'blog/gallery');
             }
             $validated['images'] = $paths;
         }
@@ -106,6 +108,7 @@ class BlogPostController extends Controller
 
     public function destroy(BlogPost $blogPost): RedirectResponse
     {
+        if ($blogPost->image) $this->deleteImageFiles($blogPost->image, 'blog');
         $blogPost->delete();
         return redirect()->route('admin.blog-posts.index')->with('success', 'تم حذف المقال بنجاح');
     }

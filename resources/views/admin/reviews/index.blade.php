@@ -36,6 +36,12 @@
                             </div>
                         </div>
                         <p class="text-sm text-gray-600 leading-relaxed line-clamp-3">{{ $review->text }}</p>
+                        @if($review->reply)
+                            <div class="mt-2 p-3 bg-blue-50 rounded-lg border-r-2 border-blue-400">
+                                <p class="text-xs font-medium text-blue-700 mb-1">رد الإدارة:</p>
+                                <p class="text-sm text-blue-600">{{ $review->reply }}</p>
+                            </div>
+                        @endif
                         <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium {{ $review->is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600' }}">
                                 <span class="w-1.5 h-1.5 rounded-full {{ $review->is_active ? 'bg-emerald-500' : 'bg-red-500' }}"></span>

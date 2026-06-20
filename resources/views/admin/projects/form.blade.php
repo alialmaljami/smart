@@ -241,6 +241,22 @@
                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
                            placeholder="كلمة1, كلمة2, كلمة3">
                 </div>
+                <div>
+                    <label for="canonical_url" class="block text-sm font-medium text-gray-700 mb-1.5">الرابط الأصلي (Canonical URL)</label>
+                    <input type="url" name="canonical_url" id="canonical_url"
+                           value="{{ old('canonical_url', $project->canonical_url ?? '') }}"
+                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
+                           placeholder="https://example.com/...">
+                </div>
+                <div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="is_indexed" value="1"
+                               {{ old('is_indexed', $project->is_indexed ?? true) ? 'checked' : '' }}
+                               class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gold-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-600"></div>
+                        <span class="mr-3 text-sm font-medium text-gray-700">أرشفة الصفحة في محركات البحث</span>
+                    </label>
+                </div>
             </div>
         </div>
 

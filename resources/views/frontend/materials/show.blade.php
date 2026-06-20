@@ -14,7 +14,7 @@
 <meta property="og:image" content="{{ asset('storage/' . $category->image) }}">
 @endpush
 
-@section('title', ($category->meta_title ?? $category->name) . ' - مواد الديكور - ديكورات المصمم الذكي')
+@section('title', ($category->meta_title ?? $category->name) . ' - ' . __('Decoration Materials') . ' - ' . __('Smart Designer Decorations'))
 
 @section('content')
 
@@ -22,9 +22,9 @@
 <section class="pt-28 pb-4 bg-[var(--cream)]">
     <div class="container mx-auto px-4">
         <nav class="flex items-center space-x-2 space-x-reverse text-sm text-[var(--stone)]">
-            <a href="{{ route('home') }}" class="hover:text-[var(--gold)] transition-colors">الرئيسية</a>
+            <a href="{{ route('home') }}" class="hover:text-[var(--gold)] transition-colors">{{ __('Home') }}</a>
             <i class="fas fa-chevron-left text-xs"></i>
-            <a href="{{ route('materials') }}" class="hover:text-[var(--gold)] transition-colors">مواد الديكور</a>
+            <a href="{{ route('materials') }}" class="hover:text-[var(--gold)] transition-colors">{{ __('Decoration Materials') }}</a>
             <i class="fas fa-chevron-left text-xs"></i>
             <span class="text-[var(--gold)] font-bold">{{ $category->name }}</span>
         </nav>
@@ -37,18 +37,18 @@
     <div class="container mx-auto px-4 relative z-10">
         <div class="grid md:grid-cols-2 gap-8 items-center">
             <div data-aos="fade-left">
-                <h1 class="text-4xl md:text-5xl font-black text-white mb-4">{{ $category->name }}</h1>
+                <h1 class="text-4xl md:text-5xl font-black text-[var(--text-heading)] mb-4">{{ $category->name }}</h1>
                 @if($category->description)
                     <p class="text-[var(--text-light)] text-lg leading-relaxed">{{ $category->description }}</p>
                 @endif
                 <a href="{{ route('contact') }}" class="inline-flex items-center btn-primary px-6 py-3 rounded-lg font-bold mt-6">
-                    <x-icon name="shopping_cart" class="w-5 h-5 inline-block ml-2 align-middle" /> استفسر عن المواد
+                    <x-icon name="shopping_cart" class="w-5 h-5 inline-block ml-2 align-middle" /> {{ __('Inquire about materials') }}
                 </a>
             </div>
             @if($category->image)
                 <div data-aos="fade-right" class="relative">
                     <div class="rounded-2xl overflow-hidden">
-                        <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-80 object-cover">
+                        <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-80 object-cover" loading="lazy">
                     </div>
                 </div>
             @endif
@@ -61,16 +61,16 @@
     <section class="py-16 bg-[var(--cream)]">
         <div class="container mx-auto px-4">
             <div data-aos="fade-up" class="text-center mb-12">
-                <h2 class="text-3xl font-black text-[var(--text-heading)]">المواد المتوفرة</h2>
+                <h2 class="text-3xl font-black text-[var(--text-heading)]">{{ __('Available Materials') }}</h2>
                 <div class="section-divider"></div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach($materials as $material)
-                    <div data-aos="fade-up" class="card-elegant">
+                    <a href="{{ route('material.show', $material->slug) }}" data-aos="fade-up" class="card-elegant block hover:shadow-lg transition-all">
                         @if($material->image)
                             <div class="relative img-zoom h-48">
-                                <img src="{{ asset('storage/' . $material->image) }}" alt="{{ $material->name }}" class="w-full h-full object-cover">
-                                <div x-data="{ liked: {{ $material->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $material->likeCount() }} }" class="absolute top-3 left-3 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'material', id: {{ $material->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
+                                <img src="{{ asset('storage/' . $material->image) }}" alt="{{ $material->name }}" class="w-full h-full object-cover" loading="lazy">
+                                <div x-data="{ liked: {{ $material->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $material->likeCount() }} }" class="absolute top-3 left-3 z-10" @click.stop="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'material', id: {{ $material->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
                                     <button class="flex items-center gap-1 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-xs">
                                         <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
                                         <span x-text="count">0</span>
@@ -79,8 +79,8 @@
                             </div>
                         @elseif(is_array($material->images) && count($material->images))
                             <div class="relative img-zoom h-48">
-                                <img src="{{ asset('storage/' . $material->images[0]) }}" alt="{{ $material->name }}" class="w-full h-full object-cover">
-                                <div x-data="{ liked: {{ $material->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $material->likeCount() }} }" class="absolute top-3 left-3 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'material', id: {{ $material->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
+                                <img src="{{ asset('storage/' . $material->images[0]) }}" alt="{{ $material->name }}" class="w-full h-full object-cover" loading="lazy">
+                                <div x-data="{ liked: {{ $material->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $material->likeCount() }} }" class="absolute top-3 left-3 z-10" @click.stop="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'material', id: {{ $material->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
                                     <button class="flex items-center gap-1 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-xs">
                                         <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
                                         <span x-text="count">0</span>
@@ -98,10 +98,10 @@
                                 <p class="text-[var(--text-light)] text-sm">{{ Str::limit($material->description, 80) }}</p>
                             @endif
                             @if($material->price)
-                                <p class="text-[var(--gold)] font-bold mt-2">{{ number_format($material->price, 2) }} ريال</p>
+                                <p class="text-[var(--gold)] font-bold mt-2">{{ number_format($material->price, 2) }} {{ __('SAR') }}</p>
                             @endif
                         </div>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         </div>
@@ -113,14 +113,14 @@
     <section class="py-16 bg-[var(--white)]">
         <div class="container mx-auto px-4">
             <div data-aos="fade-up" class="text-center mb-12">
-                <h2 class="text-3xl font-black text-[var(--text-heading)]">مشاريع استخدمت هذه المواد</h2>
+                <h2 class="text-3xl font-black text-[var(--text-heading)]">{{ __('Projects using these materials') }}</h2>
                 <div class="section-divider"></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($relatedProjects as $project)
                     @php $img = is_array($project->images) ? ($project->images[0] ?? '') : $project->images; @endphp
                     <div data-aos="fade-up" class="group relative rounded-xl overflow-hidden img-zoom h-64">
-                        <img src="{{ asset('storage/' . $img) }}" alt="{{ $project->title }}" class="w-full h-full object-cover">
+                        <img src="{{ asset('storage/' . $img) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
                         <div class="overlay-gradient absolute inset-0"></div>
                         <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-3 left-3 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
                             <button class="flex items-center gap-1 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-xs">
@@ -132,7 +132,7 @@
                             <h3 class="text-white font-bold text-lg">{{ $project->title }}</h3>
                         </div>
                         <a href="{{ route('project.show', $project->slug) }}" class="absolute inset-0 flex items-center justify-center bg-[var(--gold)]/80 opacity-0 group-hover:opacity-100 transition-all">
-                            <span class="text-white font-bold border-2 border-white px-4 py-2 rounded-lg">عرض المشروع</span>
+                            <span class="text-white font-bold border-2 border-white px-4 py-2 rounded-lg">{{ __('View Project') }}</span>
                         </a>
                     </div>
                 @endforeach
@@ -146,7 +146,7 @@
     <section class="py-16 bg-[var(--cream)]">
         <div class="container mx-auto px-4">
             <div data-aos="fade-up" class="text-center mb-12">
-                <h2 class="text-3xl font-black text-[var(--text-heading)]">خدمات ذات صلة</h2>
+                <h2 class="text-3xl font-black text-[var(--text-heading)]">{{ __('Related Services') }}</h2>
                 <div class="section-divider"></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -161,7 +161,7 @@
                             <h3 class="font-bold text-[var(--text-heading)]">{{ $service->name }}</h3>
                         </div>
                         <a href="{{ route('service.show', $service->slug) }}" class="inline-flex items-center text-[var(--gold)] text-sm font-bold">
-                            اقرأ المزيد <i class="fas fa-arrow-left mr-1"></i>
+                            {{ __('Read More') }} <i class="fas fa-arrow-left mr-1"></i>
                         </a>
                     </div>
                 @endforeach
@@ -171,14 +171,14 @@
 @endif
 
 {{-- Social Share --}}
+@php $shareSocialLinks = App\Models\SocialLink::where('is_active', true)->orderBy('sort_order')->get(); @endphp
 <section class="py-8 bg-[var(--cream)] border-t border-[var(--stone)]">
     <div class="container mx-auto px-4 text-center">
-        <span class="text-[var(--text-light)] ml-2">شارك هذه الفئة:</span>
-        <div class="inline-flex space-x-2 space-x-reverse" dir="ltr">
-            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:scale-110 transition-transform"><x-icon name="facebook" class="w-5 h-5" /></a>
-            <a href="https://twitter.com/intent/tweet?text={{ urlencode($category->name) }}&url={{ urlencode(request()->url()) }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-[#000000] text-white flex items-center justify-center hover:scale-110 transition-transform"><x-icon name="x_twitter" class="w-5 h-5" /></a>
+        <span class="text-[var(--text-light)] ml-2">{{ __('Share this category:') }}</span>
+        <div class="inline-flex space-x-2 space-x-reverse items-center" dir="ltr">
             <a href="https://api.whatsapp.com/send?text={{ urlencode($category->name . ' ' . request()->url()) }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 transition-transform"><x-icon name="whatsapp" class="w-5 h-5" /></a>
             <a href="https://www.pinterest.com/pin/create/button/?url={{ urlencode(request()->url()) }}&description={{ urlencode($category->name) }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-[#E60023] text-white flex items-center justify-center hover:scale-110 transition-transform"><x-icon name="pinterest" class="w-5 h-5" /></a>
+            @include('partials.social-icons', ['socialLinks' => $shareSocialLinks])
         </div>
     </div>
 </section>

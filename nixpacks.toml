@@ -1,2 +1,11 @@
-[php]
-version = "8.4"
+[phases.setup]
+nixPkgs = ['...']
+
+[phases.install]
+cmds = ['composer install --no-interaction --optimize-autoloader']
+
+[phases.build]
+cmds = ['php artisan config:cache', 'php artisan route:cache', 'php artisan view:cache']
+
+[start]
+cmd = 'php artisan migrate --force && php artisan storage:link --force && php-fpm -F'

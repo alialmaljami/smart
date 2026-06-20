@@ -184,23 +184,197 @@
                 </h2>
             </div>
             <div class="p-6 space-y-5">
-                <div>
-                    <label for="home_meta_title" class="block text-sm font-medium text-gray-700 mb-1.5">عنوان الصفحة الرئيسية</label>
-                    <input type="text" name="home_meta_title" id="home_meta_title"
-                           value="{{ old('home_meta_title', $settings['home_meta_title'] ?? '') }}"
-                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                {{-- Home --}}
+                <div class="border-b border-gray-100 pb-5 mb-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-4 flex items-center gap-2"><i class="fas fa-home text-gold-600"></i> الصفحة الرئيسية</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <input type="text" name="home_meta_title" placeholder="العنوان (Meta Title)"
+                               value="{{ old('home_meta_title', $settings['home_meta_title'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                        <textarea name="home_meta_description" placeholder="الوصف (Meta Description)" rows="2"
+                                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('home_meta_description', $settings['home_meta_description'] ?? '') }}</textarea>
+                        <input type="text" name="home_meta_keywords" placeholder="الكلمات المفتاحية"
+                               value="{{ old('home_meta_keywords', $settings['home_meta_keywords'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                    </div>
                 </div>
-                <div>
-                    <label for="home_meta_description" class="block text-sm font-medium text-gray-700 mb-1.5">وصف الصفحة الرئيسية</label>
-                    <textarea name="home_meta_description" id="home_meta_description" rows="3"
-                              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('home_meta_description', $settings['home_meta_description'] ?? '') }}</textarea>
+
+                {{-- About --}}
+                <div class="border-b border-gray-100 pb-5 mb-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-4 flex items-center gap-2"><i class="fas fa-info-circle text-gold-600"></i> عن الشركة</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <input type="text" name="about_meta_title" placeholder="العنوان"
+                               value="{{ old('about_meta_title', $settings['about_meta_title'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                        <textarea name="about_meta_description" placeholder="الوصف" rows="2"
+                                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('about_meta_description', $settings['about_meta_description'] ?? '') }}</textarea>
+                        <input type="text" name="about_meta_keywords" placeholder="الكلمات المفتاحية"
+                               value="{{ old('about_meta_keywords', $settings['about_meta_keywords'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                    </div>
                 </div>
-                <div>
-                    <label for="home_meta_keywords" class="block text-sm font-medium text-gray-700 mb-1.5">الكلمات المفتاحية</label>
-                    <input type="text" name="home_meta_keywords" id="home_meta_keywords"
-                           value="{{ old('home_meta_keywords', $settings['home_meta_keywords'] ?? '') }}"
-                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
-                           placeholder="كلمة1, كلمة2, كلمة3">
+
+                {{-- Contact --}}
+                <div class="border-b border-gray-100 pb-5 mb-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-4 flex items-center gap-2"><i class="fas fa-envelope text-gold-600"></i> اتصل بنا</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <input type="text" name="contact_meta_title" placeholder="العنوان"
+                               value="{{ old('contact_meta_title', $settings['contact_meta_title'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                        <textarea name="contact_meta_description" placeholder="الوصف" rows="2"
+                                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('contact_meta_description', $settings['contact_meta_description'] ?? '') }}</textarea>
+                        <input type="text" name="contact_meta_keywords" placeholder="الكلمات المفتاحية"
+                               value="{{ old('contact_meta_keywords', $settings['contact_meta_keywords'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                    </div>
+                </div>
+
+                {{-- FAQ --}}
+                <div class="border-b border-gray-100 pb-5 mb-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-4 flex items-center gap-2"><i class="fas fa-question-circle text-gold-600"></i> الأسئلة الشائعة</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <input type="text" name="faq_meta_title" placeholder="العنوان"
+                               value="{{ old('faq_meta_title', $settings['faq_meta_title'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                        <textarea name="faq_meta_description" placeholder="الوصف" rows="2"
+                                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('faq_meta_description', $settings['faq_meta_description'] ?? '') }}</textarea>
+                    </div>
+                </div>
+
+                {{-- Privacy --}}
+                <div class="border-b border-gray-100 pb-5 mb-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-4 flex items-center gap-2"><i class="fas fa-shield-alt text-gold-600"></i> سياسة الخصوصية</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <input type="text" name="privacy_meta_title" placeholder="العنوان"
+                               value="{{ old('privacy_meta_title', $settings['privacy_meta_title'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                        <textarea name="privacy_meta_description" placeholder="الوصف" rows="2"
+                                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('privacy_meta_description', $settings['privacy_meta_description'] ?? '') }}</textarea>
+                    </div>
+                </div>
+
+                {{-- Terms --}}
+                <div class="border-b border-gray-100 pb-5 mb-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-4 flex items-center gap-2"><i class="fas fa-file-contract text-gold-600"></i> الشروط والأحكام</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <input type="text" name="terms_meta_title" placeholder="العنوان"
+                               value="{{ old('terms_meta_title', $settings['terms_meta_title'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                        <textarea name="terms_meta_description" placeholder="الوصف" rows="2"
+                                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('terms_meta_description', $settings['terms_meta_description'] ?? '') }}</textarea>
+                    </div>
+                </div>
+
+                {{-- Jeddah --}}
+                <div class="border-b border-gray-100 pb-5 mb-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-4 flex items-center gap-2"><i class="fas fa-city text-gold-600"></i> ديكورات جدة</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <input type="text" name="jeddah_meta_title" placeholder="العنوان"
+                               value="{{ old('jeddah_meta_title', $settings['jeddah_meta_title'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                        <textarea name="jeddah_meta_description" placeholder="الوصف" rows="2"
+                                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('jeddah_meta_description', $settings['jeddah_meta_description'] ?? '') }}</textarea>
+                    </div>
+                </div>
+
+                {{-- Mecca --}}
+                <div class="border-b border-gray-100 pb-5 mb-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-4 flex items-center gap-2"><i class="fas fa-kaaba text-gold-600"></i> ديكورات مكة</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <input type="text" name="mecca_meta_title" placeholder="العنوان"
+                               value="{{ old('mecca_meta_title', $settings['mecca_meta_title'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                        <textarea name="mecca_meta_description" placeholder="الوصف" rows="2"
+                                  class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('mecca_meta_description', $settings['mecca_meta_description'] ?? '') }}</textarea>
+                    </div>
+                </div>
+
+                {{-- Google Search Console / Analytics --}}
+                <div class="pb-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-4 flex items-center gap-2"><i class="fab fa-google text-gold-600"></i> Google Search Console & Analytics</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <input type="text" name="google_search_console" placeholder="رمز التحقق من Google Search Console (مثال: abc123def456)"
+                               value="{{ old('google_search_console', $settings['google_search_console'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                        <input type="text" name="google_analytics_id" placeholder="معرف Google Analytics (مثال: G-XXXXXXXXXX)"
+                               value="{{ old('google_analytics_id', $settings['google_analytics_id'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                        <p class="text-xs text-gray-400">أدخل رمز التحقق من Search Console ومعرف Google Analytics 4 (GA4) لربط الموقع بخدمات Google</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Watermark settings --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fas fa-watermark text-gold-600"></i>
+                    العلامة المائية (Watermark)
+                </h2>
+            </div>
+            <div class="p-6 space-y-5">
+                <div class="flex items-center gap-3">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="hidden" name="watermark_enabled" value="0">
+                        <input type="checkbox" name="watermark_enabled" value="1" {{ old('watermark_enabled', $settings['watermark_enabled'] ?? '1') == '1' ? 'checked' : '' }} class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gold-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-500"></div>
+                    </label>
+                    <span class="text-sm text-gray-700">تفعيل العلامة المائية</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">نوع العلامة المائية</label>
+                        <select name="watermark_type" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none text-sm">
+                            <option value="text" {{ ($settings['watermark_type'] ?? 'text') == 'text' ? 'selected' : '' }}>نص فقط</option>
+                            <option value="logo" {{ ($settings['watermark_type'] ?? '') == 'logo' ? 'selected' : '' }}>شعار فقط</option>
+                            <option value="both" {{ ($settings['watermark_type'] ?? '') == 'both' ? 'selected' : '' }}>نص وشعار معاً</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">الشفافية (0-100)</label>
+                        <div class="flex items-center gap-3">
+                            <input type="range" name="watermark_opacity" min="5" max="100" value="{{ old('watermark_opacity', $settings['watermark_opacity'] ?? '40') }}" class="flex-1 accent-gold-500" oninput="document.getElementById('opacityVal').textContent = this.value">
+                            <span id="opacityVal" class="text-sm font-bold text-gold-600 min-w-[3ch]">{{ $settings['watermark_opacity'] ?? '40' }}</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">الموضع</label>
+                        <select name="watermark_position" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none text-sm">
+                            <option value="top-left" {{ ($settings['watermark_position'] ?? '') == 'top-left' ? 'selected' : '' }}>أعلى يسار</option>
+                            <option value="top-center" {{ ($settings['watermark_position'] ?? '') == 'top-center' ? 'selected' : '' }}>أعلى وسط</option>
+                            <option value="top-right" {{ ($settings['watermark_position'] ?? '') == 'top-right' ? 'selected' : '' }}>أعلى يمين</option>
+                            <option value="center" {{ ($settings['watermark_position'] ?? '') == 'center' ? 'selected' : '' }}>وسط</option>
+                            <option value="bottom-left" {{ ($settings['watermark_position'] ?? '') == 'bottom-left' ? 'selected' : '' }}>أسفل يسار</option>
+                            <option value="bottom-center" {{ ($settings['watermark_position'] ?? 'bottom-center') == 'bottom-center' ? 'selected' : '' }}>أسفل وسط</option>
+                            <option value="bottom-right" {{ ($settings['watermark_position'] ?? '') == 'bottom-right' ? 'selected' : '' }}>أسفل يمين</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">الحجم</label>
+                        <select name="watermark_size" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none text-sm">
+                            <option value="small" {{ ($settings['watermark_size'] ?? '') == 'small' ? 'selected' : '' }}>صغير</option>
+                            <option value="medium" {{ ($settings['watermark_size'] ?? 'medium') == 'medium' ? 'selected' : '' }}>متوسط</option>
+                            <option value="large" {{ ($settings['watermark_size'] ?? '') == 'large' ? 'selected' : '' }}>كبير</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">نص العلامة المائية</label>
+                        <input type="text" name="watermark_text" value="{{ old('watermark_text', $settings['watermark_text'] ?? 'ديكورات المصمم الذكي') }}" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">شعار العلامة المائية (PNG)</label>
+                        <input type="file" name="watermark_logo" accept="image/png" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-gold-50 file:text-gold-700 hover:file:bg-gold-100">
+                        @if(!empty($settings['watermark_logo']))
+                            <p class="text-xs text-gray-400 mt-1">الشعار الحالي: <a href="{{ asset('storage/'.$settings['watermark_logo']) }}" target="_blank" class="text-gold-600 hover:underline">عرض</a></p>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>

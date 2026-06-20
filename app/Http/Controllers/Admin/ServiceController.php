@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Traits\ImageUploadHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ServiceController extends Controller
 {
+    use ImageUploadHelper;
     public function index(): View
     {
         $services = Service::orderBy('sort_order')->get();
@@ -42,13 +44,13 @@ class ServiceController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('services', 'public');
+            $validated['image'] = $this->uploadImage($request->file('image'), 'services');
         }
 
         if ($request->hasFile('images')) {
             $paths = [];
             foreach ($request->file('images') as $file) {
-                $paths[] = $file->store('services/gallery', 'public');
+                $paths[] = $this->uploadImage($file, 'services/gallery');
             }
             $validated['images'] = $paths;
         }
@@ -88,13 +90,13 @@ class ServiceController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('services', 'public');
+            $validated['image'] = $this->uploadImage($request->file('image'), 'services', $service->image);
         }
 
         if ($request->hasFile('images')) {
             $paths = [];
             foreach ($request->file('images') as $file) {
-                $paths[] = $file->store('services/gallery', 'public');
+                $paths[] = $this->uploadImage($file, 'services/gallery');
             }
             $validated['images'] = $paths;
         }
@@ -110,6 +112,7 @@ class ServiceController extends Controller
 
     public function destroy(Service $service): RedirectResponse
     {
+        if ($service->image) $this->deleteImageFiles($service->image, 'services');
         $service->delete();
         return redirect()->route('admin.services.index')->with('success', 'تم حذف الخدمة بنجاح');
     }

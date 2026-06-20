@@ -7,6 +7,7 @@ use App\Models\Gallery;
 use App\Models\Like;
 use App\Models\Material;
 use App\Models\Project;
+use App\Models\Service;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class LikeController extends Controller
     public function toggle(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'type' => ['required', 'string', 'in:project,material,gallery'],
+            'type' => ['required', 'string', 'in:project,material,gallery,service'],
             'id' => ['required', 'integer'],
         ]);
 
@@ -23,6 +24,7 @@ class LikeController extends Controller
             'project' => Project::findOrFail($validated['id']),
             'material' => Material::findOrFail($validated['id']),
             'gallery' => Gallery::findOrFail($validated['id']),
+            'service' => Service::findOrFail($validated['id']),
         };
 
         $ip = $request->ip();

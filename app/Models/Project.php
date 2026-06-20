@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\TracksViews;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Project extends Model
 {
+    use TracksViews;
+
     protected $fillable = [
         'title',
         'slug',
@@ -20,6 +23,7 @@ class Project extends Model
         'completion_date',
         'service_id',
         'category_id',
+        'views',
         'is_active',
         'meta_title',
         'meta_description',

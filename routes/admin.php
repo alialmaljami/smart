@@ -14,7 +14,12 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\HomepageSectionController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\VisitorQuestionController;
 use App\Http\Controllers\Admin\AboutPageController;
+use App\Services\WatermarkService;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 Route::middleware('web')->prefix('admin')->group(function () {
     // Guest routes
@@ -52,6 +57,18 @@ Route::middleware('web')->prefix('admin')->group(function () {
         Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings');
         Route::post('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
 
+        // Watermark preview (generates a sample image with current watermark settings)
+        Route::get('/watermark-preview', function () {
+            $manager = new ImageManager(new Driver());
+            $img = $manager->createImage(800, 600);
+            $gd = $img->core()->native();
+            imagefill($gd, 0, 0, imagecolorallocate($gd, 40, 40, 60));
+            $watermark = new WatermarkService();
+            $watermark->enabled = true;
+            $watermark->apply($img);
+            return response($img->encodeUsingFileExtension('webp', quality: 90)->toString())->header('Content-Type', 'image/webp');
+        })->name('admin.watermark-preview');
+
         // Blog Posts
         Route::resource('/blog-posts', BlogPostController::class, ['as' => 'admin']);
         Route::put('/blog-posts/{blog_post}/toggle-active', [BlogPostController::class, 'toggleActive'])->name('admin.blog-posts.toggle-active');
@@ -75,5 +92,13 @@ Route::middleware('web')->prefix('admin')->group(function () {
         // About Page
         Route::get('/about', [AboutPageController::class, 'index'])->name('admin.about.index');
         Route::post('/about', [AboutPageController::class, 'update'])->name('admin.about.update');
+
+        // FAQs
+        Route::resource('/faqs', FaqController::class, ['as' => 'admin']);
+        Route::post('/faqs/{faq}/toggle-active', [FaqController::class, 'toggleActive'])->name('admin.faqs.toggle-active');
+
+        // Visitor Questions (Q&A)
+        Route::resource('/visitor-questions', VisitorQuestionController::class, ['as' => 'admin']);
+        Route::post('/visitor-questions/{visitorQuestion}/toggle-active', [VisitorQuestionController::class, 'toggleActive'])->name('admin.visitor-questions.toggle-active');
     });
 });

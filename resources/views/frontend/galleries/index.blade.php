@@ -5,13 +5,13 @@
 @extends('layouts.app')
 
 @push('meta')
-<meta name="description" content="معرض صور ديكورات المصمم الذكي - مجموعة من أحدث وأجمل تصاميم الديكور الداخلي">
-<meta name="keywords" content="معرض, ديكور, تصميم داخلي, صور ديكور, المصمم الذكي">
-<meta property="og:title" content="معرض الصور - ديكورات المصمم الذكي">
-<meta property="og:description" content="مجموعة من أحدث وأجمل تصاميم الديكور الداخلي">
+<meta name="description" content="{{ __('Gallery') . ' - ' . __('Smart Designer Decorations') . '. ' . __('Our Works Gallery') }}">
+<meta name="keywords" content="{{ __('Gallery') }}, {{ __('Design') }}, {{ __('Decoration') }}">
+<meta property="og:title" content="{{ __('Gallery') }} - {{ __('Smart Designer Decorations') }}">
+<meta property="og:description" content="{{ __('Our Works Gallery') }}">
 @endpush
 
-@section('title', 'معرض الصور - ديكورات المصمم الذكي')
+@section('title', __('Gallery') . ' - ' . __('Smart Designer Decorations'))
 
 @section('content')
 
@@ -22,9 +22,9 @@
     <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-l from-transparent via-[var(--gold)] to-transparent"></div>
     <div class="container mx-auto px-4 relative z-10">
         <div data-aos="fade-up" class="text-center">
-            <span class="section-label">معرض الصور</span>
-            <h1 class="text-4xl md:text-6xl font-black text-white mt-3 mb-4">معرض <span class="text-[var(--gold)]">أعمالنا</span></h1>
-            <p class="text-[var(--text-light)] max-w-2xl mx-auto text-lg">مجموعة من أحدث وأجمل مشاريعنا وتصاميمنا في عالم الديكور والتصميم الداخلي</p>
+            <span class="section-label">{{ __('Gallery') }}</span>
+            <h1 class="text-4xl md:text-6xl font-black text-[var(--text-heading)] mt-3 mb-4">{{ __('Our Works Gallery') }}</h1>
+            <p class="text-[var(--text-light)] max-w-2xl mx-auto text-lg">{{ __('A collection of our latest projects and designs in the world of decoration and interior design') }}</p>
         </div>
     </div>
 </section>
@@ -35,7 +35,7 @@
         <div class="container mx-auto px-4">
             <div class="flex flex-wrap items-center justify-center gap-3">
                 <button onclick="filterGallery('all')" class="filter-btn active px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-[var(--gold)] text-white" data-filter="all">
-                    الكل
+                    {{ __('All') }}
                 </button>
                 @foreach($categories as $cat)
                     <button onclick="filterGallery('{{ $cat->name }}')" class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-[var(--cream)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white" data-filter="{{ $cat->name }}">
@@ -53,29 +53,30 @@
         @if($galleries->count())
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach($galleries as $gallery)
+                    @php $catName = $gallery->getRelation('category')?->name ?? $gallery->category ?? 'all'; @endphp
                     <div data-aos="zoom-in" data-aos-delay="{{ $loop->index * 50 }}" class="gallery-item group relative rounded-2xl overflow-hidden img-zoom h-72 cursor-pointer"
-                         data-category="{{ $gallery->category->name ?? $gallery->category ?? 'all' }}"
-                         onclick="openModal('{{ asset('storage/' . $gallery->image) }}', '{{ $gallery->title }}', '{{ $gallery->description ?? '' }}')">
-                        <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->title }}" class="w-full h-full object-cover" loading="lazy">
+                         data-category="{{ $catName }}"
+                         onclick="location.href='{{ route('gallery.show', [$gallery->id, $gallery->slug]) }}'">
+                        <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->alt_text ?: $gallery->title }}" class="w-full h-full object-cover" loading="lazy">
                         <div x-data="{ liked: {{ $gallery->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $gallery->likeCount() }} }" class="absolute top-3 left-3 z-10" @click.stop="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'gallery', id: {{ $gallery->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
                             <button class="flex items-center gap-1 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-xs pointer-events-none">
                                 <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
                                 <span x-text="count">0</span>
                             </button>
                         </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <a href="{{ route('gallery.show', [$gallery->id, $gallery->slug]) }}" class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
                             <div class="absolute bottom-0 right-0 left-0 p-5">
                                 <h3 class="text-white font-bold text-lg mb-1">{{ $gallery->title }}</h3>
                                 @if($gallery->description)
-                                    <p class="text-gray-300 text-sm line-clamp-2">{{ $gallery->description }}</p>
+                                    <p class="text-white/70 text-sm line-clamp-2">{{ $gallery->description }}</p>
                                 @endif
                             </div>
                             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                                 <div class="w-16 h-16 rounded-full bg-[var(--gold)]/90 flex items-center justify-center text-white text-2xl transform scale-0 group-hover:scale-100 transition-transform duration-300">
-                                    <i class="fas fa-search-plus"></i>
+                                    <i class="fas fa-eye"></i>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 @endforeach
             </div>
@@ -84,8 +85,8 @@
                 <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-[var(--stone)] flex items-center justify-center">
                     <x-icon name="star" class="w-12 h-12 text-[var(--text-light)]" />
                 </div>
-                <h3 class="text-2xl font-bold text-[var(--gold)] mb-2">لا توجد صور في المعرض</h3>
-                <p class="text-[var(--text-light)]">سيتم إضافة الصور قريباً</p>
+                <h3 class="text-2xl font-bold text-[var(--gold)] mb-2">{{ __('No images in gallery') }}</h3>
+                <p class="text-[var(--text-light)]">{{ __('Images will be added soon') }}</p>
             </div>
         @endif
     </div>
@@ -105,10 +106,10 @@
             <i class="fas fa-chevron-left text-xl"></i>
         </button>
         <div class="max-w-5xl max-h-[85vh] text-center">
-            <img id="modal-image" src="" alt="" class="max-w-full max-h-[75vh] rounded-2xl shadow-2xl mx-auto object-contain">
+            <img id="modal-image" src="" alt="{{ __('Image preview') }}" class="max-w-full max-h-[75vh] rounded-2xl shadow-2xl mx-auto object-contain">
             <div class="mt-4 text-white">
                 <h3 id="modal-title" class="text-xl font-bold"></h3>
-                <p id="modal-description" class="text-gray-400 text-sm mt-1"></p>
+                <p id="modal-description" class="text-white/60 text-sm mt-1"></p>
             </div>
         </div>
     </div>

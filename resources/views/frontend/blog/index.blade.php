@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
 @push('meta')
-<meta name="description" content="مدونة ديكورات المصمم الذكي - أحدث المقالات والنصائح في عالم الديكور والتصميم الداخلي. أفكار إبداعية ونصائح عملية لتزيين منزلك.">
-<meta name="keywords" content="مدونة ديكور, نصائح ديكور, تصميم داخلي, أفكار ديكور, مقالات">
-<meta property="og:title" content="المدونة - ديكورات المصمم الذكي">
-<meta property="og:description" content="أحدث المقالات والنصائح في عالم الديكور والتصميم الداخلي">
+<meta name="description" content="{{ __('Blog') . ' - ' . __('Smart Designer Decorations') . '. ' . __('Latest articles and tips in the world of decoration and interior design') }}">
+<meta name="keywords" content="{{ __('Blog') }}, {{ __('Design') }}, {{ __('Decoration') }}, {{ __('Articles') }}">
+<meta property="og:title" content="{{ __('Blog') }} - {{ __('Smart Designer Decorations') }}">
+<meta property="og:description" content="{{ __('Latest articles and tips in the world of decoration and interior design') }}">
 @endpush
 
-@section('title', 'المدونة - ديكورات المصمم الذكي')
+@section('title', __('Blog') . ' - ' . __('Smart Designer Decorations'))
 
 @section('content')
 
@@ -15,9 +15,9 @@
 <section class="relative py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
     <div class="overlay-gradient"></div>
     <div class="relative z-10 text-center px-4">
-        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-white mb-4">المدونة</h1>
+        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Blog') }}</h1>
         <div class="section-divider"></div>
-        <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-muted)] text-lg max-w-2xl mx-auto">أحدث المقالات والنصائح في عالم الديكور والتصميم الداخلي</p>
+        <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-muted)] text-lg max-w-2xl mx-auto">{{ __('Latest articles and tips in the world of decoration and interior design') }}</p>
     </div>
 </section>
 
@@ -29,11 +29,11 @@
                 <article data-aos="fade-up" data-aos-delay="{{ $loop->index * 30 }}" class="card-elegant overflow-hidden">
                     @if($post->image)
                         <div class="img-zoom h-52">
-                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
+                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover" loading="lazy">
                         </div>
                     @else
                         <div class="h-52 flex items-center justify-center bg-[var(--gold)]">
-                            <i class="fas fa-newspaper text-6xl text-[var(--cream)] opacity-50"></i>
+                            <i class="fas fa-newspaper text-6xl text-white opacity-50"></i>
                         </div>
                     @endif
                     <div class="p-6">
@@ -49,15 +49,15 @@
                             <p class="text-[var(--text-light)] text-sm leading-relaxed mb-4">{{ Str::limit($post->excerpt, 120) }}</p>
                         @endif
                         <a href="{{ route('blog.post', $post->slug) }}" class="inline-flex items-center text-[var(--gold)] font-bold text-sm hover:gap-2 transition-all">
-                            اقرأ المزيد <i class="fas fa-arrow-left mr-1"></i>
+                            {{ __('Read More') }} <i class="fas fa-arrow-left mr-1"></i>
                         </a>
                     </div>
                 </article>
             @empty
                 <div class="col-span-full text-center py-16">
                     <i class="fas fa-blog text-6xl text-[var(--text-muted)] mb-4"></i>
-                    <p class="text-[var(--text-light)] text-xl">لا توجد مقالات متاحة حالياً</p>
-                    <p class="text-[var(--text-muted)] mt-2">سيتم إضافة محتوى قريباً</p>
+                    <p class="text-[var(--text-light)] text-xl">{{ __('No articles available') }}</p>
+                    <p class="text-[var(--text-muted)] mt-2">{{ __('Content will be added soon') }}</p>
                 </div>
             @endforelse
         </div>

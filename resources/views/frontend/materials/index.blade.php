@@ -5,13 +5,13 @@
 @extends('layouts.app')
 
 @push('meta')
-<meta name="description" content="مواد الديكور من ديكورات المصمم الذكي - تشكيلة واسعة من مواد الديكور عالية الجودة: الخشب، الرخام، الحجر، ورق الجدران، الإضاءة، الستائر، والأكسسوارات.">
-<meta name="keywords" content="مواد ديكور, خشب, رخام, حجر, ورق جدران, إضاءة, ستائر, ديكور, الرياض">
-<meta property="og:title" content="مواد الديكور - ديكورات المصمم الذكي">
-<meta property="og:description" content="تشكيلة واسعة من مواد الديكور عالية الجودة">
+<meta name="description" content="{{ __('Decoration Materials') . ' - ' . __('Smart Designer Decorations') . '. ' . __('Wide selection of high quality decoration materials for your project') }}">
+<meta name="keywords" content="{{ __('Decoration Materials') }}, {{ __('Design') }}, {{ __('Materials') }}">
+<meta property="og:title" content="{{ __('Decoration Materials') }} - {{ __('Smart Designer Decorations') }}">
+<meta property="og:description" content="{{ __('Wide selection of high quality decoration materials for your project') }}">
 @endpush
 
-@section('title', 'مواد الديكور - ديكورات المصمم الذكي')
+@section('title', __('Decoration Materials') . ' - ' . __('Smart Designer Decorations'))
 
 @section('content')
 
@@ -20,9 +20,9 @@
     <div class="absolute inset-0 hero-gradient"></div>
     <div class="absolute inset-0 opacity-[0.07]" style="background: radial-gradient(circle at 30% 50%, var(--gold) 0%, transparent 50%), radial-gradient(circle at 70% 50%, var(--gold) 0%, transparent 50%);"></div>
     <div class="relative z-10 text-center px-4">
-        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-white mb-4">مواد الديكور</h1>
+        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Decoration Materials') }}</h1>
         <div class="section-divider"></div>
-        <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-light)] text-lg max-w-2xl mx-auto">تشكيلة واسعة من أجود مواد الديكور لتلبية جميع احتياجات مشروعك</p>
+        <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-light)] text-lg max-w-2xl mx-auto">{{ __('Wide selection of high quality decoration materials for your project') }}</p>
     </div>
 </section>
 
@@ -34,7 +34,7 @@
                 <div data-aos="fade-up" data-aos-delay="{{ $loop->index * 30 }}" class="card-elegant">
                     <div class="img-zoom h-56">
                         @if($category->image)
-                            <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover">
+                            <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover" loading="lazy">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-[var(--stone)]">
                                 <i class="fas fa-box text-6xl text-[var(--text-light)]"></i>
@@ -48,14 +48,14 @@
                             <p class="text-[var(--text-light)] text-sm leading-relaxed mb-4">{{ Str::limit($category->description, 80) }}</p>
                         @endif
                         <a href="{{ route('material.category.show', $category->slug) }}" class="inline-flex items-center btn-primary px-6 py-2 rounded-lg font-bold text-sm">
-                            تصفح المجموعة <i class="fas fa-arrow-left mr-2"></i>
+                            {{ __('Browse Collection') }} <i class="fas fa-arrow-left mr-2"></i>
                         </a>
                     </div>
                 </div>
             @empty
                 <div class="col-span-full text-center py-12">
                     <i class="fas fa-cubes text-6xl text-[var(--stone)] mb-4"></i>
-                    <p class="text-[var(--text-light)] text-xl">لا توجد تصنيفات متاحة حالياً</p>
+                    <p class="text-[var(--text-light)] text-xl">{{ __('No categories available') }}</p>
                 </div>
             @endforelse
         </div>
@@ -65,10 +65,10 @@
 {{-- CTA --}}
 <section class="py-16 bg-[var(--gold)]">
     <div class="container mx-auto px-4 text-center">
-        <h2 data-aos="fade-up" class="text-3xl md:text-4xl font-black text-white mb-4">تحتاج مساعدة في اختيار المواد؟</h2>
-        <p data-aos="fade-up" data-aos-delay="100" class="text-white/80 text-lg mb-8">فريقنا جاهز لتقديم الاستشارات والنصائح لاختيار أفضل المواد لمشروعك</p>
+        <h2 data-aos="fade-up" class="text-3xl md:text-4xl font-black text-white mb-4">{{ __('Need help choosing materials?') }}</h2>
+        <p data-aos="fade-up" data-aos-delay="100" class="text-white/80 text-lg mb-8">{{ __('Our team is ready to provide advice on choosing the best materials for your project') }}</p>
         <a data-aos="fade-up" data-aos-delay="200" href="{{ route('contact') }}" class="btn-light inline-flex items-center px-8 py-3 rounded-lg font-bold">
-            <x-icon name="phone" class="w-5 h-5 inline-block ml-2 align-middle" /> استشرنا الآن
+            <x-icon name="phone" class="w-5 h-5 inline-block ml-2 align-middle" /> {{ __('Consult us now') }}
         </a>
     </div>
 </section>

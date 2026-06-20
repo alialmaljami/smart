@@ -35,6 +35,7 @@
             </div>
         @endif
 
+        {{-- Basic Info --}}
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
@@ -45,7 +46,7 @@
             <div class="p-6 space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                        <label for="title" class="block text-sm font-medium text-gray-700 mb-1.5">العنوان <span class="text-red-500">*</span></label>
+                        <label for="title" class="block text-sm font-medium text-gray-700 mb-1.5">اسم الصورة <span class="text-red-500">*</span></label>
                         <input type="text" name="title" id="title"
                                value="{{ old('title', $gallery->title ?? '') }}"
                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
@@ -54,6 +55,19 @@
                             <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                         @enderror
                     </div>
+                    <div>
+                        <label for="slug" class="block text-sm font-medium text-gray-700 mb-1.5">الرابط المختصر</label>
+                        <input type="text" name="slug" id="slug"
+                               value="{{ old('slug', $gallery->slug ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
+                               placeholder="اختياري - short-url">
+                        @error('slug')
+                            <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                         <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1.5">التصنيف</label>
                         <select name="category_id" id="category_id"
@@ -67,10 +81,30 @@
                             <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                         @enderror
                     </div>
+                    <div>
+                        <label for="tags" class="block text-sm font-medium text-gray-700 mb-1.5">الوسوم Tags</label>
+                        <input type="text" name="tags" id="tags"
+                               value="{{ old('tags', $gallery->tags ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
+                               placeholder="وسم1, وسم2, وسم3">
+                        @error('tags')
+                            <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
                 <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1.5">الوصف</label>
+                    <label for="alt_text" class="block text-sm font-medium text-gray-700 mb-1.5">Alt Text (نص بديل)</label>
+                    <input type="text" name="alt_text" id="alt_text"
+                           value="{{ old('alt_text', $gallery->alt_text ?? '') }}"
+                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                    @error('alt_text')
+                        <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1.5">وصف الصورة</label>
                     <textarea name="description" id="description" rows="3"
                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('description', $gallery->description ?? '') }}</textarea>
                     @error('description')
@@ -102,17 +136,86 @@
                         @enderror
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="is_active" value="1"
-                               {{ old('is_active', $gallery->is_active ?? true) ? 'checked' : '' }}
-                               class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gold-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-600"></div>
-                        <span class="mr-3 text-sm font-medium text-gray-700">الحالة (نشط)</span>
-                    </label>
+        {{-- Linking --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fas fa-link text-gold-600"></i>
+                    الربط
+                </h2>
+            </div>
+            <div class="p-6 space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label for="service_id" class="block text-sm font-medium text-gray-700 mb-1.5">الخدمة المرتبطة</label>
+                        <select name="service_id" id="service_id"
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none text-sm">
+                            <option value="">بدون خدمة</option>
+                            @foreach($services ?? [] as $service)
+                                <option value="{{ $service->id }}" {{ old('service_id', $gallery->service_id ?? '') == $service->id ? 'selected' : '' }}>{{ $service->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('service_id')
+                            <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div>
+                        <label for="project_id" class="block text-sm font-medium text-gray-700 mb-1.5">المشروع المرتبط</label>
+                        <select name="project_id" id="project_id"
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none text-sm">
+                            <option value="">بدون مشروع</option>
+                            @foreach($projects ?? [] as $project)
+                                <option value="{{ $project->id }}" {{ old('project_id', $gallery->project_id ?? '') == $project->id ? 'selected' : '' }}>{{ $project->title }}</option>
+                            @endforeach
+                        </select>
+                        @error('project_id')
+                            <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </div>
+        </div>
+
+        {{-- SEO --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2">
+                    <i class="fas fa-search text-gold-600"></i>
+                    تحسين محركات البحث SEO
+                </h2>
+            </div>
+            <div class="p-6 space-y-5">
+                <div>
+                    <label for="meta_title" class="block text-sm font-medium text-gray-700 mb-1.5">Meta Title</label>
+                    <input type="text" name="meta_title" id="meta_title"
+                           value="{{ old('meta_title', $gallery->meta_title ?? '') }}"
+                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                    @error('meta_title')
+                        <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <label for="meta_description" class="block text-sm font-medium text-gray-700 mb-1.5">Meta Description</label>
+                    <textarea name="meta_description" id="meta_description" rows="2"
+                              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('meta_description', $gallery->meta_description ?? '') }}</textarea>
+                    @error('meta_description')
+                        <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="is_active" value="1"
+                       {{ old('is_active', $gallery->is_active ?? true) ? 'checked' : '' }}
+                       class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gold-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold-600"></div>
+                <span class="mr-3 text-sm font-medium text-gray-700">الحالة (نشط)</span>
+            </label>
         </div>
 
         <div class="flex items-center gap-3 bg-white rounded-xl shadow-sm border border-gray-200 p-5">

@@ -97,6 +97,6 @@ class HomeController extends Controller
 
         Review::create($validated);
 
-        return redirect()->back()->with('review_success', 'تم إرسال تقييمك بنجاح وسيتم نشره بعد المراجعة!');
+        return redirect()->back()->with('review_success', __('Your review has been submitted successfully and will be published after review!'));
     }
 }

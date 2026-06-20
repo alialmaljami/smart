@@ -17,4 +17,6 @@ yarn-error.log
 .DS_Store
 Thumbs.db
 UserFiles
-/public/storage
+check_*.php
+fix_*.php
+*.sqlite

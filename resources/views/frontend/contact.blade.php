@@ -4,6 +4,7 @@
     $email = App\Models\Setting::getValue('email', 'info@smart-designer.com');
     $phone = App\Models\Setting::getValue('phone', '+966 50 000 0000');
     $address = App\Models\Setting::getValue('address', 'الرياض، المملكة العربية السعودية');
+    $mapEmbedSrc = $mapUrl ? (str_contains($mapUrl, '/maps/embed') ? $mapUrl : 'https://www.google.com/maps?q=' . urlencode($address) . '&output=embed') : '';
 @endphp
 
 @php
@@ -13,13 +14,13 @@
 @extends('layouts.app')
 
 @push('meta')
-<meta name="description" content="اتصل بنا - ديكورات المصمم الذكي. تواصل معنا لاستفساراتك واستشاراتك في مجال الديكور والتصميم الداخلي.">
-<meta name="keywords" content="اتصل بنا, ديكور, تصميم داخلي, استشارات ديكور, الرياض, المملكة العربية السعودية">
-<meta property="og:title" content="اتصل بنا - ديكورات المصمم الذكي">
-<meta property="og:description" content="تواصل معنا لاستفساراتك واستشاراتك في مجال الديكور والتصميم الداخلي">
+<meta name="description" content="{{ __('Contact Us') }} - {{ __('Smart Designer Decorations') }}. {{ __('Get in Touch') }}">
+<meta name="keywords" content="{{ __('Contact Us') }}, ديكور, تصميم داخلي, الرياض">
+<meta property="og:title" content="{{ __('Contact Us') }} - {{ __('Smart Designer Decorations') }}">
+<meta property="og:description" content="{{ __('Get in Touch') }}">
 @endpush
 
-@section('title', 'اتصل بنا - ديكورات المصمم الذكي')
+@section('title', __('Contact Us') . ' - ' . __('Smart Designer Decorations'))
 
 @section('content')
 
@@ -27,86 +28,86 @@
 <section class="relative py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
     <div class="overlay-gradient"></div>
     <div class="relative z-10 text-center px-4">
-        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-white mb-4">اتصل بنا</h1>
+        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Contact Us') }}</h1>
         <div class="section-divider"></div>
-        <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-muted)] text-lg max-w-2xl mx-auto">نحن هنا للإجابة على جميع استفساراتكم وتقديم المساعدة</p>
+        <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-muted)] text-lg max-w-2xl mx-auto">{{ __('Get in Touch') }}</p>
     </div>
 </section>
 
 {{-- Contact Info Cards --}}
-<section class="py-16 bg-[var(--cream)] -mt-16 relative z-20">
+<section class="py-16 -mt-16 relative z-20">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div data-aos="fade-up" class="card-elegant p-8 text-center">
+            <a href="{{ $mapUrl ?: 'https://www.google.com/maps?q=' . urlencode($address) }}" target="_blank" rel="noopener noreferrer" class="card-elegant p-8 text-center block hover:scale-[1.02] transition-all duration-300">
                 <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--gold)]/10 flex items-center justify-center">
                     <x-icon name="location" class="w-8 h-8 text-[var(--gold)]" />
                 </div>
-                <h3 class="text-lg font-bold text-[var(--gold)] mb-2">العنوان</h3>
+                <h3 class="text-lg font-bold text-[var(--gold)] mb-2">{{ __('Address') }}</h3>
                 <p class="text-[var(--text-light)]">{{ $address }}</p>
-            </div>
-            <div data-aos="fade-up" data-aos-delay="100" class="card-elegant p-8 text-center">
+            </a>
+            <a href="mailto:{{ $email }}" target="_blank" rel="noopener noreferrer" class="card-elegant p-8 text-center block hover:scale-[1.02] transition-all duration-300">
                 <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--gold)]/10 flex items-center justify-center">
                     <x-icon name="email" class="w-8 h-8 text-[var(--gold)]" />
                 </div>
-                <h3 class="text-lg font-bold text-[var(--gold)] mb-2">البريد الإلكتروني</h3>
+                <h3 class="text-lg font-bold text-[var(--gold)] mb-2">{{ __('Email') }}</h3>
                 <p class="text-[var(--text-light)]" dir="ltr">{{ $email }}</p>
-            </div>
-            <div data-aos="fade-up" data-aos-delay="200" class="card-elegant p-8 text-center">
+            </a>
+            <a href="tel:{{ preg_replace('/[^0-9+]/', '', $phone) }}" target="_blank" rel="noopener noreferrer" class="card-elegant p-8 text-center block hover:scale-[1.02] transition-all duration-300">
                 <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--gold)]/10 flex items-center justify-center">
                     <x-icon name="phone" class="w-8 h-8 text-[var(--gold)]" />
                 </div>
-                <h3 class="text-lg font-bold text-[var(--gold)] mb-2">رقم الهاتف</h3>
+                <h3 class="text-lg font-bold text-[var(--gold)] mb-2">{{ __('Phone Number') }}</h3>
                 <p class="text-[var(--text-light)]" dir="ltr">{{ $phone }}</p>
-            </div>
+            </a>
         </div>
     </div>
 </section>
 
 {{-- Contact Form + Map --}}
-<section class="py-16 bg-[var(--white)]">
+<section class="py-16 relative z-10">
     <div class="container mx-auto px-4">
         <div class="grid lg:grid-cols-2 gap-12">
             {{-- Form --}}
             <div data-aos="fade-left">
-                <h2 class="text-3xl font-black text-[var(--gold)] mb-2">أرسل لنا رسالة</h2>
+                <h2 class="text-3xl font-black text-[var(--gold)] mb-2">{{ __('Send Us a Message') }}</h2>
                 <div class="section-divider mb-6"></div>
                 <form action="{{ route('contact.send') }}" method="POST" class="space-y-5">
                     @csrf
                     <div>
-                        <label for="name" class="block text-sm font-bold text-[var(--text-heading)] mb-1">الاسم كامل</label>
-                        <input type="text" name="name" id="name" required class="input-elegant" placeholder="أدخل اسمك الكامل">
+                        <label for="name" class="block text-sm font-bold text-[var(--text-heading)] mb-1">{{ __('Full Name') }}</label>
+                        <input type="text" name="name" id="name" required class="input-elegant" placeholder="{{ __('Enter your full name') }}">
                     </div>
                     <div>
-                        <label for="email" class="block text-sm font-bold text-[var(--text-heading)] mb-1">البريد الإلكتروني</label>
-                        <input type="email" name="email" id="email" required class="input-elegant" placeholder="أدخل بريدك الإلكتروني" dir="ltr">
+                        <label for="email" class="block text-sm font-bold text-[var(--text-heading)] mb-1">{{ __('Email') }}</label>
+                        <input type="email" name="email" id="email" required class="input-elegant" placeholder="{{ __('Email') }}" dir="ltr">
                     </div>
                     <div>
-                        <label for="phone" class="block text-sm font-bold text-[var(--text-heading)] mb-1">رقم الجوال</label>
-                        <input type="tel" name="phone" id="phone" required class="input-elegant" placeholder="أدخل رقم جوالك" dir="ltr">
+                        <label for="phone" class="block text-sm font-bold text-[var(--text-heading)] mb-1">{{ __('Mobile Number') }}</label>
+                        <input type="tel" name="phone" id="phone" required class="input-elegant" placeholder="{{ __('Enter your mobile number') }}" dir="ltr">
                     </div>
                     <div>
-                        <label for="message" class="block text-sm font-bold text-[var(--text-heading)] mb-1">الرسالة</label>
-                        <textarea name="message" id="message" rows="5" required class="input-elegant resize-none" placeholder="اكتب رسالتك هنا..."></textarea>
+                        <label for="message" class="block text-sm font-bold text-[var(--text-heading)] mb-1">{{ __('Message') }}</label>
+                        <textarea name="message" id="message" rows="5" required class="input-elegant resize-none" placeholder="{{ __('Write your message here...') }}"></textarea>
                     </div>
                     <button type="submit" class="btn-primary w-full py-4 rounded-xl font-bold text-lg">
-                        <x-icon name="paper_plane" class="w-5 h-5 inline-block ml-2 align-middle" /> إرسال الرسالة
+                        <x-icon name="paper_plane" class="w-5 h-5 inline-block ml-2 align-middle" /> {{ __('Send Message') }}
                     </button>
                 </form>
             </div>
 
             {{-- Map --}}
             <div data-aos="fade-right">
-                <h2 class="text-3xl font-black text-[var(--gold)] mb-2">موقعنا</h2>
+                <h2 class="text-3xl font-black text-[var(--gold)] mb-2">{{ __('Our Location') }}</h2>
                 <div class="section-divider mb-6"></div>
-                @if($mapUrl)
+                @if($mapEmbedSrc)
                     <div class="rounded-2xl overflow-hidden h-96">
-                        <iframe src="{{ $mapUrl }}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        <iframe src="{{ $mapEmbedSrc }}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                     </div>
                 @else
                     <div class="rounded-2xl overflow-hidden h-96 flex items-center justify-center bg-[var(--stone)]">
                         <div class="text-center">
                             <x-icon name="map_marked" class="w-16 h-16 text-[var(--text-muted)] inline-block mb-4" />
-                            <p class="text-[var(--text-light)]">الخريطة غير متوفرة حالياً</p>
+                            <p class="text-[var(--text-light)]">{{ __('Map not available') }}</p>
                         </div>
                     </div>
                 @endif
@@ -116,12 +117,12 @@
 </section>
 
 {{-- Social Media --}}
-<section class="py-16 bg-[var(--cream)]">
+<section class="py-16 relative z-10 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-sm">
     <div class="container mx-auto px-4 text-center">
         <div data-aos="fade-up">
-            <h2 class="text-3xl font-black text-[var(--gold)] mb-2">تابعنا على وسائل التواصل</h2>
+            <h2 class="text-3xl font-black text-[var(--gold)] mb-2">{{ __('Follow us on social media') }}</h2>
             <div class="section-divider mb-6"></div>
-            <p class="text-[var(--text-light)] mb-8">كن على اطلاع بأحدث أعمالنا وعروضنا</p>
+            <p class="text-[var(--text-light)] mb-8">{{ __('Stay updated with our latest work') }}</p>
             <div class="flex justify-center space-x-4 space-x-reverse flex-wrap gap-4">
                 @include('partials.social-icons', ['socialLinks' => $socialLinks])
             </div>

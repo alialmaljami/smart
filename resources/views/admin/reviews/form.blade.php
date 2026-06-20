@@ -78,10 +78,20 @@
 
                 <div>
                     <label for="text" class="block text-sm font-medium text-gray-700 mb-1.5">نص التقييم <span class="text-red-500">*</span></label>
-                    <textarea name="text" id="text" rows="5"
+                    <textarea name="text" id="text" rows="4"
                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
                               required>{{ old('text', $review->text ?? '') }}</textarea>
                     @error('text')
+                        <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="reply" class="block text-sm font-medium text-gray-700 mb-1.5">الرد على التقييم</label>
+                    <textarea name="reply" id="reply" rows="3"
+                              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
+                              placeholder="اكتب رداً على هذا التقييم (اختياري)">{{ old('reply', $review->reply ?? '') }}</textarea>
+                    @error('reply')
                         <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>
                     @enderror
                 </div>

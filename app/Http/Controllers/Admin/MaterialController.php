@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Material;
+use App\Traits\ImageUploadHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class MaterialController extends Controller
 {
+    use ImageUploadHelper;
     public function index(Request $request): View
     {
         $categories = Category::where('type', 'material')->orderBy('sort_order')->get();
@@ -52,7 +54,7 @@ class MaterialController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('materials', 'public');
+            $validated['image'] = $this->uploadImage($request->file('image'), 'materials');
         }
 
         Material::create($validated);
@@ -89,7 +91,7 @@ class MaterialController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('materials', 'public');
+            $validated['image'] = $this->uploadImage($request->file('image'), 'materials', $material->image);
         }
 
         $material->update($validated);
@@ -100,6 +102,7 @@ class MaterialController extends Controller
 
     public function destroy(Material $material): RedirectResponse
     {
+        if ($material->image) $this->deleteImageFiles($material->image, 'materials');
         $material->delete();
         return redirect()->route('admin.materials.index')
             ->with('success', 'تم حذف المادة بنجاح');

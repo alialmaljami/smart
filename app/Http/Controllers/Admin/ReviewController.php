@@ -26,6 +26,7 @@ class ReviewController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'text' => ['required', 'string'],
+            'reply' => ['nullable', 'string'],
             'stars' => ['required', 'integer', 'min:1', 'max:5'],
             'image' => ['nullable', 'image', 'max:10240'],
             'is_active' => ['boolean'],
@@ -52,6 +53,7 @@ class ReviewController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'text' => ['required', 'string'],
+            'reply' => ['nullable', 'string'],
             'stars' => ['required', 'integer', 'min:1', 'max:5'],
             'image' => ['nullable', 'image', 'max:10240'],
             'is_active' => ['boolean'],

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\TracksViews;
 use Illuminate\Database\Eloquent\Model;
 
 class BlogPost extends Model
 {
+    use TracksViews;
+
     protected $fillable = [
         'title',
         'slug',
@@ -14,6 +17,7 @@ class BlogPost extends Model
         'image',
         'images',
         'tags',
+        'views',
         'is_active',
         'meta_title',
         'meta_description',
