@@ -26,6 +26,8 @@
 <style>
     .scrollbar-none::-webkit-scrollbar { display: none; }
     .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    .line-clamp-6 { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+    @media (min-width: 640px) { .sm\:line-clamp-none { -webkit-line-clamp: unset; display: block; overflow: visible; } }
 </style>
 @endpush
 
@@ -105,21 +107,40 @@
                 @endif
 
                 <h1 data-aos="fade-up" class="text-xl sm:text-3xl md:text-4xl font-black text-[var(--text-heading)] mb-3 md:mb-4">{{ $project->title }}</h1>
-                <div data-aos="fade-up" class="text-[13px] sm:text-sm md:text-base text-[var(--text-secondary)] leading-relaxed sm:leading-relaxed whitespace-pre-line">
-                    {{ $project->description }}
+
+                {{-- Description with Read More toggle for long content --}}
+                @php $descLen = mb_strlen(strip_tags($project->description)); @endphp
+                <div x-data="{ expanded: false }" data-aos="fade-up" class="text-[13px] sm:text-sm md:text-base text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
+                    <div :class="expanded ? '' : 'line-clamp-6 sm:line-clamp-none'">
+                        {{ $project->description }}
+                    </div>
+                    @if($descLen > 400)
+                        <button @@click="expanded = !expanded" class="mt-2 text-[var(--gold)] hover:text-[var(--gold)]/80 font-bold text-xs sm:text-sm transition-colors">
+                            <span x-show="!expanded">{{ __('Read More') }} <i class="fas fa-chevron-down text-[10px] mr-1"></i></span>
+                            <span x-show="expanded" x-cloak>{{ __('Show Less') }} <i class="fas fa-chevron-up text-[10px] mr-1"></i></span>
+                        </button>
+                    @endif
                 </div>
 
                 {{-- Videos --}}
                 @if(count($videos))
-                    <div class="mt-6 md:mt-12">
-                        <h2 class="text-lg md:text-2xl font-bold text-[var(--text-heading)] mb-3 md:mb-6">{{ __('Project Videos') }}</h2>
+                    <div x-data="{ showAllVideos: false }" class="mt-6 md:mt-12">
+                        <h2 class="text-lg md:text-2xl font-bold text-[var(--text-heading)] mb-3 md:mb-6">{{ __('Project Videos') }} ({{ count($videos) }})</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                            @foreach($videos as $video)
-                                <video controls class="w-full rounded-[var(--radius-lg)] card-elegant max-h-60 md:max-h-none">
-                                    <source src="{{ $video }}" type="video/mp4">
-                                </video>
+                            @foreach($videos as $i => $video)
+                                <div x-show="showAllVideos || {{ $i < 2 ? 'true' : 'false' }}" x-cloak>
+                                    <video controls class="w-full rounded-[var(--radius-lg)] card-elegant max-h-48 md:max-h-72">
+                                        <source src="{{ $video }}" type="video/mp4">
+                                    </video>
+                                </div>
                             @endforeach
                         </div>
+                        @if(count($videos) > 2)
+                            <button @@click="showAllVideos = !showAllVideos" class="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)]/20 rounded-lg font-bold text-xs sm:text-sm transition-all">
+                                <span x-show="!showAllVideos">{{ __('Show All') }} ({{ count($videos) }}) <i class="fas fa-chevron-down text-[10px] mr-1"></i></span>
+                                <span x-show="showAllVideos" x-cloak>{{ __('Show Less') }} <i class="fas fa-chevron-up text-[10px] mr-1"></i></span>
+                            </button>
+                        @endif
                     </div>
                 @endif
             </div>
