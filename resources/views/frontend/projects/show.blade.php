@@ -48,27 +48,27 @@
 {{-- Breadcrumb --}}
 <section class="pt-4 pb-4 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
-        <nav class="flex items-center flex-wrap gap-x-1.5 gap-y-1 text-xs md:text-sm text-[var(--stone)]">
+        <nav class="flex items-center flex-wrap gap-x-1 gap-y-1 text-[11px] sm:text-sm text-[var(--stone)]">
             <a href="{{ route('home') }}" class="text-[var(--text-muted)] hover:text-[var(--text-heading)] transition-colors whitespace-nowrap">{{ __('Home') }}</a>
-            <i class="fas fa-chevron-left text-[10px] text-[var(--text-muted)]"></i>
-            <a href="{{ route('projects') }}" class="text-[var(--text-muted)] hover:text-[var(--text-heading)] transition-colors whitespace-nowrap">{{ __('Our Projects') }}</a>
-            <i class="fas fa-chevron-left text-[10px] text-[var(--text-muted)]"></i>
-            <span class="text-[var(--text-heading)] font-bold truncate max-w-[120px] sm:max-w-[200px] md:max-w-none">{{ $project->title }}</span>
+            <i class="fas fa-chevron-left text-[9px] text-[var(--text-muted)]"></i>
+            <a href="{{ route('projects') }}" class="text-[var(--text-muted)] hover:text-[var(--text-heading)] transition-colors whitespace-nowrap">{{ __('Projects') }}</a>
+            <i class="fas fa-chevron-left text-[9px] text-[var(--text-muted)]"></i>
+            <span class="text-[var(--text-heading)] font-bold truncate max-w-[100px] sm:max-w-[200px]">{{ $project->title }}</span>
         </nav>
     </div>
 </section>
 
 {{-- Project Detail --}}
-<section class="py-8 md:py-12 bg-[var(--navy)]">
+<section class="py-6 md:py-12 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
-        <div class="grid lg:grid-cols-3 gap-6 md:gap-8">
+        <div class="grid lg:grid-cols-3 gap-4 md:gap-8">
             {{-- Main Content --}}
             <div class="lg:col-span-2">
                 {{-- Image Slider/Gallery --}}
                 @if(count($images))
                     <div x-data="{ activeImage: 0, images: {{ json_encode($images) }} }" class="mb-8">
-                        <div class="relative rounded-[var(--radius-lg)] overflow-hidden card-elegant h-64 md:h-96 mb-4">
-                            <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-3 left-3 md:top-4 md:left-4 z-10" @@click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
+                        <div class="relative rounded-[var(--radius-lg)] overflow-hidden card-elegant h-56 sm:h-72 md:h-96 mb-3 sm:mb-4">
+                            <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-2 sm:top-3 left-2 sm:left-3 md:top-4 md:left-4 z-10" @@click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
                                 <button class="flex items-center gap-1 px-2 py-1 md:gap-1.5 md:px-3 md:py-1.5 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all">
                                     <i class="fas fa-heart text-xs md:text-sm" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
                                     <span class="text-[10px] md:text-xs font-medium" x-text="count">0</span>
@@ -78,16 +78,16 @@
                                 <img x-show="activeImage === i" :src="img" alt="{{ $project->title }}" class="w-full h-full object-cover absolute inset-0" loading="eager">
                             </template>
                             @if(count($images) > 1)
-                                <button @click="activeImage = activeImage > 0 ? activeImage - 1 : images.length - 1" class="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-all z-10">
-                                    <i class="fas fa-chevron-right text-sm md:text-lg"></i>
+                                <button @click="activeImage = activeImage > 0 ? activeImage - 1 : images.length - 1" class="absolute right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-9 sm:h-9 md:w-12 md:h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-all z-10">
+                                    <i class="fas fa-chevron-right text-base sm:text-sm md:text-lg"></i>
                                 </button>
-                                <button @click="activeImage = activeImage < images.length - 1 ? activeImage + 1 : 0" class="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-9 h-9 md:w-12 md:h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-all z-10">
-                                    <i class="fas fa-chevron-left text-sm md:text-lg"></i>
+                                <button @click="activeImage = activeImage < images.length - 1 ? activeImage + 1 : 0" class="absolute left-1 sm:left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-9 sm:h-9 md:w-12 md:h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-all z-10">
+                                    <i class="fas fa-chevron-left text-base sm:text-sm md:text-lg"></i>
                                 </button>
                                 {{-- Dots indicator --}}
-                                <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                                <div class="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-1.5 z-10">
                                     <template x-for="(img, i) in images" :key="i">
-                                        <button @click="activeImage = i" class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all" :class="activeImage === i ? 'bg-white w-4 md:w-6' : 'bg-white/40'"></button>
+                                        <button @click="activeImage = i" class="w-2 h-2 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full transition-all" :class="activeImage === i ? 'bg-white w-5 sm:w-4 md:w-6' : 'bg-white/40'"></button>
                                     </template>
                                 </div>
                             @endif
@@ -95,7 +95,7 @@
                         @if(count($images) > 1)
                             <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-none" dir="ltr">
                                 @foreach($images as $idx => $img)
-                                    <button @click="activeImage = {{ $idx }}" class="flex-shrink-0 w-14 h-10 md:w-20 md:h-16 rounded-lg overflow-hidden border-2 transition-all" :class="activeImage === {{ $idx }} ? 'border-[var(--gold)]' : 'border-transparent'">
+                                    <button @click="activeImage = {{ $idx }}" class="flex-shrink-0 w-16 h-12 sm:w-14 sm:h-10 md:w-20 md:h-16 rounded-lg overflow-hidden border-2 transition-all" :class="activeImage === {{ $idx }} ? 'border-[var(--gold)]' : 'border-transparent'">
                                         <img src="{{ $img }}" alt="" class="w-full h-full object-cover" loading="lazy">
                                     </button>
                                 @endforeach
@@ -104,18 +104,18 @@
                     </div>
                 @endif
 
-                <h1 data-aos="fade-up" class="text-2xl sm:text-3xl md:text-4xl font-black text-[var(--text-heading)] mb-4">{{ $project->title }}</h1>
-                <div data-aos="fade-up" class="text-sm md:text-base text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
+                <h1 data-aos="fade-up" class="text-xl sm:text-3xl md:text-4xl font-black text-[var(--text-heading)] mb-3 md:mb-4">{{ $project->title }}</h1>
+                <div data-aos="fade-up" class="text-[13px] sm:text-sm md:text-base text-[var(--text-secondary)] leading-relaxed sm:leading-relaxed whitespace-pre-line">
                     {{ $project->description }}
                 </div>
 
                 {{-- Videos --}}
                 @if(count($videos))
-                    <div class="mt-8 md:mt-12">
-                        <h2 class="text-xl md:text-2xl font-bold text-[var(--text-heading)] mb-4 md:mb-6">{{ __('Project Videos') }}</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="mt-6 md:mt-12">
+                        <h2 class="text-lg md:text-2xl font-bold text-[var(--text-heading)] mb-3 md:mb-6">{{ __('Project Videos') }}</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                             @foreach($videos as $video)
-                                <video controls class="w-full rounded-[var(--radius-lg)] card-elegant">
+                                <video controls class="w-full rounded-[var(--radius-lg)] card-elegant max-h-60 md:max-h-none">
                                     <source src="{{ $video }}" type="video/mp4">
                                 </video>
                             @endforeach
@@ -127,59 +127,59 @@
             {{-- Sidebar --}}
             <div class="lg:col-span-1" data-aos="fade-right">
                 <div class="bg-[var(--white)] rounded-[var(--radius-lg)] p-4 md:p-6 card-elegant lg:sticky top-28 border border-[var(--stone)]">
-                    <h3 class="text-xl font-bold text-[var(--gold)] mb-6">{{ __('Project Information') }}</h3>
-                    <div class="space-y-3 md:space-y-4">
+                    <h3 class="text-lg md:text-xl font-bold text-[var(--gold)] mb-4 md:mb-6">{{ __('Project Information') }}</h3>
+                    <div class="space-y-2 md:space-y-4">
                         @if($project->client_name)
                             <div class="flex items-center gap-2 md:gap-3">
-                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center">
-                                    <x-icon name="user" class="w-4 h-4 md:w-5 md:h-5 text-[var(--gold)]" />
+                                <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0">
+                                    <x-icon name="user" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
                                 </div>
-                                <div>
-                                    <span class="text-[var(--text-light)] text-sm">{{ __('Client') }}</span>
-                                    <p class="font-bold text-[var(--gold)]">{{ $project->client_name }}</p>
+                                <div class="min-w-0">
+                                    <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Client') }}</span>
+                                    <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate">{{ $project->client_name }}</p>
                                 </div>
                             </div>
                         @endif
                         @if($project->completion_date)
                             <div class="flex items-center gap-2 md:gap-3">
-                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center">
-                                    <x-icon name="calendar" class="w-4 h-4 md:w-5 md:h-5 text-[var(--gold)]" />
+                                <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0">
+                                    <x-icon name="calendar" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
                                 </div>
-                                <div>
-                                    <span class="text-[var(--text-light)] text-sm">{{ __('Completion Date') }}</span>
-                                    <p class="font-bold text-[var(--gold)]">{{ $project->completion_date->format('d / m / Y') }}</p>
+                                <div class="min-w-0">
+                                    <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Completion Date') }}</span>
+                                    <p class="font-bold text-[var(--gold)] text-sm md:text-base">{{ $project->completion_date->format('d / m / Y') }}</p>
                                 </div>
                             </div>
                         @endif
                         @if($project->services->count())
                             <div class="flex items-center gap-2 md:gap-3">
-                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center">
-                                    <x-icon name="star" class="w-4 h-4 md:w-5 md:h-5 text-[var(--gold)]" />
+                                <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0">
+                                    <x-icon name="star" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
                                 </div>
-                                <div>
-                                    <span class="text-[var(--text-light)] text-sm">{{ __('Services') }}</span>
+                                <div class="min-w-0">
+                                    <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Services') }}</span>
                                     @foreach($project->services as $service)
-                                        <p class="font-bold text-[var(--gold)]">{{ $service->name }}</p>
+                                        <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate">{{ $service->name }}</p>
                                     @endforeach
                                 </div>
                             </div>
                         @endif
                         @if($project->materialCategories->count())
                             <div class="flex items-center gap-2 md:gap-3">
-                                <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center">
-                                    <x-icon name="star" class="w-4 h-4 md:w-5 md:h-5 text-[var(--gold)]" />
+                                <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0">
+                                    <x-icon name="star" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
                                 </div>
-                                <div>
-                                    <span class="text-[var(--text-light)] text-sm">{{ __('Materials Used') }}</span>
+                                <div class="min-w-0">
+                                    <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Materials Used') }}</span>
                                     @foreach($project->materialCategories as $mc)
-                                        <p class="font-bold text-[var(--gold)]">{{ $mc->name }}</p>
+                                        <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate">{{ $mc->name }}</p>
                                     @endforeach
                                 </div>
                             </div>
                         @endif
                     </div>
-                    <div class="mt-6 md:mt-8 pt-5 md:pt-6 border-t border-[var(--stone)]">
-                        <a href="{{ route('contact') }}" class="btn-primary w-full text-center px-4 md:px-6 py-2.5 md:py-3 rounded-lg font-bold block text-sm md:text-base">
+                    <div class="mt-4 md:mt-8 pt-4 md:pt-6 border-t border-[var(--stone)]">
+                        <a href="{{ route('contact') }}" class="btn-primary w-full text-center px-3 md:px-6 py-3 md:py-3 rounded-lg font-bold block text-xs md:text-base">
                             <x-icon name="phone" class="w-4 h-4 md:w-5 md:h-5 inline-block ml-1.5 md:ml-2 align-middle" /> {{ __('Contact for a similar project') }}
                         </a>
                     </div>
@@ -191,29 +191,31 @@
 
 {{-- Related Projects --}}
 @if($relatedProjects->count())
-    <section class="py-12 md:py-16 bg-[var(--white)]">
+    <section class="py-10 md:py-16 bg-[var(--white)]">
         <div class="container mx-auto px-4">
-            <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
-                <h2 class="text-2xl md:text-3xl font-black text-[var(--gold)]">{{ __('Similar Projects') }}</h2>
+            <div data-aos="fade-up" class="text-center mb-6 md:mb-12">
+                <h2 class="text-xl md:text-3xl font-black text-[var(--gold)]">{{ __('Similar Projects') }}</h2>
                 <div class="section-divider"></div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 @foreach($relatedProjects as $related)
                     @php $rImg = is_array($related->images) ? ($related->images[0] ?? '') : $related->images; @endphp
-                    <div data-aos="fade-up" class="group relative rounded-[var(--radius-lg)] overflow-hidden img-zoom h-52 md:h-64 card-elegant">
-                        <img src="{{ asset('storage/' . $rImg) }}" alt="{{ $related->title }}" class="w-full h-full object-cover" loading="lazy">
+                    <div data-aos="fade-up" class="group relative rounded-[var(--radius-lg)] overflow-hidden shadow-lg card-elegant">
+                        <div class="h-44 sm:h-52 md:h-64">
+                            <img src="{{ asset('storage/' . $rImg) }}" alt="{{ $related->title }}" class="w-full h-full object-cover" loading="lazy">
+                        </div>
                         <div class="overlay-gradient absolute inset-0"></div>
-                        <div x-data="{ liked: {{ $related->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $related->likeCount() }} }" class="absolute top-3 left-3 z-10" @@click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $related->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
-                            <button class="flex items-center gap-1 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-xs">
+                        <div x-data="{ liked: {{ $related->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $related->likeCount() }} }" class="absolute top-2 sm:top-3 left-2 sm:left-3 z-10" @@click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $related->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
+                            <button class="flex items-center gap-1 px-2 sm:px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-[10px] sm:text-xs">
                                 <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
                                 <span x-text="count">0</span>
                             </button>
                         </div>
-                        <div class="absolute bottom-4 right-4">
-                            <h3 class="text-white font-bold">{{ $related->title }}</h3>
+                        <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 left-2 sm:left-4">
+                            <h3 class="text-white font-bold text-xs sm:text-base leading-tight">{{ $related->title }}</h3>
                         </div>
-                        <a href="{{ route('project.show', $related->slug) }}" class="absolute inset-0 flex items-center justify-center bg-[var(--gold)]/80 opacity-0 group-hover:opacity-100 transition-all">
-                            <span class="text-white font-bold border-2 border-white px-4 py-2 rounded-lg">{{ __('View Project') }}</span>
+                        <a href="{{ route('project.show', $related->slug) }}" class="absolute inset-0 flex items-center justify-center bg-[var(--gold)]/80 opacity-0 group-hover:opacity-100 transition-all rounded-[var(--radius-lg)]">
+                            <span class="text-white font-bold border-2 border-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm">{{ __('View Project') }}</span>
                         </a>
                     </div>
                 @endforeach
@@ -224,13 +226,15 @@
 
 {{-- Social Share --}}
 @php $shareSocialLinks = App\Models\SocialLink::where('is_active', true)->orderBy('sort_order')->get(); @endphp
-<section class="py-8 bg-[var(--cream)] border-t border-[var(--stone)]">
+<section class="py-6 md:py-8 bg-[var(--cream)] border-t border-[var(--stone)]">
     <div class="container mx-auto px-4 text-center">
-        <span class="block sm:inline text-[var(--text-light)] mb-3 sm:mb-0 sm:ml-2">{{ __('Share this project:') }}</span>
-        <div class="flex flex-wrap justify-center gap-2 items-center" dir="ltr">
-            <a href="https://api.whatsapp.com/send?text={{ urlencode($project->title . ' ' . request()->url()) }}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 transition-transform"><x-icon name="whatsapp" class="w-4 h-4 md:w-5 md:h-5" /></a>
-            <a href="https://www.pinterest.com/pin/create/button/?url={{ urlencode(request()->url()) }}&media={{ count($images) ? urlencode($images[0]) : '' }}&description={{ urlencode($project->title) }}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-[#E60023] text-white flex items-center justify-center hover:scale-110 transition-transform"><x-icon name="pinterest" class="w-4 h-4 md:w-5 md:h-5" /></a>
-            @include('partials.social-icons', ['socialLinks' => $shareSocialLinks])
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
+            <span class="text-xs sm:text-base text-[var(--text-light)]">{{ __('Share this project:') }}</span>
+            <div class="flex flex-wrap justify-center gap-2 items-center" dir="ltr">
+                <a href="https://api.whatsapp.com/send?text={{ urlencode($project->title . ' ' . request()->url()) }}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 transition-transform"><x-icon name="whatsapp" class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" /></a>
+                <a href="https://www.pinterest.com/pin/create/button/?url={{ urlencode(request()->url()) }}&media={{ count($images) ? urlencode($images[0]) : '' }}&description={{ urlencode($project->title) }}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-[#E60023] text-white flex items-center justify-center hover:scale-110 transition-transform"><x-icon name="pinterest" class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" /></a>
+                @include('partials.social-icons', ['socialLinks' => $shareSocialLinks])
+            </div>
         </div>
     </div>
 </section>
