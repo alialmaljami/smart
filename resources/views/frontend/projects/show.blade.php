@@ -1,11 +1,14 @@
 @php
-    $images = collect(is_array($project->images) ? $project->images : [])->map(fn($i) => asset('storage/' . $i))->toArray();
+    $images = collect(is_array($project->images) ? $project->images : [])->map(fn($i) => asset('storage/' . $i))->values()->toArray();
     $videos = is_array($project->videos) ? $project->videos : [];
+    $totalImages = count($images);
+    $totalVideos = count($videos);
     $relatedProjects = App\Models\Project::where('is_active', true)
         ->where('id', '!=', $project->id)
         ->latest()
         ->take(3)
         ->get();
+    $descLines = preg_split('/\n\s*\n/', trim($project->description));
 @endphp
 
 @extends('layouts.app')
@@ -15,7 +18,7 @@
 <meta name="keywords" content="{{ $project->meta_keywords ?? '' }}">
 <meta property="og:title" content="{{ $project->meta_title ?? $project->title }}">
 <meta property="og:description" content="{{ $project->meta_description ?? Str::limit($project->description, 160) }}">
-@if(count($images))
+@if($totalImages)
     <meta property="og:image" content="{{ $images[0] }}">
 @endif
 @endpush
@@ -24,10 +27,10 @@
 
 @push('styles')
 <style>
-    .scrollbar-none::-webkit-scrollbar { display: none; }
-    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
-    .line-clamp-6 { display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
-    @media (min-width: 640px) { .sm\:line-clamp-none { -webkit-line-clamp: unset; display: block; overflow: visible; } }
+    [x-cloak] { display: none !important; }
+    @media (max-width: 639px) {
+        .desc-preview { display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+    }
 </style>
 @endpush
 
@@ -49,55 +52,59 @@
 
 {{-- Breadcrumb --}}
 <section class="pt-4 pb-4 bg-[var(--navy)]">
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto px-4 max-w-full">
         <nav class="flex items-center flex-wrap gap-x-1 gap-y-1 text-[11px] sm:text-sm text-[var(--stone)]">
-            <a href="{{ route('home') }}" class="text-[var(--text-muted)] hover:text-[var(--text-heading)] transition-colors whitespace-nowrap">{{ __('Home') }}</a>
-            <i class="fas fa-chevron-left text-[9px] text-[var(--text-muted)]"></i>
-            <a href="{{ route('projects') }}" class="text-[var(--text-muted)] hover:text-[var(--text-heading)] transition-colors whitespace-nowrap">{{ __('Projects') }}</a>
-            <i class="fas fa-chevron-left text-[9px] text-[var(--text-muted)]"></i>
-            <span class="text-[var(--text-heading)] font-bold truncate max-w-[100px] sm:max-w-[200px]">{{ $project->title }}</span>
+            <a href="{{ route('home') }}" class="text-[var(--text-muted)] hover:text-[var(--text-heading)] whitespace-nowrap">{{ __('Home') }}</a>
+            <i class="fas fa-chevron-left text-[9px] text-[var(--text-muted)] mx-0.5"></i>
+            <a href="{{ route('projects') }}" class="text-[var(--text-muted)] hover:text-[var(--text-heading)] whitespace-nowrap">{{ __('Projects') }}</a>
+            <i class="fas fa-chevron-left text-[9px] text-[var(--text-muted)] mx-0.5"></i>
+            <span class="text-[var(--text-heading)] font-bold truncate max-w-[120px] sm:max-w-[250px]">{{ $project->title }}</span>
         </nav>
     </div>
 </section>
 
 {{-- Project Detail --}}
 <section class="py-6 md:py-12 bg-[var(--navy)]">
-    <div class="container mx-auto px-4">
-        <div class="grid lg:grid-cols-3 gap-4 md:gap-8">
+    <div class="container mx-auto px-4 max-w-full">
+        <div class="flex flex-col lg:grid lg:grid-cols-3 gap-6 md:gap-8">
             {{-- Main Content --}}
-            <div class="lg:col-span-2">
-                {{-- Image Slider/Gallery --}}
-                @if(count($images))
-                    <div x-data="{ activeImage: 0, images: {{ json_encode($images) }} }" class="mb-8">
-                        <div class="relative rounded-[var(--radius-lg)] overflow-hidden card-elegant h-56 sm:h-72 md:h-96 mb-3 sm:mb-4">
-                            <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-2 sm:top-3 left-2 sm:left-3 md:top-4 md:left-4 z-10" @@click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
-                                <button class="flex items-center gap-1 px-2 py-1 md:gap-1.5 md:px-3 md:py-1.5 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all">
+            <div class="lg:col-span-2 min-w-0 max-w-full">
+                {{-- Image Slider (rendered server-side, NOT in Alpine data) --}}
+                @if($totalImages)
+                    <div x-data="{ activeImage: 0 }" class="mb-6 md:mb-8">
+                        <div class="relative rounded-[var(--radius-lg)] overflow-hidden bg-[var(--navy-dark)] h-56 sm:h-72 md:h-96 mb-3 sm:mb-4 w-full">
+                            @foreach($images as $idx => $img)
+                                <div x-show="activeImage === {{ $idx }}" x-cloak class="absolute inset-0 w-full h-full">
+                                    <img src="{{ $img }}" alt="{{ $project->title }}" class="w-full h-full object-cover">
+                                </div>
+                            @endforeach
+
+                            <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-2 sm:top-3 left-2 sm:left-3 md:top-4 md:left-4 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
+                                <button type="button" class="flex items-center gap-1 px-2 py-1 md:gap-1.5 md:px-3 md:py-1.5 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all">
                                     <i class="fas fa-heart text-xs md:text-sm" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
                                     <span class="text-[10px] md:text-xs font-medium" x-text="count">0</span>
                                 </button>
                             </div>
-                            <template x-for="(img, i) in images" :key="i">
-                                <img x-show="activeImage === i" :src="img" alt="{{ $project->title }}" class="w-full h-full object-cover absolute inset-0" loading="eager">
-                            </template>
-                            @if(count($images) > 1)
-                                <button @click="activeImage = activeImage > 0 ? activeImage - 1 : images.length - 1" class="absolute right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-9 sm:h-9 md:w-12 md:h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-all z-10">
-                                    <i class="fas fa-chevron-right text-base sm:text-sm md:text-lg"></i>
+
+                            @if($totalImages > 1)
+                                <button type="button" @click="activeImage = activeImage > 0 ? activeImage - 1 : {{ $totalImages - 1 }}" class="absolute right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 z-10">
+                                    <i class="fas fa-chevron-right text-base sm:text-lg"></i>
                                 </button>
-                                <button @click="activeImage = activeImage < images.length - 1 ? activeImage + 1 : 0" class="absolute left-1 sm:left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-9 sm:h-9 md:w-12 md:h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 transition-all z-10">
-                                    <i class="fas fa-chevron-left text-base sm:text-sm md:text-lg"></i>
+                                <button type="button" @click="activeImage = activeImage < {{ $totalImages - 1 }} ? activeImage + 1 : 0" class="absolute left-1 sm:left-2 md:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 z-10">
+                                    <i class="fas fa-chevron-left text-base sm:text-lg"></i>
                                 </button>
-                                {{-- Dots indicator --}}
-                                <div class="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-1.5 z-10">
-                                    <template x-for="(img, i) in images" :key="i">
-                                        <button @click="activeImage = i" class="w-2 h-2 sm:w-1.5 sm:h-1.5 md:w-2 md:h-2 rounded-full transition-all" :class="activeImage === i ? 'bg-white w-5 sm:w-4 md:w-6' : 'bg-white/40'"></button>
-                                    </template>
+                                <div class="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                                    @foreach($images as $idx => $img)
+                                        <button type="button" @click="activeImage = {{ $idx }}" class="transition-all rounded-full" :class="activeImage === {{ $idx }} ? 'w-5 sm:w-6 bg-white' : 'w-2 h-2 bg-white/40'"></button>
+                                    @endforeach
                                 </div>
                             @endif
                         </div>
-                        @if(count($images) > 1)
-                            <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-none" dir="ltr">
+
+                        @if($totalImages > 1)
+                            <div class="flex gap-2 overflow-x-auto pb-2" dir="ltr" style="scrollbar-width:none;-ms-overflow-style:none;">
                                 @foreach($images as $idx => $img)
-                                    <button @click="activeImage = {{ $idx }}" class="flex-shrink-0 w-16 h-12 sm:w-14 sm:h-10 md:w-20 md:h-16 rounded-lg overflow-hidden border-2 transition-all" :class="activeImage === {{ $idx }} ? 'border-[var(--gold)]' : 'border-transparent'">
+                                    <button type="button" @click="activeImage = {{ $idx }}" class="flex-shrink-0 w-16 h-12 sm:w-14 sm:h-10 md:w-20 md:h-16 rounded-lg overflow-hidden border-2 transition-all" :class="activeImage === {{ $idx }} ? 'border-[var(--gold)]' : 'border-transparent'">
                                         <img src="{{ $img }}" alt="" class="w-full h-full object-cover" loading="lazy">
                                     </button>
                                 @endforeach
@@ -106,16 +113,16 @@
                     </div>
                 @endif
 
-                <h1 data-aos="fade-up" class="text-xl sm:text-3xl md:text-4xl font-black text-[var(--text-heading)] mb-3 md:mb-4">{{ $project->title }}</h1>
+                <h1 class="text-xl sm:text-3xl md:text-4xl font-black text-[var(--text-heading)] mb-3 md:mb-4 break-words max-w-full">{{ $project->title }}</h1>
 
-                {{-- Description with Read More toggle for long content --}}
-                @php $descLen = mb_strlen(strip_tags($project->description)); @endphp
-                <div x-data="{ expanded: false }" data-aos="fade-up" class="text-[13px] sm:text-sm md:text-base text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
-                    <div :class="expanded ? '' : 'line-clamp-6 sm:line-clamp-none'">
-                        {{ $project->description }}
+                {{-- Description collapsible on mobile --}}
+                @php $descFull = strip_tags($project->description); $isLong = mb_strlen($descFull) > 300; @endphp
+                <div x-data="{ expanded: false }" class="text-[13px] sm:text-sm md:text-base text-[var(--text-secondary)] leading-relaxed break-words max-w-full">
+                    <div :class="expanded || !$isLong ? '' : 'desc-preview'">
+                        {!! nl2br(e($project->description)) !!}
                     </div>
-                    @if($descLen > 400)
-                        <button @@click="expanded = !expanded" class="mt-2 text-[var(--gold)] hover:text-[var(--gold)]/80 font-bold text-xs sm:text-sm transition-colors">
+                    @if($isLong)
+                        <button type="button" @click="expanded = !expanded" class="mt-2 text-[var(--gold)] hover:text-[var(--gold)]/80 font-bold text-xs sm:text-sm">
                             <span x-show="!expanded">{{ __('Read More') }} <i class="fas fa-chevron-down text-[10px] mr-1"></i></span>
                             <span x-show="expanded" x-cloak>{{ __('Show Less') }} <i class="fas fa-chevron-up text-[10px] mr-1"></i></span>
                         </button>
@@ -123,22 +130,22 @@
                 </div>
 
                 {{-- Videos --}}
-                @if(count($videos))
-                    <div x-data="{ showAllVideos: false }" class="mt-6 md:mt-12">
-                        <h2 class="text-lg md:text-2xl font-bold text-[var(--text-heading)] mb-3 md:mb-6">{{ __('Project Videos') }} ({{ count($videos) }})</h2>
+                @if($totalVideos)
+                    <div x-data="{ showAll: false }" class="mt-6 md:mt-12">
+                        <h2 class="text-lg md:text-2xl font-bold text-[var(--text-heading)] mb-3 md:mb-6">{{ __('Project Videos') }} ({{ $totalVideos }})</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                             @foreach($videos as $i => $video)
-                                <div x-show="showAllVideos || {{ $i < 2 ? 'true' : 'false' }}" x-cloak>
-                                    <video controls class="w-full rounded-[var(--radius-lg)] card-elegant max-h-48 md:max-h-72">
+                                <div x-show="showAll || {{ $i < 2 ? 'true' : 'false' }}" x-cloak class="max-w-full w-full">
+                                    <video controls class="w-full rounded-[var(--radius-lg)] max-h-48 md:max-h-72 bg-black">
                                         <source src="{{ $video }}" type="video/mp4">
                                     </video>
                                 </div>
                             @endforeach
                         </div>
-                        @if(count($videos) > 2)
-                            <button @@click="showAllVideos = !showAllVideos" class="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)]/20 rounded-lg font-bold text-xs sm:text-sm transition-all">
-                                <span x-show="!showAllVideos">{{ __('Show All') }} ({{ count($videos) }}) <i class="fas fa-chevron-down text-[10px] mr-1"></i></span>
-                                <span x-show="showAllVideos" x-cloak>{{ __('Show Less') }} <i class="fas fa-chevron-up text-[10px] mr-1"></i></span>
+                        @if($totalVideos > 2)
+                            <button type="button" @click="showAll = !showAll" class="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)]/20 rounded-lg font-bold text-xs sm:text-sm">
+                                <span x-show="!showAll">{{ __('Show All') }} ({{ $totalVideos }}) <i class="fas fa-chevron-down text-[10px] mr-1"></i></span>
+                                <span x-show="showAll" x-cloak>{{ __('Show Less') }} <i class="fas fa-chevron-up text-[10px] mr-1"></i></span>
                             </button>
                         @endif
                     </div>
@@ -146,18 +153,18 @@
             </div>
 
             {{-- Sidebar --}}
-            <div class="lg:col-span-1" data-aos="fade-right">
-                <div class="bg-[var(--white)] rounded-[var(--radius-lg)] p-4 md:p-6 card-elegant lg:sticky top-28 border border-[var(--stone)]">
-                    <h3 class="text-lg md:text-xl font-bold text-[var(--gold)] mb-4 md:mb-6">{{ __('Project Information') }}</h3>
+            <div class="lg:col-span-1 min-w-0 max-w-full">
+                <div class="bg-[var(--cream)] rounded-[var(--radius-lg)] p-4 md:p-6 lg:sticky top-28 border border-[var(--stone)]">
+                    <h3 class="text-base md:text-xl font-bold text-[var(--gold)] mb-3 md:mb-6">{{ __('Project Information') }}</h3>
                     <div class="space-y-2 md:space-y-4">
                         @if($project->client_name)
                             <div class="flex items-center gap-2 md:gap-3">
                                 <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0">
                                     <x-icon name="user" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
                                 </div>
-                                <div class="min-w-0">
+                                <div class="min-w-0 max-w-full">
                                     <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Client') }}</span>
-                                    <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate">{{ $project->client_name }}</p>
+                                    <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate max-w-full">{{ $project->client_name }}</p>
                                 </div>
                             </div>
                         @endif
@@ -166,41 +173,41 @@
                                 <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0">
                                     <x-icon name="calendar" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
                                 </div>
-                                <div class="min-w-0">
+                                <div class="min-w-0 max-w-full">
                                     <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Completion Date') }}</span>
                                     <p class="font-bold text-[var(--gold)] text-sm md:text-base">{{ $project->completion_date->format('d / m / Y') }}</p>
                                 </div>
                             </div>
                         @endif
                         @if($project->services->count())
-                            <div class="flex items-center gap-2 md:gap-3">
-                                <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0">
+                            <div class="flex items-start gap-2 md:gap-3">
+                                <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0 mt-0.5">
                                     <x-icon name="star" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
                                 </div>
-                                <div class="min-w-0">
+                                <div class="min-w-0 max-w-full">
                                     <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Services') }}</span>
                                     @foreach($project->services as $service)
-                                        <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate">{{ $service->name }}</p>
+                                        <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate max-w-full">{{ $service->name }}</p>
                                     @endforeach
                                 </div>
                             </div>
                         @endif
                         @if($project->materialCategories->count())
-                            <div class="flex items-center gap-2 md:gap-3">
-                                <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0">
+                            <div class="flex items-start gap-2 md:gap-3">
+                                <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0 mt-0.5">
                                     <x-icon name="star" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
                                 </div>
-                                <div class="min-w-0">
+                                <div class="min-w-0 max-w-full">
                                     <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Materials Used') }}</span>
                                     @foreach($project->materialCategories as $mc)
-                                        <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate">{{ $mc->name }}</p>
+                                        <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate max-w-full">{{ $mc->name }}</p>
                                     @endforeach
                                 </div>
                             </div>
                         @endif
                     </div>
                     <div class="mt-4 md:mt-8 pt-4 md:pt-6 border-t border-[var(--stone)]">
-                        <a href="{{ route('contact') }}" class="btn-primary w-full text-center px-3 md:px-6 py-3 md:py-3 rounded-lg font-bold block text-xs md:text-base">
+                        <a href="{{ route('contact') }}" class="btn-primary w-full text-center px-3 md:px-6 py-3 rounded-lg font-bold block text-xs md:text-base no-underline">
                             <x-icon name="phone" class="w-4 h-4 md:w-5 md:h-5 inline-block ml-1.5 md:ml-2 align-middle" /> {{ __('Contact for a similar project') }}
                         </a>
                     </div>
@@ -212,30 +219,30 @@
 
 {{-- Related Projects --}}
 @if($relatedProjects->count())
-    <section class="py-10 md:py-16 bg-[var(--white)]">
-        <div class="container mx-auto px-4">
-            <div data-aos="fade-up" class="text-center mb-6 md:mb-12">
+    <section class="py-10 md:py-16 bg-[var(--cream)]">
+        <div class="container mx-auto px-4 max-w-full">
+            <div class="text-center mb-6 md:mb-12">
                 <h2 class="text-xl md:text-3xl font-black text-[var(--gold)]">{{ __('Similar Projects') }}</h2>
                 <div class="section-divider"></div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 @foreach($relatedProjects as $related)
                     @php $rImg = is_array($related->images) ? ($related->images[0] ?? '') : $related->images; @endphp
-                    <div data-aos="fade-up" class="group relative rounded-[var(--radius-lg)] overflow-hidden shadow-lg card-elegant">
-                        <div class="h-44 sm:h-52 md:h-64">
+                    <div class="group relative rounded-[var(--radius-lg)] overflow-hidden shadow-lg bg-[var(--navy-dark)]">
+                        <div class="h-44 sm:h-52 md:h-64 w-full">
                             <img src="{{ asset('storage/' . $rImg) }}" alt="{{ $related->title }}" class="w-full h-full object-cover" loading="lazy">
                         </div>
                         <div class="overlay-gradient absolute inset-0"></div>
-                        <div x-data="{ liked: {{ $related->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $related->likeCount() }} }" class="absolute top-2 sm:top-3 left-2 sm:left-3 z-10" @@click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $related->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
-                            <button class="flex items-center gap-1 px-2 sm:px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-[10px] sm:text-xs">
+                        <div x-data="{ liked: {{ $related->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $related->likeCount() }} }" class="absolute top-2 sm:top-3 left-2 sm:left-3 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $related->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
+                            <button type="button" class="flex items-center gap-1 px-2 sm:px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 text-[10px] sm:text-xs">
                                 <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
                                 <span x-text="count">0</span>
                             </button>
                         </div>
                         <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 left-2 sm:left-4">
-                            <h3 class="text-white font-bold text-xs sm:text-base leading-tight">{{ $related->title }}</h3>
+                            <h3 class="text-white font-bold text-xs sm:text-base leading-tight break-words">{{ $related->title }}</h3>
                         </div>
-                        <a href="{{ route('project.show', $related->slug) }}" class="absolute inset-0 flex items-center justify-center bg-[var(--gold)]/80 opacity-0 group-hover:opacity-100 transition-all rounded-[var(--radius-lg)]">
+                        <a href="{{ route('project.show', $related->slug) }}" class="absolute inset-0 flex items-center justify-center bg-[var(--gold)]/80 opacity-0 group-hover:opacity-100 rounded-[var(--radius-lg)]">
                             <span class="text-white font-bold border-2 border-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm">{{ __('View Project') }}</span>
                         </a>
                     </div>
@@ -248,12 +255,12 @@
 {{-- Social Share --}}
 @php $shareSocialLinks = App\Models\SocialLink::where('is_active', true)->orderBy('sort_order')->get(); @endphp
 <section class="py-6 md:py-8 bg-[var(--cream)] border-t border-[var(--stone)]">
-    <div class="container mx-auto px-4 text-center">
+    <div class="container mx-auto px-4 max-w-full text-center">
         <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
             <span class="text-xs sm:text-base text-[var(--text-light)]">{{ __('Share this project:') }}</span>
             <div class="flex flex-wrap justify-center gap-2 items-center" dir="ltr">
-                <a href="https://api.whatsapp.com/send?text={{ urlencode($project->title . ' ' . request()->url()) }}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 transition-transform"><x-icon name="whatsapp" class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" /></a>
-                <a href="https://www.pinterest.com/pin/create/button/?url={{ urlencode(request()->url()) }}&media={{ count($images) ? urlencode($images[0]) : '' }}&description={{ urlencode($project->title) }}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-[#E60023] text-white flex items-center justify-center hover:scale-110 transition-transform"><x-icon name="pinterest" class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" /></a>
+                <a href="https://api.whatsapp.com/send?text={{ urlencode($project->title . ' ' . request()->url()) }}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 shrink-0"><x-icon name="whatsapp" class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" /></a>
+                <a href="https://www.pinterest.com/pin/create/button/?url={{ urlencode(request()->url()) }}&media={{ $totalImages ? urlencode($images[0]) : '' }}&description={{ urlencode($project->title) }}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-[#E60023] text-white flex items-center justify-center hover:scale-110 shrink-0"><x-icon name="pinterest" class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" /></a>
                 @include('partials.social-icons', ['socialLinks' => $shareSocialLinks])
             </div>
         </div>
