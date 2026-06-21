@@ -4,14 +4,14 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">المشاريع</h1>
-            <p class="text-gray-500 text-sm mt-1">إدارة مشاريع الديكور المنفذة للعملاء</p>
+            <h1 class="text-lg sm:text-2xl font-bold text-gray-800">المشاريع</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">إدارة مشاريع الديكور المنفذة للعملاء</p>
         </div>
-        <a href="{{ route('admin.projects.create') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-l from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-gray-900 font-bold rounded-lg text-sm transition-all duration-300 shadow-sm hover:shadow-md shrink-0">
+        <a href="{{ route('admin.projects.create') }}" class="self-start sm:self-auto inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-l from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-gray-900 font-bold rounded-lg text-xs sm:text-sm transition-all duration-300 shadow-sm hover:shadow-md shrink-0">
             <i class="fas fa-plus"></i>
-            إضافة مشروع جديد
+            إضافة
         </a>
     </div>
 
@@ -46,7 +46,7 @@
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto admin-table-wrap">
             <table class="w-full admin-table">
                 <thead>
                     <tr class="bg-gradient-to-l from-gray-50 to-white border-b border-gray-200">

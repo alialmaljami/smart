@@ -4,19 +4,19 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">الروابط الاجتماعية</h1>
-            <p class="text-gray-500 mt-1">إدارة روابط منصات التواصل الاجتماعي</p>
+            <h1 class="text-lg sm:text-2xl font-bold text-gray-800">الروابط الاجتماعية</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">إدارة روابط منصات التواصل الاجتماعي</p>
         </div>
-        <a href="{{ route('admin.social-links.create') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gold-600 hover:bg-gold-700 text-white rounded-lg text-sm font-medium transition-colors">
-            <x-icon name="plus" class="w-4 h-4" />
-            إضافة رابط جديد
+        <a href="{{ route('admin.social-links.create') }}" class="self-start sm:self-auto inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-gold-600 hover:bg-gold-700 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors">
+            <x-icon name="plus" class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            إضافة
         </a>
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto admin-table-wrap">
             <table class="w-full admin-table">
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-200">

@@ -1,9 +1,3 @@
-@php
-    $materials = $category->materials()->where('is_active', true)->get();
-    $relatedProjects = $category->relatedProjects()->where('is_active', true)->get();
-    $relatedServices = $category->services()->where('is_active', true)->get();
-@endphp
-
 @extends('layouts.app')
 
 @push('meta')

@@ -1,12 +1,12 @@
-<div class="space-y-6">
-    <div class="flex items-center justify-between">
+<div class="space-y-4 sm:space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">@if(isset($service)) تعديل خدمة @else إضافة خدمة جديدة @endif</h1>
-            <p class="text-gray-500 text-sm mt-1">@if(isset($service)) تعديل بيانات الخدمة @else إضافة خدمة ديكور جديدة @endif</p>
+            <h1 class="text-lg sm:text-2xl font-bold text-gray-800">@if(isset($service)) تعديل خدمة @else إضافة خدمة جديدة @endif</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">@if(isset($service)) تعديل بيانات الخدمة @else إضافة خدمة ديكور جديدة @endif</p>
         </div>
-        <a href="{{ route('admin.services.index') }}" class="inline-flex items-center gap-2 px-4 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-            <i class="fas fa-arrow-right"></i>
-            العودة للقائمة
+        <a href="{{ route('admin.services.index') }}" class="self-start sm:self-auto inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            <i class="fas fa-arrow-right text-xs"></i>
+            العودة
         </a>
     </div>
 
@@ -37,15 +37,15 @@
         @endif
 
         {{-- Main info card --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
-                <h2 class="font-bold text-gray-800 flex items-center gap-2">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2 text-sm sm:text-base">
                     <i class="fas fa-info-circle text-gold-600"></i>
                     المعلومات الأساسية
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">الاسم <span class="text-red-500">*</span></label>
                         <input type="text" name="name" id="name"
@@ -82,15 +82,15 @@
         </div>
 
         {{-- Media card --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
-                <h2 class="font-bold text-gray-800 flex items-center gap-2">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2 text-sm sm:text-base">
                     <i class="fas fa-images text-gold-600"></i>
                     الوسائط
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                         <label for="image" class="block text-sm font-medium text-gray-700 mb-1.5">الصورة الرئيسية</label>
                         @if(isset($service) && $service->image)
@@ -144,15 +144,15 @@
         </div>
 
         {{-- Settings card --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
-                <h2 class="font-bold text-gray-800 flex items-center gap-2">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2 text-sm sm:text-base">
                     <i class="fas fa-sliders-h text-gold-600"></i>
                     الإعدادات
                 </h2>
             </div>
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="p-4 sm:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                         <label for="sort_order" class="block text-sm font-medium text-gray-700 mb-1.5">ترتيب العرض</label>
                         <input type="number" name="sort_order" id="sort_order"
@@ -177,14 +177,14 @@
         </div>
 
         {{-- SEO card --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
-                <h2 class="font-bold text-gray-800 flex items-center gap-2">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2 text-sm sm:text-base">
                     <i class="fab fa-searchengin text-gold-600"></i>
                     بيانات تحسين محركات البحث (SEO)
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
                 <div>
                     <label for="meta_title" class="block text-sm font-medium text-gray-700 mb-1.5">عنوان الصفحة</label>
                     <input type="text" name="meta_title" id="meta_title"
@@ -219,12 +219,12 @@
         </div>
 
         {{-- Submit --}}
-        <div class="flex items-center gap-3 bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-l from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-gray-900 font-bold rounded-lg text-sm transition-all duration-300 shadow-sm hover:shadow-md">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5">
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-gradient-to-l from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-gray-900 font-bold rounded-lg text-sm transition-all duration-300 shadow-sm hover:shadow-md">
                 <i class="fas fa-save"></i>
                 @if(isset($service)) حفظ التغييرات @else إضافة الخدمة @endif
             </button>
-            <a href="{{ route('admin.services.index') }}" class="inline-flex items-center gap-2 px-6 py-2.5 text-gray-600 hover:text-gray-800 bg-white border border-gray-300 rounded-lg text-sm font-medium transition-colors hover:bg-gray-50">
+            <a href="{{ route('admin.services.index') }}" class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 text-gray-600 hover:text-gray-800 bg-white border border-gray-300 rounded-lg text-sm font-medium transition-colors hover:bg-gray-50">
                 إلغاء
             </a>
         </div>

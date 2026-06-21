@@ -4,14 +4,14 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">التصنيفات</h1>
-            <p class="text-gray-500 mt-1">إدارة تصنيفات المشاريع ومعرض الصور ومواد الديكور</p>
+            <h1 class="text-lg sm:text-2xl font-bold text-gray-800">التصنيفات</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">إدارة تصنيفات المشاريع ومعرض الصور ومواد الديكور</p>
         </div>
-        <a href="{{ route('admin.categories.create') }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-gold-600 hover:bg-gold-700 text-white rounded-lg text-sm font-medium transition-colors">
+        <a href="{{ route('admin.categories.create') }}" class="self-start sm:self-auto inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-gold-600 hover:bg-gold-700 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors">
             <i class="fas fa-plus"></i>
-            إضافة تصنيف
+            إضافة
         </a>
     </div>
 
@@ -30,7 +30,7 @@
     </div>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto admin-table-wrap">
             <table class="w-full admin-table">
                 <thead>
                     <tr class="bg-gray-50 border-b border-gray-200">

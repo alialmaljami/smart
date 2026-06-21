@@ -69,19 +69,22 @@
             --dark-text-secondary: #9C9C9C;
         }
 
+        .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .admin-table-wrap table { min-width: 650px; }
+        .admin-table td, .admin-table th { white-space: nowrap; }
+
         @media (max-width: 768px) {
             .admin-table { font-size: 0.75rem; }
-            .admin-table td, .admin-table th { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
-            .admin-card-padding { padding: 1rem !important; }
-            .admin-header-text { font-size: 1.25rem !important; }
-                .admin-sidebar { width: 100% !important; max-width: 320px !important; }
-            .admin-topbar { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
-            .admin-topbar h1 { font-size: 1.1rem !important; }
+            .admin-table td, .admin-table th { padding-left: 0.5rem !important; padding-right: 0.5rem !important; white-space: nowrap; }
+            .admin-sidebar { width: 100% !important; max-width: 320px !important; }
         }
 
         @media (max-width: 480px) {
             .admin-action-btn { width: 2rem !important; height: 2rem !important; }
             .admin-action-btn i { font-size: 0.625rem !important; }
+            .admin-content { padding: 0.75rem !important; }
+            .admin-card { padding: 1rem !important; }
+            .admin-hide-mobile { display: none !important; }
         }
     </style>
     <script>
@@ -109,18 +112,18 @@
            class="admin-sidebar fixed inset-y-0 right-0 z-50 w-72 bg-gradient-to-b from-[#0F1A2E] via-[#0F1A2E] to-[#070C14] text-white shadow-2xl lg:relative lg:translate-x-0 lg:flex lg:flex-col lg:shrink-0 transition-all duration-300">
 
         {{-- Brand --}}
-        <div class="flex items-center justify-between h-16 px-5 border-b border-white/[0.06]">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-[#E07A5F] to-[#D4694C] flex items-center justify-center shadow-lg shadow-[#E07A5F]/20">
-                    <i class="fas fa-pen-ruler text-sm text-white"></i>
+        <div class="flex items-center justify-between h-14 sm:h-16 px-4 sm:px-5 border-b border-white/[0.06]">
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 sm:gap-3">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-gradient-to-br from-[#E07A5F] to-[#D4694C] flex items-center justify-center shadow-lg shadow-[#E07A5F]/20 shrink-0">
+                    <i class="fas fa-pen-ruler text-xs sm:text-sm text-white"></i>
                 </div>
                 <div>
-                    <span class="text-base font-bold text-white">المصمم الذكي</span>
-                    <p class="text-[10px] text-gray-400 -mt-0.5">لوحة الإدارة</p>
+                    <span class="text-sm sm:text-base font-bold text-white">المصمم الذكي</span>
+                    <p class="text-[9px] sm:text-[10px] text-gray-400 -mt-0.5">لوحة الإدارة</p>
                 </div>
             </a>
-            <button @@click="mobileSidebar = false" class="text-gray-400 hover:text-white lg:hidden">
-                <i class="fas fa-times text-lg"></i>
+            <button @@click="mobileSidebar = false" class="p-1.5 sm:p-2 text-gray-400 hover:text-white lg:hidden rounded-lg hover:bg-white/5 transition-colors">
+                <i class="fas fa-times text-base sm:text-lg"></i>
             </button>
         </div>
 
@@ -222,22 +225,31 @@
         </nav>
 
         {{-- Footer --}}
-        <div class="p-4 border-t border-white/[0.06]">
-            <div class="flex items-center gap-3 px-4 py-2">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#E07A5F] to-[#D4694C] flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-[#E07A5F]/10">
+        <div class="p-3 sm:p-4 border-t border-white/[0.06]">
+            <div class="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2">
+                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-[#E07A5F] to-[#D4694C] flex items-center justify-center text-white font-bold text-xs sm:text-sm shadow-lg shadow-[#E07A5F]/10">
                     {{ substr(Auth::user()->name ?? 'م', 0, 1) }}
                 </div>
-                <div class="flex-1 min-w-0">
+                <div class="flex-1 min-w-0 hidden sm:block">
                     <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name ?? 'المدير' }}</p>
                     <p class="text-[11px] text-gray-500">مدير النظام</p>
                 </div>
-                <a href="{{ url('/') }}" target="_blank" class="p-2 text-gray-500 hover:text-[#E07A5F] hover:bg-[#E07A5F]/10 rounded-lg transition-colors" title="زيارة الموقع">
-                    <i class="fas fa-external-link-alt text-sm"></i>
+            </div>
+            <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 pt-2 sm:pt-3 border-t border-white/[0.06] mt-2 sm:mt-3">
+                <a href="{{ url('/') }}" target="_blank" class="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-gray-400 hover:text-[#E07A5F] hover:bg-[#E07A5F]/10 transition-all text-xs sm:text-sm" title="زيارة الموقع">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span class="sm:hidden">الموقع</span>
+                    <span class="hidden sm:inline">زيارة الموقع</span>
                 </a>
-                <form action="{{ route('admin.logout') }}" method="POST">
+                <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'))" class="flex-1 flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-gray-400 hover:text-[#E07A5F] hover:bg-[#E07A5F]/10 transition-all text-xs sm:text-sm" title="الوضع الليلي">
+                    <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    <span>ليلي</span>
+                </button>
+                <form action="{{ route('admin.logout') }}" method="POST" class="flex-1">
                     @csrf
-                    <button type="submit" class="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors" title="تسجيل خروج">
-                        <i class="fas fa-sign-out-alt text-sm"></i>
+                    <button type="submit" class="w-full flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all text-xs sm:text-sm" title="تسجيل خروج">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>خروج</span>
                     </button>
                 </form>
             </div>
@@ -247,63 +259,59 @@
     {{-- Main content wrapper --}}
     <div class="flex-1 flex flex-col min-w-0">
         {{-- Top bar --}}
-        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 lg:px-6 shadow-sm">
-            <div class="flex items-center gap-4">
-                <button @@click="mobileSidebar = true" class="text-gray-500 hover:text-gray-700 lg:hidden">
-                    <i class="fas fa-bars text-xl"></i>
+        <header class="admin-topbar h-14 sm:h-16 bg-white border-b border-gray-200 flex items-center justify-between px-3 sm:px-4 lg:px-6 shadow-sm">
+            <div class="flex items-center gap-2 sm:gap-4">
+                <button @@click="mobileSidebar = true" class="p-1.5 sm:p-2 text-gray-500 hover:text-gray-700 lg:hidden rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="fas fa-bars text-lg sm:text-xl"></i>
                 </button>
-                <button @@click="sidebarOpen = !sidebarOpen" class="text-gray-400 hover:text-gray-600 hidden lg:block transition-colors">
-                    <i class="fas fa-bars text-sm" :class="sidebarOpen ? 'fa-times' : 'fa-bars'"></i>
+                <button @@click="sidebarOpen = !sidebarOpen" class="p-1.5 text-gray-400 hover:text-gray-600 hidden lg:block transition-colors rounded-lg hover:bg-gray-100">
+                    <i class="fas fa-bars" :class="sidebarOpen ? 'fa-times' : 'fa-bars'"></i>
                 </button>
-                <div class="hidden md:flex items-center gap-2 text-sm text-gray-400">
-                    <i class="fas fa-home text-[#E07A5F] text-xs"></i>
-                    <span>/</span>
-                    <span class="text-gray-600 font-medium">@yield('title', 'لوحة التحكم')</span>
+                <div class="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-400 truncate max-w-[140px] sm:max-w-none">
+                    <i class="fas fa-home text-[#E07A5F] hidden sm:inline"></i>
+                    <span class="hidden sm:inline">/</span>
+                    <span class="text-gray-600 font-medium truncate">@yield('title', 'لوحة التحكم')</span>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1 sm:gap-2 shrink-0">
                 {{-- Search --}}
                 <div x-data="{ open: false }" class="relative">
-                    <button @@click="open = true" class="w-9 h-9 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:border-[#E07A5F] transition-all" title="بحث">
-                        <i class="fas fa-search text-sm"></i>
+                    <button @@click="open = true" class="w-8 h-8 sm:w-9 sm:h-9 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:border-[#E07A5F] transition-all" title="بحث">
+                        <i class="fas fa-search text-xs sm:text-sm"></i>
                     </button>
                     <div x-show="open" @@click.outside="open = false" x-transition class="fixed inset-0 z-50 flex items-start justify-center pt-24">
                         <div @@click="open = false" class="absolute inset-0 bg-[#0F1A2E]/60 backdrop-blur-sm"></div>
                         <div class="relative bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-xl p-6" @@click.stop>
                             <div class="flex items-center gap-3 mb-4">
                                 <i class="fas fa-search text-gray-400"></i>
-                                <input type="text" x-ref="searchInput" placeholder="ابحث عن خدمات، مشاريع، مواد، مقالات..." class="flex-1 border-0 outline-none text-sm text-gray-700 placeholder-gray-400" autofocus>
-                                <button @@click="open = false" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+                                <input type="text" x-ref="searchInput" placeholder="ابحث عن..." class="flex-1 border-0 outline-none text-sm text-gray-700 placeholder-gray-400" autofocus>
                             </div>
-                            <p class="text-xs text-gray-400">اكتب كلمة مفتاحية للبحث في جميع المحتويات</p>
                         </div>
                     </div>
                 </div>
 
-                {{-- Visit site --}}
-                <a href="{{ url('/') }}" target="_blank" class="h-9 px-3 bg-white border border-gray-200 rounded-lg flex items-center gap-2 text-gray-500 hover:bg-gray-50 hover:border-[#E07A5F] hover:text-[#E07A5F] transition-all" title="زيارة الموقع">
-                    <i class="fas fa-external-link-alt text-sm"></i>
-                    <span class="text-sm font-medium hidden md:block">زيارة الموقع</span>
-                </a>
+                {{-- Desktop-only buttons --}}
+                <div class="hidden sm:flex items-center gap-1 sm:gap-2">
+                    <a href="{{ url('/') }}" target="_blank" class="w-8 h-8 sm:w-9 sm:h-9 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:border-[#E07A5F] hover:text-[#E07A5F] transition-all" title="زيارة الموقع">
+                        <i class="fas fa-external-link-alt text-xs sm:text-sm"></i>
+                    </a>
 
-                {{-- Language toggle --}}
-                <button x-data="{ ar: true }" @@click="ar = !ar; document.documentElement.dir = ar ? 'rtl' : 'ltr'; document.documentElement.lang = ar ? 'ar' : 'en'" class="w-9 h-9 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:border-[#E07A5F] transition-all" title="تغيير اللغة">
-                    <span class="text-[11px] font-bold" x-text="ar ? 'AR' : 'EN'">AR</span>
-                </button>
+                    <button x-data="{ ar: true }" @@click="ar = !ar; document.documentElement.dir = ar ? 'rtl' : 'ltr'; document.documentElement.lang = ar ? 'ar' : 'en'" class="w-8 h-8 sm:w-9 sm:h-9 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:border-[#E07A5F] transition-all" title="تغيير اللغة">
+                        <span class="text-[10px] sm:text-[11px] font-bold" x-text="ar ? 'AR' : 'EN'">AR</span>
+                    </button>
 
-                {{-- Dark mode toggle --}}
-                <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'))" class="w-9 h-9 flex items-center justify-center rounded-lg text-[#E07A5F] hover:text-gold-400 hover:bg-white/5 transition-all" title="الوضع الليلي">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-                </button>
-            </div>
+                    <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'))" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg text-[#E07A5F] hover:bg-gray-100 transition-all" title="الوضع الليلي">
+                        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
+                </div>
 
-            <div class="flex items-center gap-3">
-                <div class="flex items-center gap-3 px-3 py-1.5 bg-gray-50 rounded-xl">
-                    <div class="text-left">
-                        <p class="text-sm font-medium text-gray-700">{{ Auth::user()->name ?? 'المدير' }}</p>
+                {{-- User avatar --}}
+                <div class="flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-50 rounded-xl">
+                    <div class="hidden sm:block text-left">
+                        <p class="text-xs sm:text-sm font-medium text-gray-700 truncate max-w-[80px]">{{ Auth::user()->name ?? '' }}</p>
                     </div>
-                    <div class="w-9 h-9 rounded-full bg-gradient-to-br from-[#E07A5F] to-[#D4694C] flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                    <div class="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-[#E07A5F] to-[#D4694C] flex items-center justify-center text-white font-bold text-xs sm:text-sm shadow-sm">
                         {{ substr(Auth::user()->name ?? 'م', 0, 1) }}
                     </div>
                 </div>
@@ -311,7 +319,7 @@
         </header>
 
         {{-- Page content --}}
-        <main class="flex-1 overflow-y-auto p-4 lg:p-6 bg-gray-50">
+        <main class="flex-1 overflow-y-auto admin-content p-4 lg:p-6 bg-gray-50">
             {{-- Alert messages --}}
             @if(session('success'))
                 <div class="mb-6 flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl shadow-sm" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">

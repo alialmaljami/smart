@@ -3,16 +3,16 @@
 @section('title', 'لوحة التحكم')
 
 @section('content')
-<div class="space-y-8">
+<div class="space-y-4 sm:space-y-8">
     {{-- Header --}}
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">لوحة التحكم</h1>
-            <p class="text-gray-500 text-sm mt-1">نظرة عامة على نظام إدارة ديكورات المصمم الذكي</p>
+            <h1 class="text-lg sm:text-2xl font-bold text-gray-800">لوحة التحكم</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">نظرة عامة على نظام إدارة ديكورات المصمم الذكي</p>
         </div>
-        <div class="flex items-center gap-2 px-3 py-2 bg-white rounded-xl shadow-sm border border-gray-200 text-sm text-gray-500">
+        <div class="self-start sm:self-auto flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-white rounded-xl shadow-sm border border-gray-200 text-xs sm:text-sm text-gray-500">
             <i class="far fa-calendar-alt text-gold-600"></i>
-            <span>{{ now()->locale('ar')->translatedFormat('l d F Y') }}</span>
+            <span class="truncate">{{ now()->locale('ar')->translatedFormat('l d F Y') }}</span>
         </div>
     </div>
 

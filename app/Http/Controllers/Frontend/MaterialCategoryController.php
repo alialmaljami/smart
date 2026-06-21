@@ -19,9 +19,10 @@ class MaterialCategoryController extends Controller
     {
         $category = Category::where('type', 'material')->where('slug', $slug)->where('is_active', true)->firstOrFail();
         $materials = $category->materials()->where('is_active', true)->get();
-        $projects = $category->relatedProjects()->where('is_active', true)->latest()->get();
+        $relatedProjects = $category->relatedProjects()->where('is_active', true)->latest()->get();
+        $relatedServices = $category->services()->where('is_active', true)->get();
 
-        return view('frontend.materials.show', compact('category', 'materials', 'projects'));
+        return view('frontend.materials.show', compact('category', 'materials', 'relatedProjects', 'relatedServices'));
     }
 
     public function showMaterial(string $slug): View

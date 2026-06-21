@@ -18,7 +18,7 @@
 
     {{-- Table --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto admin-table-wrap">
             <table class="w-full admin-table">
                 <thead>
                     <tr class="bg-gradient-to-l from-gray-50 to-white border-b border-gray-200">

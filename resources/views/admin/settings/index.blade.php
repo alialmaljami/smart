@@ -5,8 +5,8 @@
 @section('content')
 <div class="space-y-6">
     <div>
-        <h1 class="text-2xl font-bold text-gray-800">الإعدادات العامة</h1>
-        <p class="text-gray-500 text-sm mt-1">إعدادات الموقع الأساسية</p>
+        <h1 class="text-lg sm:text-2xl font-bold text-gray-800">الإعدادات العامة</h1>
+        <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">إعدادات الموقع الأساسية</p>
     </div>
 
     <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
@@ -29,15 +29,15 @@
         @endif
 
         {{-- General settings --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
-                <h2 class="font-bold text-gray-800 flex items-center gap-2">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2 text-sm sm:text-base">
                     <i class="fas fa-globe text-gold-600"></i>
                     الإعدادات العامة
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                         <label for="site_name" class="block text-sm font-medium text-gray-700 mb-1.5">اسم الموقع</label>
                         <input type="text" name="site_name" id="site_name"
@@ -52,7 +52,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                         <label for="logo" class="block text-sm font-medium text-gray-700 mb-1.5">شعار الموقع</label>
                         <div class="flex items-center gap-4">
@@ -89,15 +89,15 @@
         </div>
 
         {{-- Contact info --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-address-card text-gold-600"></i>
                     معلومات الاتصال
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">البريد الإلكتروني</label>
                         <input type="email" name="email" id="email"
@@ -112,7 +112,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                         <label for="address" class="block text-sm font-medium text-gray-700 mb-1.5">العنوان</label>
                         <input type="text" name="address" id="address"
@@ -131,8 +131,8 @@
         </div>
 
         {{-- Social links status --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-share-alt text-gold-600"></i>
                     إظهار الروابط الاجتماعية
@@ -152,15 +152,15 @@
         </div>
 
         {{-- Footer --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-code-branch text-gold-600"></i>
                     تذييل الموقع (Footer)
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                         <label for="copyright_text" class="block text-sm font-medium text-gray-700 mb-1.5">نص الحقوق المحفوظة</label>
                         <input type="text" name="copyright_text" id="copyright_text"
@@ -177,14 +177,14 @@
         </div>
 
         {{-- SEO --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
                     <i class="fab fa-searchengin text-gold-600"></i>
                     بيانات تحسين محركات البحث (SEO)
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
                 {{-- Home --}}
                 <div class="border-b border-gray-100 pb-5 mb-3">
                     <h3 class="font-semibold text-gray-800 text-sm mb-4 flex items-center gap-2"><i class="fas fa-home text-gold-600"></i> الصفحة الرئيسية</h3>
@@ -307,14 +307,14 @@
         </div>
 
         {{-- Watermark settings --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-watermark text-gold-600"></i>
                     العلامة المائية (Watermark)
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
                 <div class="flex items-center gap-3">
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="hidden" name="watermark_enabled" value="0">
@@ -324,7 +324,7 @@
                     <span class="text-sm text-gray-700">تفعيل العلامة المائية</span>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">نوع العلامة المائية</label>
                         <select name="watermark_type" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none text-sm">
@@ -380,8 +380,8 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-3 bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-l from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-white font-bold rounded-lg text-sm transition-all duration-300 shadow-sm hover:shadow-md">
+        <div class="flex items-center gap-3 bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5">
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-gradient-to-l from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-white font-bold rounded-lg text-xs sm:text-sm transition-all duration-300 shadow-sm hover:shadow-md w-full sm:w-auto">
                 <i class="fas fa-save"></i>
                 حفظ الإعدادات
             </button>

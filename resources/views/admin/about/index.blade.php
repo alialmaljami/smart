@@ -6,8 +6,8 @@
 <div class="space-y-6">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">صفحة عن الشركة</h1>
-            <p class="text-gray-500 text-sm mt-1">إدارة محتوى صفحة "عن الشركة"</p>
+            <h1 class="text-lg sm:text-2xl font-bold text-gray-800">صفحة عن الشركة</h1>
+            <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">إدارة محتوى صفحة "عن الشركة"</p>
         </div>
     </div>
 
@@ -31,14 +31,14 @@
         @endif
 
         {{-- Hero Section --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-header text-gold-600"></i>
                     القسم الرئيسي (Hero)
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                         <label for="about_title" class="block text-sm font-medium text-gray-700 mb-1.5">العنوان الرئيسي</label>
@@ -62,14 +62,14 @@
         </div>
 
         {{-- Company Story --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-book-open text-gold-600"></i>
                     قصة الشركة
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
                 <div>
                     <label for="about_story_1" class="block text-sm font-medium text-gray-700 mb-1.5">الفقرة الأولى</label>
                     <textarea name="about_story_1" id="about_story_1" rows="4"
@@ -99,14 +99,14 @@
         </div>
 
         {{-- Vision, Mission, Values --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-bullseye text-gold-600"></i>
                     الرؤية والرسالة والقيم
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div>
                         <label for="about_vision_title" class="block text-sm font-medium text-gray-700 mb-1.5">عنوان الرؤية</label>
@@ -140,8 +140,8 @@
         </div>
 
         {{-- Stats --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-chart-bar text-gold-600"></i>
                     الإحصائيات
@@ -194,14 +194,14 @@
         </div>
 
         {{-- CTA --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-hand-pointer text-gold-600"></i>
                     قسم الدعوة للإجراء (CTA)
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div>
                         <label for="about_cta_title" class="block text-sm font-medium text-gray-700 mb-1.5">عنوان CTA</label>
@@ -226,14 +226,14 @@
         </div>
 
         {{-- SEO --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden admin-card">
+            <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-100 bg-gradient-to-l from-gray-50 to-white">
                 <h2 class="font-bold text-gray-800 flex items-center gap-2">
                     <i class="fab fa-searchengin text-gold-600"></i>
                     تحسين محركات البحث (SEO)
                 </h2>
             </div>
-            <div class="p-6 space-y-5">
+            <div class="p-4 sm:p-6 space-y-4 sm:space-y-5">
                 <div>
                     <label for="about_meta_title" class="block text-sm font-medium text-gray-700 mb-1.5">عنوان SEO</label>
                     <input type="text" name="about_meta_title" id="about_meta_title"
@@ -255,8 +255,8 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-3 bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-l from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-white font-bold rounded-lg text-sm transition-all duration-300 shadow-sm hover:shadow-md">
+        <div class="flex items-center gap-3 bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-5">
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-gradient-to-l from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-white font-bold rounded-lg text-xs sm:text-sm transition-all duration-300 shadow-sm hover:shadow-md w-full sm:w-auto">
                 <i class="fas fa-save"></i>
                 حفظ التغييرات
             </button>
