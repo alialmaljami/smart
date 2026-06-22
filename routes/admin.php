@@ -103,6 +103,8 @@ Route::middleware('web')->prefix('admin')->group(function () {
                 $output = Artisan::output();
                 return redirect()->route('admin.settings')->with('success', nl2br(e($output)));
             })->name('admin.watermark.regenerate');
+
+            Route::get('/watermark-diagnostic', [\App\Http\Controllers\Admin\WatermarkDiagnosticController::class, 'index'])->name('admin.watermark-diagnostic');
         });
 
         // Watermark preview (generates a sample image with current watermark settings)
