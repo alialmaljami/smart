@@ -62,6 +62,25 @@ class WatermarkDiagnosticController extends Controller
             $info['error'] = $e->getMessage();
         }
 
+        // Storage diagnostics
+        $info['public_storage_exists'] = is_dir(public_path('storage'));
+        $info['public_storage_is_link'] = is_link(public_path('storage'));
+        if ($info['public_storage_is_link']) {
+            $info['public_storage_target'] = readlink(public_path('storage'));
+        }
+        $info['storage_app_public_exists'] = is_dir(storage_path('app/public'));
+
+        // Check last gallery image
+        $lastGallery = \App\Models\Gallery::latest()->first();
+        if ($lastGallery) {
+            $info['last_gallery_id'] = $lastGallery->id;
+            $info['last_gallery_image_db'] = $lastGallery->image;
+            $fullPath = storage_path('app/public/' . $lastGallery->image);
+            $info['last_gallery_file_exists'] = file_exists($fullPath);
+            $info['last_gallery_file_path'] = $fullPath;
+            $info['last_gallery_url'] = asset('storage/' . $lastGallery->image);
+        }
+
         return view('admin.watermark-diagnostic', compact('info'));
     }
 }

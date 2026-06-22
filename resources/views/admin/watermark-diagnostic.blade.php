@@ -77,6 +77,65 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                <h2 class="text-lg font-semibold mb-4">تشخيص التخزين</h2>
+                <table class="w-full text-sm">
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 text-gray-600 font-medium">public/storage موجود؟</td>
+                        <td class="py-2 text-left">
+                            @if($info['public_storage_exists'] ?? false) <span class="text-green-600 font-bold">نعم</span>
+                            @else <span class="text-red-600 font-bold">لا</span> @endif
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 text-gray-600 font-medium">public/storage هو symlink؟</td>
+                        <td class="py-2 text-left">
+                            @if($info['public_storage_is_link'] ?? false) <span class="text-green-600 font-bold">نعم</span>
+                            @else <span class="text-red-600 font-bold">لا</span> @endif
+                        </td>
+                    </tr>
+                    @if($info['public_storage_is_link'] ?? false)
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 text-gray-600 font-medium">الـ symlink يشير إلى</td>
+                        <td class="py-2 text-left font-mono text-xs">{{ $info['public_storage_target'] ?? '' }}</td>
+                    </tr>
+                    @endif
+                </table>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                <h2 class="text-lg font-semibold mb-4">آخر صورة في المعرض</h2>
+                <table class="w-full text-sm">
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 text-gray-600 font-medium">معرف الصورة</td>
+                        <td class="py-2 text-left">{{ $info['last_gallery_id'] ?? 'لا يوجد' }}</td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 text-gray-600 font-medium">المسار في قاعدة البيانات</td>
+                        <td class="py-2 text-left font-mono text-xs">{{ $info['last_gallery_image_db'] ?? 'N/A' }}</td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 text-gray-600 font-medium">الملف موجود على القرص؟</td>
+                        <td class="py-2 text-left">
+                            @if($info['last_gallery_file_exists'] ?? false) <span class="text-green-600 font-bold">نعم</span>
+                            @else <span class="text-red-600 font-bold">لا</span> @endif
+                        </td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 text-gray-600 font-medium">المسار الفعلي</td>
+                        <td class="py-2 text-left font-mono text-xs">{{ $info['last_gallery_file_path'] ?? 'N/A' }}</td>
+                    </tr>
+                    <tr class="border-b border-gray-100">
+                        <td class="py-2 text-gray-600 font-medium">رابط الصورة</td>
+                        <td class="py-2 text-left font-mono text-xs">{{ $info['last_gallery_url'] ?? 'N/A' }}</td>
+                    </tr>
+                </table>
+                @if(isset($info['last_gallery_file_exists']) && $info['last_gallery_file_exists'])
+                    <img src="{{ $info['last_gallery_url'] }}" alt="Last gallery" class="mt-3 border rounded-lg max-w-sm" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                    <p class="text-red-600 font-bold mt-2 hidden">⚠ الصورة لا تظهر — رابط معطل</p>
+                @endif
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
                 <h2 class="text-lg font-semibold mb-4">صورة حقيقية (آخر صورة مرفوعة)</h2>
                 @php
                     use Illuminate\Support\Facades\Storage;
