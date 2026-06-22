@@ -22,8 +22,15 @@ class PageController extends Controller
 
     public function blog(): View
     {
-        $posts = BlogPost::where('is_active', true)->latest()->paginate(9);
-        return view('frontend.blog.index', compact('posts'));
+        $tag = request('tag');
+        $posts = BlogPost::where('is_active', true)
+            ->when($tag, fn($q, $t) => $q->where('tags', 'like', "%{$t}%"))
+            ->latest()->paginate(9);
+
+        $allTags = BlogPost::where('is_active', true)->whereNotNull('tags')->pluck('tags');
+        $tags = $allTags->flatMap(fn($t) => array_map('trim', explode(',', $t)))->unique()->sort()->values();
+
+        return view('frontend.blog.index', compact('posts', 'tags', 'tag'));
     }
 
     public function blogPost(string $slug): View

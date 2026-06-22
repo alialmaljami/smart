@@ -21,8 +21,26 @@
     </div>
 </section>
 
+{{-- Category Chips --}}
+<section class="py-4 bg-[var(--white)] border-b border-[var(--stone)] sticky top-20 z-30">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-wrap justify-center gap-2">
+            <a href="{{ route('blog') }}"
+               class="px-4 py-2 rounded-full text-xs font-bold transition-all {{ !$tag ? 'bg-[var(--gold)] text-black' : 'bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)]/20 hover:text-[var(--gold)]' }}">
+                {{ __('All') }}
+            </a>
+            @foreach($tags as $t)
+                <a href="{{ route('blog', array_merge(request()->query(), ['tag' => $t])) }}"
+                   class="px-4 py-2 rounded-full text-xs font-bold transition-all {{ $tag == $t ? 'bg-[var(--gold)] text-black' : 'bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)]/20 hover:text-[var(--gold)]' }}">
+                    {{ $t }}
+                </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+
 {{-- Blog Posts --}}
-<section class="py-20 bg-[var(--cream)]">
+<section class="py-10 bg-[var(--cream)]">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($posts as $post)

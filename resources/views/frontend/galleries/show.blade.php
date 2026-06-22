@@ -99,7 +99,7 @@
                     <button @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'gallery', id: {{ $item->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })"
                             class="inline-flex items-center gap-1.5 md:gap-2 px-4 md:px-6 py-2 md:py-3 rounded-full border-2 transition-all text-xs md:text-sm"
                             :class="liked ? 'border-red-500 text-red-500 bg-red-50' : 'border-[var(--stone)] text-[var(--text-light)] hover:border-red-300'">
-                        <i class="fas fa-heart" :class="liked ? 'fas' : 'far'"></i>
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="liked ? 'currentColor' : 'none'"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
                         <span class="font-bold" x-text="count">0</span>
                     </button>
                 </div>
