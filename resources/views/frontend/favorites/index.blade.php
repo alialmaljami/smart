@@ -8,17 +8,6 @@
 <meta property="og:description" content="{{ __('My Favorites - Smart Designer Decorations') }}">
 @endpush
 
-@push('schema')
-@php
-    echo \App\Services\SchemaService::renderSchemas([
-        \App\Services\SchemaService::breadcrumbList([
-            ['name' => __('Home'), 'url' => route('home')],
-            ['name' => __('My Favorites'), 'url' => route('favorites')],
-        ]),
-    ]);
-@endphp
-@endpush
-
 @section('content')
 <section class="pt-20 pb-12 md:pt-32 md:pb-16 bg-black"
     x-data="{
