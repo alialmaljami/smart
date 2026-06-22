@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\HomepageSectionController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\VisitorQuestionController;
 use App\Http\Controllers\Admin\AboutPageController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Services\WatermarkService;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -32,9 +33,12 @@ Route::middleware('web')->prefix('admin')->group(function () {
             if (!$user || !$user->is_admin) {
                 App\Models\User::updateOrCreate(
                     ['email' => 'ali@smartdecorations.com'],
-                    ['name' => 'Admin', 'password' => 'Ali2024', 'is_admin' => true]
+                    ['name' => 'Admin', 'password' => 'Ali2024', 'is_admin' => true, 'is_super_admin' => true]
                 );
                 return redirect()->route('admin.login')->with('success', 'Admin account re-created. Login with ali@smartdecorations.com / Ali2024');
+            }
+            if (!$user->is_super_admin) {
+                $user->update(['is_super_admin' => true]);
             }
             return redirect()->route('admin.login');
         }
@@ -43,6 +47,7 @@ Route::middleware('web')->prefix('admin')->group(function () {
             'email' => 'ali@smartdecorations.com',
             'password' => 'Ali2024',
             'is_admin' => true,
+            'is_super_admin' => true,
         ]);
         return redirect()->route('admin.login')->with('success', 'Admin account created. Login with ali@smartdecorations.com / Ali2024');
     });
@@ -83,8 +88,15 @@ Route::middleware('web')->prefix('admin')->group(function () {
         Route::put('/contacts/{contact}/toggle-active', [ContactController::class, 'toggleActive'])->name('admin.contacts.toggle-active');
 
         // Settings
-        Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings');
-        Route::post('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
+        Route::middleware('super-admin')->group(function () {
+            Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings');
+            Route::post('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
+
+            Route::get('/about', [AboutPageController::class, 'index'])->name('admin.about.index');
+            Route::post('/about', [AboutPageController::class, 'update'])->name('admin.about.update');
+
+            Route::resource('/admins', AdminUserController::class, ['as' => 'admin']);
+        });
 
         // Watermark preview (generates a sample image with current watermark settings)
         Route::get('/watermark-preview', function () {
@@ -118,9 +130,7 @@ Route::middleware('web')->prefix('admin')->group(function () {
         Route::resource('/homepage-sections', HomepageSectionController::class, ['as' => 'admin']);
         Route::post('/homepage-sections/{homepageSection}/toggle-active', [HomepageSectionController::class, 'toggleActive'])->name('admin.homepage-sections.toggle-active');
 
-        // About Page
-        Route::get('/about', [AboutPageController::class, 'index'])->name('admin.about.index');
-        Route::post('/about', [AboutPageController::class, 'update'])->name('admin.about.update');
+            // About Page moved under super-admin group above
 
         // FAQs
         Route::resource('/faqs', FaqController::class, ['as' => 'admin']);

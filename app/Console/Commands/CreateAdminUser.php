@@ -19,8 +19,9 @@ class CreateAdminUser extends Command
             ['email' => $email],
             [
                 'name' => 'Admin',
-                'password' => bcrypt($password),
+                'password' => $password,
                 'is_admin' => true,
+                'is_super_admin' => true,
             ]
         );
 

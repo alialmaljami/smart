@@ -143,11 +143,13 @@
 
             <p class="px-4 pt-5 pb-1 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">المحتوى</p>
 
+            @if(auth()->user()->is_super_admin)
             <a href="{{ route('admin.about.index') }}"
                class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.about.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
                 <i class="fas fa-info-circle w-5 text-center text-base"></i>
                 <span>عن الشركة</span>
             </a>
+            @endif
 
             <a href="{{ route('admin.categories.index') }}"
                class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.categories.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
@@ -203,6 +205,14 @@
                 <span>المقالات</span>
             </a>
 
+            @if(auth()->user()->is_super_admin)
+            <a href="{{ route('admin.admins.index') }}"
+               class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.admins.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
+                <i class="fas fa-users-cog w-5 text-center text-base"></i>
+                <span>المشرفون</span>
+            </a>
+            @endif
+
             <p class="px-4 pt-5 pb-1 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">الإعدادات</p>
 
             <a href="{{ route('admin.social-links.index') }}"
@@ -217,11 +227,13 @@
                 <span>معلومات الاتصال</span>
             </a>
 
+            @if(auth()->user()->is_super_admin)
             <a href="{{ route('admin.settings') }}"
                class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.settings.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
                 <i class="fas fa-cog w-5 text-center text-base"></i>
                 <span>الإعدادات العامة</span>
             </a>
+            @endif
         </nav>
 
         {{-- Footer --}}
@@ -232,7 +244,7 @@
                 </div>
                 <div class="flex-1 min-w-0 hidden sm:block">
                     <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name ?? 'المدير' }}</p>
-                    <p class="text-[11px] text-gray-500">مدير النظام</p>
+                    <p class="text-[11px] text-gray-500">{{ auth()->user()->is_super_admin ? 'مدير النظام' : 'مشرف' }}</p>
                 </div>
             </div>
             <div class="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 pt-2 sm:pt-3 border-t border-white/[0.06] mt-2 sm:mt-3">
