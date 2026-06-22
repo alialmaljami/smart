@@ -48,6 +48,6 @@ class SettingController extends Controller
             }
         }
 
-        return redirect()->route('admin.settings.index')->with('success', 'تم حفظ الإعدادات بنجاح');
+        return redirect()->route('admin.settings')->with('success', 'تم حفظ الإعدادات بنجاح');
     }
 }
