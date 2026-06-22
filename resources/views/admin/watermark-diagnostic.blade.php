@@ -1,6 +1,8 @@
-<x-admin-layout>
-    <div class="p-6 max-w-4xl mx-auto">
-        <h1 class="text-2xl font-bold mb-6">تشخيص العلامة المائية</h1>
+@extends('layouts.admin')
+@section('title', 'تشخيص العلامة المائية')
+@section('content')
+<div class="space-y-6">
+    <h1 class="text-lg sm:text-2xl font-bold text-gray-800">تشخيص العلامة المائية والتخزين</h1>
 
         <div class="space-y-4">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
@@ -138,8 +140,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
                 <h2 class="text-lg font-semibold mb-4">صورة حقيقية (آخر صورة مرفوعة)</h2>
                 @php
-                    use Illuminate\Support\Facades\Storage;
-                    $files = Storage::disk('public')->allFiles();
+                    $files = \Storage::disk('public')->allFiles();
                     $images = array_values(array_filter($files, fn($f) => preg_match('/\.(jpg|jpeg|png|webp)$/i', $f)));
                     $lastImg = $images[count($images)-1] ?? null;
                 @endphp
@@ -170,4 +171,5 @@
             </div>
         </div>
     </div>
-</x-admin-layout>
+</div>
+@endsection
