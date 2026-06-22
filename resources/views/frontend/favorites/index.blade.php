@@ -34,8 +34,29 @@
             empty: false,
             activeTab: 'all',
 
+            getFavs() {
+                return JSON.parse(localStorage.getItem('sm_favorites') || '{}');
+            },
+            toggleFavorite(type, id) {
+                let favs = this.getFavs();
+                if (!favs[type]) favs[type] = [];
+                const idx = favs[type].indexOf(id);
+                if (idx > -1) {
+                    favs[type].splice(idx, 1);
+                    if (favs[type].length === 0) delete favs[type];
+                } else {
+                    favs[type].push(id);
+                }
+                localStorage.setItem('sm_favorites', JSON.stringify(favs));
+                window.dispatchEvent(new CustomEvent('fav-updated'));
+            },
+            isFavorite(type, id) {
+                let favs = this.getFavs();
+                return favs[type] && favs[type].includes(id);
+            },
+
             init() {
-                const favs = JSON.parse(localStorage.getItem('sm_favorites') || '{}');
+                const favs = this.getFavs();
                 const hasAny = Object.values(favs).some(a => a && a.length > 0);
                 if (!hasAny) { this.loading = false; this.empty = true; return; }
 

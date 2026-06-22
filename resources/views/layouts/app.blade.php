@@ -706,7 +706,7 @@
         favCount() {
             return Object.values(this.favorites).reduce((a, b) => a + (b ? b.length : 0), 0);
         }
-    }">
+    }" @fav-updated.window="favorites = JSON.parse(localStorage.getItem('sm_favorites') || '{}')">
 
         {{-- Mobile Sidebar Overlay --}}
         <div class="sidebar-overlay" :class="{ 'open': mobileMenu }" @click="mobileMenu = false"></div>
