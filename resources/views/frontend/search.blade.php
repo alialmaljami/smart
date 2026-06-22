@@ -10,7 +10,7 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="relative pt-32 pb-16 overflow-hidden bg-[var(--navy)]">
+<section class="relative pt-20 pb-12 md:pt-32 md:pb-16 overflow-hidden bg-[var(--navy)]">
     <div class="absolute inset-0 opacity-10" style="background: radial-gradient(circle at 30% 50%, var(--cream) 0%, transparent 50%), radial-gradient(circle at 70% 50%, var(--cream) 0%, transparent 50%);"></div>
     <div class="container mx-auto px-4 relative z-10">
         <div data-aos="fade-up" class="text-center">

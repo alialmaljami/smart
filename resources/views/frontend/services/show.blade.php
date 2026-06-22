@@ -73,6 +73,12 @@
                                 <span class="text-sm font-medium" x-text="count"></span>
                             </button>
                         </div>
+                        <button type="button" @click.stop="toggleFavorite('service', {{ $service->id }})"
+                                :class="isFavorite('service', {{ $service->id }}) ? 'text-red-400' : 'text-white/70'"
+                                class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all shadow-lg"
+                                title="{{ __('Add to Favorites') }}">
+                            <i class="text-sm" :class="isFavorite('service', {{ $service->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                        </button>
                         <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}" class="w-full h-80 object-cover" loading="lazy">
                     </div>
                     <div class="absolute -bottom-4 -left-4 w-24 h-24 bg-[var(--gold)] rounded-2xl -z-10"></div>

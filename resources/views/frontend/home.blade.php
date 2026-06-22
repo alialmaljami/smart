@@ -53,26 +53,36 @@
 
 @if($hero)
 {{-- Hero with Multi-Image Slider --}}
-<section class="relative h-screen min-h-[500px] md:min-h-[650px] overflow-hidden"
+<section class="relative h-screen min-h-[500px] md:min-h-[650px] overflow-hidden group"
     @if(count($heroImages) > 1)
     x-data="{
         current: 0,
         total: {{ count($heroImages) }},
-        init() { setInterval(() => { this.current = (this.current + 1) % this.total; }, 6000); }
+        paused: false,
+        interval: null,
+        startTimer() {
+            this.interval = setInterval(() => {
+                if (!this.paused) this.current = (this.current + 1) % this.total;
+            }, 6000);
+        },
+        init() { this.startTimer(); },
+        destroy() { if (this.interval) clearInterval(this.interval); }
     }"
+    @@mouseenter="paused = true"
+    @@mouseleave="paused = false"
     @endif
 >
     @if(count($heroImages) > 1)
         @foreach($heroImages as $i => $heroImg)
-        <div class="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+        <div class="absolute inset-0 transition-all duration-1000 ease-in-out"
              :class="current === {{ $i }} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'">
-            <img src="{{ $heroImg }}" alt="{{ __('Smart Designer Decorations - Hero Background') }}" class="w-full h-full object-cover" fetchpriority="high"
-                 :style="current === {{ $i }} ? 'transform: scale(1); transition: transform 8s ease-out;' : 'transform: scale(1.08);'">
+            <img src="{{ $heroImg }}" alt="{{ __('Smart Designer Decorations - Hero Background') }}" class="w-full h-full object-cover hero-zoom" fetchpriority="high"
+                 :class="current === {{ $i }} ? 'hero-zoom-active' : ''">
         </div>
         @endforeach
     @elseif(count($heroImages) === 1)
         <div class="absolute inset-0 z-[1]">
-            <img src="{{ $heroImages[0] }}" alt="{{ __('Smart Designer Decorations - Hero Image') }}" class="w-full h-full object-cover" fetchpriority="high">
+            <img src="{{ $heroImages[0] }}" alt="{{ __('Smart Designer Decorations - Hero Image') }}" class="w-full h-full object-cover hero-zoom hero-zoom-active" fetchpriority="high">
         </div>
     @else
         <div class="absolute inset-0 z-[1] bg-[var(--navy)]"></div>
@@ -113,14 +123,14 @@
     @if(count($heroImages) > 1)
     <div class="absolute bottom-12 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2">
         @foreach($heroImages as $i => $heroImg)
-        <button @click="current = {{ $i }}" class="group">
+        <button @click="current = {{ $i }}; paused = true; setTimeout(() => { paused = false; }, 8000)" class="group">
             <span class="block rounded-full transition-all duration-500"
                   :class="current === {{ $i }} ? 'w-8 h-2.5 bg-[var(--gold)] shadow-[0_0_12px_rgba(234,179,8,0.5)]' : 'w-2.5 h-2.5 bg-white/30 hover:bg-white/50'"></span>
         </button>
         @endforeach
     </div>
     <div class="absolute bottom-0 left-0 right-0 h-1 z-40 bg-white/5">
-        <div class="h-full bg-gradient-to-r from-[var(--gold)] to-[var(--gold-light)]" style="animation: heroProgress 6s linear infinite;"></div>
+        <div class="h-full bg-gradient-to-r from-[var(--gold)] to-[var(--gold-light)] progress-bar" :style="{ animationDuration: paused ? '0s' : '6s' }"></div>
     </div>
     @endif
 
@@ -219,9 +229,43 @@
 
             <div x-ref="ptrack" class="flex gap-6 overflow-x-auto scroll-smooth pb-4 snap-x snap-mandatory" style="-ms-overflow-style: none; scrollbar-width: none;">
                 @foreach($projects as $project)
-                    @php $image = is_array($project->images) ? ($project->images[0] ?? '') : $project->images; @endphp
-                    <div class="flex-shrink-0 w-[400px] snap-start group relative rounded-[var(--radius-lg)] overflow-hidden img-zoom h-80 border border-[var(--glass-border)] bg-transparent">
-                        <img src="{{ $image ? asset('storage/' . $image) : '' }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                    @php
+                        $projImages = is_array($project->images) ? array_values(array_filter($project->images)) : [];
+                        $projImg = $projImages[0] ?? $project->images ?? '';
+                    @endphp
+                    <div class="flex-shrink-0 w-[280px] sm:w-[400px] snap-start group relative rounded-[var(--radius-lg)] overflow-hidden h-80 border border-[var(--glass-border)] bg-transparent"
+                        @if(count($projImages) > 1)
+                        x-data="{
+                            si: 0,
+                            ti: {{ count($projImages) }},
+                            pi: false,
+                            ini: null,
+                            go() { this.ini = setInterval(() => { if (!this.pi) this.si = (this.si + 1) % this.ti; }, 4000); },
+                            st() { if (this.ini) clearInterval(this.ini); },
+                            init() { this.go(); },
+                            destroy() { this.st(); }
+                        }"
+                        @@mouseenter="pi = true"
+                        @@mouseleave="pi = false"
+                        @endif
+                    >
+                        @if(count($projImages) > 1)
+                            @foreach($projImages as $pi => $pimg)
+                            <img src="{{ asset('storage/' . $pimg) }}" alt="{{ $project->title }}"
+                                 class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out"
+                                 :class="si === {{ $pi }} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'"
+                                 loading="lazy">
+                            @endforeach
+                            <div class="absolute top-3 right-3 z-20 flex gap-1">
+                                @foreach($projImages as $pi => $pimg)
+                                <button @@click.stop="si = {{ $pi }}; pi = true; setTimeout(() => pi = false, 5000)"
+                                        class="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                                        :class="si === {{ $pi }} ? 'bg-[var(--gold)] w-3' : 'bg-white/40 hover:bg-white/70'"></button>
+                                @endforeach
+                            </div>
+                        @else
+                            <img src="{{ $projImg ? asset('storage/' . $projImg) : '' }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                        @endif
                         <div class="overlay-gradient absolute inset-0"></div>
                         <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-4 left-4 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
                             <button class="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-xs">
@@ -229,13 +273,19 @@
                                 <span x-text="count">0</span>
                             </button>
                         </div>
-                        <div class="absolute bottom-0 right-0 left-0 p-6">
+                        <button type="button" @click.stop="toggleFavorite('project', {{ $project->id }})"
+                                :class="isFavorite('project', {{ $project->id }}) ? 'text-red-400' : 'text-white/70'"
+                                class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                title="{{ __('Add to Favorites') }}">
+                            <i class="text-xs" :class="isFavorite('project', {{ $project->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                        </button>
+                        <div class="absolute bottom-0 right-0 left-0 p-6 z-[2]">
                             <h3 class="text-lg font-bold text-white mb-1">{{ $project->title }}</h3>
                             @if($project->client_name)
                                 <span class="text-white/50 text-xs flex items-center gap-1.5"><x-icon name="user" class="w-3 h-3 text-[var(--gold)]" /> {{ $project->client_name }}</span>
                             @endif
                         </div>
-                        <a href="{{ route('project.show', $project->slug) }}" class="absolute inset-0 flex items-center justify-center bg-[var(--gold)]/90 opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm">
+                        <a href="{{ route('project.show', $project->slug) }}" class="absolute inset-0 z-[3] flex items-center justify-center bg-[var(--gold)]/90 opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm">
                             <span class="text-white text-xs font-semibold border-2 border-white/80 px-6 py-2.5 rounded-xl inline-flex items-center gap-2 uppercase tracking-wider">
                                 <x-icon name="eye" class="w-4 h-4" /> {{ __('View Project') }}
                             </span>

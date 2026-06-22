@@ -33,7 +33,7 @@
 @section('title', $q->question . ' - ' . __('Smart Designer Decorations'))
 
 @section('content')
-<section class="relative pt-40 pb-24 overflow-hidden bg-gradient-to-br from-[var(--navy)] via-[var(--navy)]/95 to-[var(--navy)]">
+<section class="relative pt-20 pb-12 md:pt-40 md:pb-24 overflow-hidden bg-gradient-to-br from-[var(--navy)] via-[var(--navy)]/95 to-[var(--navy)]">
     <div class="absolute inset-0 hero-gradient"></div>
     <div class="absolute inset-0 opacity-[0.07]" style="background: radial-gradient(circle at 30% 50%, var(--gold) 0%, transparent 50%), radial-gradient(circle at 70% 50%, var(--gold) 0%, transparent 50%);"></div>
     <div class="container mx-auto px-4 relative z-10">

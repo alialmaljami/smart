@@ -10,13 +10,13 @@
 
 @section('content')
 
-<section class="relative pt-40 pb-24 overflow-hidden bg-gradient-to-br from-[var(--navy)] via-[var(--navy)]/95 to-[var(--navy)]">
+<section class="relative pt-20 pb-12 md:pt-40 md:pb-24 overflow-hidden bg-gradient-to-br from-[var(--navy)] via-[var(--navy)]/95 to-[var(--navy)]">
     <div class="absolute inset-0 hero-gradient"></div>
     <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-l from-transparent via-[var(--gold)] to-transparent"></div>
     <div class="container mx-auto px-4 relative z-10">
         <div data-aos="fade-up" class="text-center max-w-3xl mx-auto">
             <span class="section-label">{{ __('Terms') }}</span>
-            <h1 class="text-4xl md:text-6xl font-black text-[var(--text-heading)] mt-3 mb-4">{{ __('Terms and Conditions') }}</h1>
+            <h1 class="text-2xl sm:text-3xl md:text-6xl font-black text-[var(--text-heading)] mt-3 mb-4">{{ __('Terms and Conditions') }}</h1>
             <p class="text-[var(--text-light)] text-lg">{{ __('Last updated') }}: 1 {{ __('June') }} 2026</p>
         </div>
     </div>
@@ -24,7 +24,7 @@
 
 <section class="py-16 bg-[var(--cream)]">
     <div class="container mx-auto px-4 max-w-4xl">
-        <div class="card-elegant p-8 space-y-6">
+        <div class="card-elegant p-4 md:p-8 space-y-6">
             <h2 class="text-2xl font-bold text-[var(--text-heading)]">مقدمة</h2>
             <p class="text-[var(--text-light)]">مرحباً بكم في موقع شركة المصمم الذكي للديكور. باستخدامكم لهذا الموقع، فإنكم توافقون على الالتزام بالشروط والأحكام التالية. يرجى قراءة هذه الشروط بعناية قبل استخدام الموقع.</p>
 

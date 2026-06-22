@@ -16,11 +16,11 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="relative py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
+<section class="relative py-16 md:py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
     <div class="absolute inset-0 opacity-[0.04]" style="background: radial-gradient(circle at 30% 50%, var(--cream) 0%, transparent 50%), radial-gradient(circle at 70% 50%, var(--cream) 0%, transparent 50%);"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
     <div class="relative z-10 text-center px-4">
-        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Our Services') }}</h1>
+        <h1 data-aos="fade-up" class="text-3xl sm:text-4xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Our Services') }}</h1>
         <div class="section-divider"></div>
         <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-light)] text-lg max-w-2xl mx-auto">{{ __('We offer a comprehensive range of design and decoration services to meet all your needs') }}</p>
     </div>
@@ -40,6 +40,12 @@
                                     <span class="text-xs font-medium" x-text="count"></span>
                                 </button>
                             </div>
+                            <button type="button" @click.stop="toggleFavorite('service', {{ $service->id }})"
+                                    :class="isFavorite('service', {{ $service->id }}) ? 'text-red-400' : 'text-white/70'"
+                                    class="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                    title="{{ __('Add to Favorites') }}">
+                                <i class="text-xs" :class="isFavorite('service', {{ $service->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                            </button>
                             <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover" loading="lazy">
                         </div>
                     @endif

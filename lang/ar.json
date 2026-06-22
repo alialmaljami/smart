@@ -210,5 +210,19 @@
     "Recent Projects": "أحدث المشاريع",
     "Services": "الخدمات",
     "Contact Us": "اتصل بنا",
-    "Discover Our Projects": "اكتشف مشاريعنا"
+    "Discover Our Projects": "اكتشف مشاريعنا",
+    "Latest Articles": "أحدث المقالات",
+    "Favorites": "المفضلة",
+    "My Favorites": "مفضلتي",
+    "Add to Favorites": "أضف إلى المفضلة",
+    "Remove from Favorites": "إزالة من المفضلة",
+    "No favorites yet": "لا توجد مفضلات بعد",
+    "Browse our projects, services, and articles and add your favorites": "تصفح مشاريعنا وخدماتنا ومقالاتنا وأضف ما يعجبك إلى المفضلة",
+    "Browse Projects": "تصفح المشاريع",
+    "All": "الكل",
+    "Project": "مشروع",
+    "Article": "مقال",
+    "Material": "مادة",
+    "View Details": "عرض التفاصيل",
+    "Service": "خدمة"
 }

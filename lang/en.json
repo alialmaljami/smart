@@ -209,5 +209,19 @@
     "Gallery": "Gallery",
     "Recent Projects": "Recent Projects",
     "Services": "Services",
-    "Contact Us": "Contact Us"
+    "Contact Us": "Contact Us",
+    "Latest Articles": "Latest Articles",
+    "Favorites": "Favorites",
+    "My Favorites": "My Favorites",
+    "Add to Favorites": "Add to Favorites",
+    "Remove from Favorites": "Remove from Favorites",
+    "No favorites yet": "No favorites yet",
+    "Browse our projects, services, and articles and add your favorites": "Browse our projects, services, and articles and add your favorites",
+    "Browse Projects": "Browse Projects",
+    "All": "All",
+    "Project": "Project",
+    "Article": "Article",
+    "Material": "Material",
+    "View Details": "View Details",
+    "Service": "Service"
 }

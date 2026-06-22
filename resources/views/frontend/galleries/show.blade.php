@@ -54,8 +54,14 @@
     <div class="container mx-auto px-4 max-w-full">
         <div class="max-w-5xl mx-auto min-w-0 max-w-full">
             {{-- Main Image --}}
-            <div class="rounded-2xl overflow-hidden bg-[var(--navy-dark)] mb-6 md:mb-8">
+            <div class="rounded-2xl overflow-hidden bg-[var(--navy-dark)] mb-6 md:mb-8 relative">
                 <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->alt_text ?: $item->title }}" class="w-full h-auto max-h-[50vh] sm:max-h-[70vh] md:max-h-[80vh] object-contain" loading="lazy">
+                <button type="button" @click.stop="toggleFavorite('gallery', {{ $item->id }})"
+                        :class="isFavorite('gallery', {{ $item->id }}) ? 'text-red-400' : 'text-white/70'"
+                        class="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                        title="{{ __('Add to Favorites') }}">
+                    <i class="text-xs" :class="isFavorite('gallery', {{ $item->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                </button>
             </div>
 
             {{-- Info --}}

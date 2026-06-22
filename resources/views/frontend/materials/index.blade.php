@@ -16,11 +16,11 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="relative py-32 flex items-center justify-center overflow-hidden bg-gradient-to-br from-[var(--navy)] to-[var(--navy)]">
+<section class="relative py-16 md:py-32 flex items-center justify-center overflow-hidden bg-gradient-to-br from-[var(--navy)] to-[var(--navy)]">
     <div class="absolute inset-0 hero-gradient"></div>
     <div class="absolute inset-0 opacity-[0.07]" style="background: radial-gradient(circle at 30% 50%, var(--gold) 0%, transparent 50%), radial-gradient(circle at 70% 50%, var(--gold) 0%, transparent 50%);"></div>
     <div class="relative z-10 text-center px-4">
-        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Decoration Materials') }}</h1>
+        <h1 data-aos="fade-up" class="text-3xl sm:text-4xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Decoration Materials') }}</h1>
         <div class="section-divider"></div>
         <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-light)] text-lg max-w-2xl mx-auto">{{ __('Wide selection of high quality decoration materials for your project') }}</p>
     </div>

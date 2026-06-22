@@ -45,8 +45,8 @@
 
 @push('styles')
 <style>
-    .blog-content { line-height: 1.9; }
-    .blog-content p { margin-bottom: 1.25rem; }
+    .blog-content { line-height: 1.9; word-spacing: 0.05em; }
+    .blog-content p { margin-bottom: 1.25rem; text-align: justify; }
     .blog-content img { max-width: 100%; height: auto; border-radius: 12px; margin: 1.5rem 0; }
     .blog-content h2 { font-size: 1.5rem; font-weight: 800; margin: 2rem 0 1rem; color: var(--text-heading); }
     .blog-content h3 { font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--text-heading); }
@@ -81,8 +81,14 @@
     <div class="container mx-auto px-4 max-w-full">
         <div class="max-w-4xl mx-auto min-w-0 max-w-full">
             @if($post->image)
-                <div class="rounded-2xl overflow-hidden mb-6 md:mb-8 h-48 sm:h-64 md:h-96 w-full">
+                <div class="rounded-2xl overflow-hidden mb-6 md:mb-8 h-48 sm:h-64 md:h-96 w-full relative">
                     <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover" loading="lazy">
+                    <button type="button" @click.stop="toggleFavorite('blog', {{ $post->id }})"
+                            :class="isFavorite('blog', {{ $post->id }}) ? 'text-red-400' : 'text-white/70'"
+                            class="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                            title="{{ __('Add to Favorites') }}">
+                        <i class="text-xs" :class="isFavorite('blog', {{ $post->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                    </button>
                 </div>
             @endif
 
@@ -112,7 +118,14 @@
             @endif
 
             <div class="blog-content text-[14px] sm:text-base md:text-lg text-[var(--text-heading)] leading-relaxed break-words max-w-full">
-                {!! $post->content !!}
+                @php
+                    $content = $post->content;
+                    if (!str_contains($content, '<p') && !str_contains($content, '<h')) {
+                        $content = '<p>' . preg_replace('/\n\n+/', '</p><p>', trim($content)) . '</p>';
+                        $content = str_replace(["\r\n", "\n"], '<br>', $content);
+                    }
+                @endphp
+                {!! $content !!}
             </div>
 
             {{-- Tags --}}

@@ -85,6 +85,12 @@
                                     <span class="text-[10px] md:text-xs font-medium" x-text="count">0</span>
                                 </button>
                             </div>
+                            <button type="button" @click.stop="toggleFavorite('project', {{ $project->id }})"
+                                    :class="isFavorite('project', {{ $project->id }}) ? 'text-red-400' : 'text-white/70'"
+                                    class="absolute top-2 sm:top-3 right-2 sm:right-3 md:top-4 md:right-4 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                    title="{{ __('Add to Favorites') }}">
+                                <i class="text-xs" :class="isFavorite('project', {{ $project->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                            </button>
 
                             @if($totalImages > 1)
                                 <button type="button" @click="activeImage = activeImage > 0 ? activeImage - 1 : {{ $totalImages - 1 }}" class="absolute right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-black/60 flex items-center justify-center text-white hover:bg-black/80 z-10">
@@ -239,6 +245,12 @@
                                 <span x-text="count">0</span>
                             </button>
                         </div>
+                        <button type="button" @click.stop="toggleFavorite('project', {{ $related->id }})"
+                                :class="isFavorite('project', {{ $related->id }}) ? 'text-red-400' : 'text-white/70'"
+                                class="absolute top-2 sm:top-3 right-2 sm:right-3 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                title="{{ __('Add to Favorites') }}">
+                            <i class="text-[10px] sm:text-xs" :class="isFavorite('project', {{ $related->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                        </button>
                         <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 left-2 sm:left-4">
                             <h3 class="text-white font-bold text-xs sm:text-base leading-tight break-words">{{ $related->title }}</h3>
                         </div>

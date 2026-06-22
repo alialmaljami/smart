@@ -12,10 +12,10 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="relative py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
+<section class="relative py-16 md:py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
     <div class="overlay-gradient"></div>
     <div class="relative z-10 text-center px-4">
-        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Blog') }}</h1>
+        <h1 data-aos="fade-up" class="text-3xl sm:text-4xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Blog') }}</h1>
         <div class="section-divider"></div>
         <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-muted)] text-lg max-w-2xl mx-auto">{{ __('Latest articles and tips in the world of decoration and interior design') }}</p>
     </div>
@@ -26,10 +26,52 @@
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($posts as $post)
+                @php
+                    $postImages = is_array($post->images) ? array_values(array_filter($post->images)) : [];
+                    $singleImage = $post->image ?? ($postImages[0] ?? null);
+                @endphp
                 <article data-aos="fade-up" data-aos-delay="{{ $loop->index * 30 }}" class="card-elegant overflow-hidden">
-                    @if($post->image)
-                        <div class="img-zoom h-52">
-                            <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover" loading="lazy">
+                    @if($singleImage)
+                        <div class="relative h-52 overflow-hidden group/img"
+                            @if(count($postImages) > 1)
+                            x-data="{
+                                s: 0,
+                                t: {{ count($postImages) }},
+                                p: false,
+                                int: null,
+                                go() { this.int = setInterval(() => { if (!this.p) this.s = (this.s + 1) % this.t; }, 4500); },
+                                stop() { if (this.int) clearInterval(this.int); },
+                                init() { this.go(); },
+                                destroy() { this.stop(); }
+                            }"
+                            @@mouseenter="p = true"
+                            @@mouseleave="p = false"
+                            @endif
+                        >
+                            {{-- Favorite --}}
+                            <button type="button" @click.stop="toggleFavorite('blog', {{ $post->id }})"
+                                    :class="isFavorite('blog', {{ $post->id }}) ? 'text-red-400' : 'text-white/70'"
+                                    class="absolute top-3 left-3 z-20 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                    title="{{ __('Add to Favorites') }}">
+                                <i class="text-xs" :class="isFavorite('blog', {{ $post->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                            </button>
+                            @if(count($postImages) > 1)
+                                @foreach($postImages as $bi => $bImg)
+                                <img src="{{ asset('storage/' . $bImg) }}" alt="{{ $post->title }}"
+                                     class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out"
+                                     :class="s === {{ $bi }} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'"
+                                     loading="lazy">
+                                @endforeach
+                                <div class="absolute top-2 right-2 z-20 flex gap-1">
+                                    @foreach($postImages as $bi => $bImg)
+                                    <button @@click.stop="s = {{ $bi }}; p = true; setTimeout(() => p = false, 5500)"
+                                            class="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                                            :class="s === {{ $bi }} ? 'bg-[var(--gold)] w-3' : 'bg-white/40 hover:bg-white/70'"></button>
+                                    @endforeach
+                                </div>
+                            @else
+                                <img src="{{ asset('storage/' . $singleImage) }}" alt="{{ $post->title }}" class="w-full h-full object-cover" loading="lazy">
+                            @endif
                         </div>
                     @else
                         <div class="h-52 flex items-center justify-center bg-[var(--gold)]">

@@ -22,10 +22,10 @@
 @endpush
 
 @section('content')
-<section class="relative py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
+<section class="relative py-16 md:py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
     <div class="overlay-gradient"></div>
     <div class="relative z-10 text-center px-4">
-        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Most Viewed') }}</h1>
+        <h1 data-aos="fade-up" class="text-3xl sm:text-4xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Most Viewed') }}</h1>
         <div class="section-divider"></div>
         <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-muted)] text-lg max-w-2xl mx-auto">{{ __('Most popular content on our site') }}</p>
     </div>

@@ -31,14 +31,14 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="relative pt-40 pb-24 overflow-hidden bg-gradient-to-br from-[var(--navy)] via-[var(--navy)]/95 to-[var(--navy)]">
+<section class="relative pt-20 pb-12 md:pt-40 md:pb-24 overflow-hidden bg-gradient-to-br from-[var(--navy)] via-[var(--navy)]/95 to-[var(--navy)]">
     <div class="absolute inset-0 hero-gradient"></div>
     <div class="absolute inset-0 opacity-[0.07]" style="background: radial-gradient(circle at 30% 50%, var(--gold) 0%, transparent 50%), radial-gradient(circle at 70% 50%, var(--gold) 0%, transparent 50%);"></div>
     <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-l from-transparent via-[var(--gold)] to-transparent"></div>
     <div class="container mx-auto px-4 relative z-10">
         <div data-aos="fade-up" class="text-center max-w-3xl mx-auto">
             <span class="section-label">الأسئلة الشائعة</span>
-            <h1 class="text-4xl md:text-6xl font-black text-[var(--text-heading)] mt-3 mb-4">الأسئلة الأكثر شيوعاً</h1>
+            <h1 class="text-2xl sm:text-3xl md:text-6xl font-black text-[var(--text-heading)] mt-3 mb-4">الأسئلة الأكثر شيوعاً</h1>
             <p class="text-[var(--text-light)] text-lg">تجد هنا إجابات لأبرز استفساراتكم حول خدماتنا في التصميم والتنفيذ</p>
         </div>
     </div>

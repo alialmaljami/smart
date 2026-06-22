@@ -9,7 +9,7 @@
 @section('title', __('Areas We Serve') . ' - ' . __('Smart Designer Decorations'))
 
 @section('content')
-<section class="relative pt-40 pb-24 overflow-hidden bg-gradient-to-br from-[var(--navy)] via-[var(--navy)]/95 to-[var(--navy)]">
+<section class="relative pt-20 pb-12 md:pt-40 md:pb-24 overflow-hidden bg-gradient-to-br from-[var(--navy)] via-[var(--navy)]/95 to-[var(--navy)]">
     <div class="absolute inset-0 hero-gradient"></div>
     <div class="absolute inset-0 opacity-[0.07]" style="background: radial-gradient(circle at 30% 50%, var(--gold) 0%, transparent 50%), radial-gradient(circle at 70% 50%, var(--gold) 0%, transparent 50%);"></div>
     <div class="container mx-auto px-4 relative z-10">
@@ -17,7 +17,7 @@
             <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-[var(--gold)]/10 flex items-center justify-center">
                 <i class="fas fa-map-marked-alt text-3xl text-[var(--gold)]"></i>
             </div>
-            <h1 class="text-4xl md:text-6xl font-black text-[var(--text-heading)] mt-3 mb-4">{{ __('Areas We Serve') }}</h1>
+            <h1 class="text-2xl sm:text-3xl md:text-6xl font-black text-[var(--text-heading)] mt-3 mb-4">{{ __('Areas We Serve') }}</h1>
             <p class="text-[var(--text-light)] text-lg">{{ __('We provide decoration and interior design services in all Saudi cities') }}</p>
         </div>
     </div>

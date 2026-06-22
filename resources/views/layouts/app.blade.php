@@ -9,6 +9,7 @@
     ];
     $services = App\Models\Service::where('is_active', true)->orderBy('sort_order')->get();
     $materialCategories = App\Models\Category::where('type', 'material')->where('is_active', true)->orderBy('sort_order')->get();
+    $latestPosts = App\Models\BlogPost::where('is_active', true)->latest()->take(3)->get();
 @endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() === 'ar' ? 'ar' : 'en' }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="dark">
@@ -60,14 +61,14 @@
     <meta name="twitter:description" content="@yield('description', __('Smart Designer Decorations - Professional interior design and decoration services in Saudi Arabia'))" />
     <meta name="twitter:image" content="@yield('image', url('/storage/settings/og-default.jpg'))" />
 
-    {{-- Preload critical fonts --}}
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800;900&display=swap" />
-    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    {{-- Preload critical fonts & assets --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&amp;family=Outfit:wght@300;400;500;600;700;800&amp;family=Tajawal:wght@300;400;500;700;800;900&amp;display=swap" />
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
     <script src="https://cdn.tailwindcss.com"></script>
 
     {{-- Preload hero image if on home page --}}
@@ -507,30 +508,50 @@
             .stat-number { font-size: 2.5rem; }
         }
 
-        .whatsapp-float {
-            position: fixed;
-            bottom: 28px;
-            left: 28px;
-            z-index: 1000;
+        .whatsapp-float,
+        .call-float,
+        .search-float {
             width: 52px;
             height: 52px;
             border-radius: 50%;
-            background: rgba(37, 211, 102, 0.2);
-            border: 1px solid rgba(37, 211, 102, 0.4);
-            color: #25D366;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 20px rgba(37, 211, 102, 0.2);
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
-
+        .whatsapp-float {
+            background: rgba(37, 211, 102, 0.2);
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            color: #25D366;
+        }
         .whatsapp-float:hover {
             transform: scale(1.1);
             background: rgba(37, 211, 102, 0.9);
             color: white;
             box-shadow: 0 0 30px rgba(37, 211, 102, 0.5);
+            border-color: transparent;
+        }
+        .call-float {
+            background: rgba(52, 168, 83, 0.2);
+            border: 1px solid rgba(52, 168, 83, 0.4);
+            color: #34A853;
+        }
+        .call-float:hover {
+            transform: scale(1.1);
+            background: rgba(52, 168, 83, 0.9);
+            color: white;
+            box-shadow: 0 0 30px rgba(52, 168, 83, 0.5);
+            border-color: transparent;
+        }
+        .search-float {
+            background: rgba(234, 179, 8, 0.15);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            color: var(--gold);
+        }
+        .search-float:hover {
+            transform: scale(1.1);
+            background: rgba(234, 179, 8, 0.9);
+            color: white;
+            box-shadow: 0 0 30px rgba(234, 179, 8, 0.4);
             border-color: transparent;
         }
 
@@ -635,6 +656,17 @@
             0% { width: 0%; }
             100% { width: 100%; }
         }
+
+        .hero-zoom {
+            transform: scale(1.08);
+            transition: transform 8s ease-out;
+        }
+        .hero-zoom-active {
+            transform: scale(1);
+        }
+        .progress-bar {
+            animation: heroProgress 6s linear infinite;
+        }
     </style>
     {{-- Google Analytics --}}
     @php $gaId = App\Models\Setting::getValue('google_analytics_id', ''); @endphp
@@ -650,7 +682,31 @@
 </head>
 <body>
 
-    <div x-data="{ mobileMenu: false, searchOpen: false }">
+    <div x-data="{
+        mobileMenu: false,
+        searchOpen: false,
+        favorites: JSON.parse(localStorage.getItem('sm_favorites') || '{}'),
+        saveFavs() {
+            localStorage.setItem('sm_favorites', JSON.stringify(this.favorites));
+        },
+        toggleFavorite(type, id) {
+            if (!this.favorites[type]) this.favorites[type] = [];
+            const idx = this.favorites[type].indexOf(id);
+            if (idx > -1) {
+                this.favorites[type].splice(idx, 1);
+                if (this.favorites[type].length === 0) delete this.favorites[type];
+            } else {
+                this.favorites[type].push(id);
+            }
+            this.saveFavs();
+        },
+        isFavorite(type, id) {
+            return this.favorites[type] && this.favorites[type].includes(id);
+        },
+        favCount() {
+            return Object.values(this.favorites).reduce((a, b) => a + (b ? b.length : 0), 0);
+        }
+    }">
 
         {{-- Mobile Sidebar Overlay --}}
         <div class="sidebar-overlay" :class="{ 'open': mobileMenu }" @click="mobileMenu = false"></div>
@@ -677,6 +733,11 @@
                     <a href="{{ route('most-viewed') }}" class="flex items-center gap-3 text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-sm font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Most Viewed') }}</a>
                     <a href="{{ route('questions') }}" class="flex items-center gap-3 text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-sm font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Questions & Answers') }}</a>
                     <a href="{{ route('areas.we.serve') }}" class="flex items-center gap-3 text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-sm font-medium border-r-2 border-transparent hover:border-[var(--gold)]">{{ __('Areas We Serve') }}</a>
+                    <a href="{{ route('favorites') }}" class="flex items-center gap-3 text-white/60 hover:text-[var(--gold)] transition-colors px-4 py-3 rounded-lg hover:bg-white/[0.03] text-sm font-medium border-r-2 border-transparent hover:border-[var(--gold)]">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                        {{ __('Favorites') }}
+                        <span x-show="favCount() > 0" x-cloak class="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full" x-text="favCount()"></span>
+                    </a>
                 </nav>
                 <div class="mt-8 pt-6 border-t border-white/5 space-y-4">
                     {{-- Lang & Dark mode in sidebar --}}
@@ -733,6 +794,10 @@
                             <a href="{{ route('materials') }}" class="nav-link">{{ __('Decoration Materials') }}</a>
                             <a href="{{ route('blog') }}" class="nav-link">{{ __('Blog') }}</a>
                             <a href="{{ route('faq') }}" class="nav-link">{{ __('FAQ') }}</a>
+                            <a href="{{ route('favorites') }}" class="nav-link relative">
+                                {{ __('Favorites') }}
+                                <span x-show="favCount() > 0" x-cloak class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[9px] flex items-center justify-center text-white font-bold" x-text="favCount()"></span>
+                            </a>
                         </nav>
 
                         <div class="flex items-center gap-1.5 sm:gap-4">
@@ -757,6 +822,11 @@
 
                             <div class="w-px h-5 sm:h-6 bg-[var(--glass-border)] hidden sm:block"></div>
 
+                            {{-- Favorites --}}
+                            <a href="{{ route('favorites') }}" class="relative w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 flex items-center justify-center text-[var(--text-secondary)] hover:text-red-400 hover:bg-[var(--cream)] rounded-lg sm:rounded-xl transition-all" title="{{ __('Favorites') }}">
+                                <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                                <span x-show="favCount() > 0" x-cloak class="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] flex items-center justify-center text-white font-bold" x-text="favCount()"></span>
+                            </a>
                             {{-- Search --}}
                             <button type="button" @@click="searchOpen = true" class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--gold)] hover:bg-[var(--cream)] rounded-lg sm:rounded-xl transition-all" title="{{ __('Search') }}">
                                 <x-icon name="search" class="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
@@ -886,6 +956,33 @@
                     </div>
                 </div>
 
+                {{-- Latest Articles Strip --}}
+                @if($latestPosts->isNotEmpty())
+                <div class="border-t border-white/[0.04] pt-10 pb-10 mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xs font-bold text-white/50 tracking-[0.2em] uppercase">{{ __('Latest Articles') }}</h3>
+                        <a href="{{ route('blog') }}" class="text-[var(--gold)] text-xs hover:underline">{{ __('View All') }}</a>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        @foreach($latestPosts as $post)
+                        <a href="{{ route('blog.post', $post->slug) }}" class="group flex items-center gap-4 p-3 rounded-xl transition-all duration-300 hover:bg-white/[0.03] hover:scale-[1.02]">
+                            <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                                @if($post->image)
+                                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">
+                                @else
+                                    <div class="w-full h-full bg-white/5 flex items-center justify-center text-white/20"><i class="fas fa-newspaper"></i></div>
+                                @endif
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm text-white/70 group-hover:text-[var(--gold)] transition-colors line-clamp-2 leading-relaxed">{{ $post->title }}</h4>
+                                <p class="text-[11px] text-white/30 mt-1">{{ $post->created_at->diffForHumans() }}</p>
+                            </div>
+                        </a>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
                 <div class="border-t border-white/[0.04] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p class="text-white/30 text-xs">{{ $settings['copyright'] }}</p>
                 <div class="mt-2 text-center">
@@ -894,22 +991,37 @@
             </div>
         </footer>
 
+        {{-- Floating Buttons --}}
+        <div class="fixed bottom-6 left-6 z-[1000] flex flex-col gap-3">
+            {{-- Call --}}
+            <a href="tel:{{ preg_replace('/[^0-9]/', '', $settings['phone']) }}"
+               class="call-float flex items-center justify-center">
+                <x-icon name="phone" class="w-6 h-6" />
+            </a>
+            {{-- WhatsApp --}}
+            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $settings['phone']) }}" target="_blank" rel="noopener noreferrer"
+               class="whatsapp-float flex items-center justify-center">
+                <x-icon name="whatsapp" class="w-6 h-6" />
+            </a>
+            {{-- Search --}}
+            <button type="button" @@click="searchOpen = true"
+                    class="search-float flex items-center justify-center">
+                <x-icon name="search" class="w-5 h-5" />
+            </button>
+        </div>
+
     </div>
 
-    {{-- Floating WhatsApp Button --}}
-    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $settings['phone']) }}" target="_blank" rel="noopener noreferrer"
-       class="whatsapp-float">
-        <x-icon name="whatsapp" class="w-6 h-6" />
-    </a>
-
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script>
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 80,
-            easing: 'ease-out-cubic',
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 80,
+                easing: 'ease-out-cubic',
+            });
         });
     </script>
 

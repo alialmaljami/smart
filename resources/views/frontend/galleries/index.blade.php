@@ -16,14 +16,14 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="relative pt-40 pb-24 overflow-hidden bg-gradient-to-br from-[var(--navy)] via-[var(--navy)]/95 to-[var(--navy)]">
+<section class="relative pt-20 pb-12 md:pt-40 md:pb-24 overflow-hidden bg-gradient-to-br from-[var(--navy)] via-[var(--navy)]/95 to-[var(--navy)]">
     <div class="absolute inset-0 hero-gradient"></div>
     <div class="absolute inset-0 opacity-[0.07]" style="background: radial-gradient(circle at 30% 50%, var(--gold) 0%, transparent 50%), radial-gradient(circle at 70% 50%, var(--gold) 0%, transparent 50%);"></div>
     <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-l from-transparent via-[var(--gold)] to-transparent"></div>
     <div class="container mx-auto px-4 relative z-10">
         <div data-aos="fade-up" class="text-center">
             <span class="section-label">{{ __('Gallery') }}</span>
-            <h1 class="text-4xl md:text-6xl font-black text-[var(--text-heading)] mt-3 mb-4">{{ __('Our Works Gallery') }}</h1>
+            <h1 class="text-2xl sm:text-3xl md:text-6xl font-black text-[var(--text-heading)] mt-3 mb-4">{{ __('Our Works Gallery') }}</h1>
             <p class="text-[var(--text-light)] max-w-2xl mx-auto text-lg">{{ __('A collection of our latest projects and designs in the world of decoration and interior design') }}</p>
         </div>
     </div>
@@ -64,6 +64,12 @@
                                 <span x-text="count">0</span>
                             </button>
                         </div>
+                        <button type="button" @click.stop="toggleFavorite('gallery', {{ $gallery->id }})"
+                                :class="isFavorite('gallery', {{ $gallery->id }}) ? 'text-red-400' : 'text-white/70'"
+                                class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                title="{{ __('Add to Favorites') }}">
+                            <i class="text-xs" :class="isFavorite('gallery', {{ $gallery->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                        </button>
                         <a href="{{ route('gallery.show', [$gallery->id, $gallery->slug]) }}" class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
                             <div class="absolute bottom-0 right-0 left-0 p-5">
                                 <h3 class="text-white font-bold text-lg mb-1">{{ $gallery->title }}</h3>

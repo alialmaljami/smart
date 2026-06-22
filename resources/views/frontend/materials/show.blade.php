@@ -70,6 +70,12 @@
                                         <span x-text="count">0</span>
                                     </button>
                                 </div>
+                                <button type="button" @click.stop="toggleFavorite('material', {{ $material->id }})"
+                                        :class="isFavorite('material', {{ $material->id }}) ? 'text-red-400' : 'text-white/70'"
+                                        class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                        title="{{ __('Add to Favorites') }}">
+                                    <i class="text-xs" :class="isFavorite('material', {{ $material->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                                </button>
                             </div>
                         @elseif(is_array($material->images) && count($material->images))
                             <div class="relative img-zoom h-48">
@@ -80,6 +86,12 @@
                                         <span x-text="count">0</span>
                                     </button>
                                 </div>
+                                <button type="button" @click.stop="toggleFavorite('material', {{ $material->id }})"
+                                        :class="isFavorite('material', {{ $material->id }}) ? 'text-red-400' : 'text-white/70'"
+                                        class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                        title="{{ __('Add to Favorites') }}">
+                                    <i class="text-xs" :class="isFavorite('material', {{ $material->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                                </button>
                             </div>
                         @else
                             <div class="h-48 flex items-center justify-center bg-[var(--stone)]">
@@ -122,6 +134,12 @@
                                 <span x-text="count">0</span>
                             </button>
                         </div>
+                        <button type="button" @click.stop="toggleFavorite('project', {{ $project->id }})"
+                                :class="isFavorite('project', {{ $project->id }}) ? 'text-red-400' : 'text-white/70'"
+                                class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                title="{{ __('Add to Favorites') }}">
+                            <i class="text-xs" :class="isFavorite('project', {{ $project->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                        </button>
                         <div class="absolute bottom-4 right-4">
                             <h3 class="text-white font-bold text-lg">{{ $project->title }}</h3>
                         </div>

@@ -17,10 +17,10 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="relative py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
+<section class="relative py-16 md:py-32 flex items-center justify-center overflow-hidden bg-[var(--navy)]">
     <div class="absolute inset-0 opacity-10" style="background: radial-gradient(circle at 30% 50%, var(--cream) 0%, transparent 50%), radial-gradient(circle at 70% 50%, var(--cream) 0%, transparent 50%);"></div>
     <div class="relative z-10 text-center px-4">
-        <h1 data-aos="fade-up" class="text-5xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Our Projects') }}</h1>
+        <h1 data-aos="fade-up" class="text-3xl sm:text-4xl md:text-6xl font-black text-[var(--text-heading)] mb-4">{{ __('Our Projects') }}</h1>
         <div class="section-divider"></div>
         <p data-aos="fade-up" data-aos-delay="100" class="text-[var(--text-light)] text-lg max-w-2xl mx-auto">{{ __('Browse our latest projects and get inspired for your next project') }}</p>
     </div>
@@ -59,18 +59,61 @@
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($projects as $project)
-                @php $image = is_array($project->images) ? ($project->images[0] ?? '') : $project->images; @endphp
-                <div data-aos="fade-up" data-aos-delay="{{ $loop->index * 30 }}" class="group relative rounded-[var(--radius-lg)] overflow-hidden img-zoom h-80 card-elegant">
-                    <img src="{{ asset('storage/' . $image) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
-                    <div class="overlay-gradient absolute inset-0"></div>
+                @php
+                    $projectImages = is_array($project->images) ? array_values(array_filter($project->images)) : [];
+                    $image = $projectImages[0] ?? $project->images ?? '';
+                @endphp
+                <div data-aos="fade-up" data-aos-delay="{{ $loop->index * 30 }}" class="group relative rounded-[var(--radius-lg)] overflow-hidden h-80 card-elegant"
+                    @if(count($projectImages) > 1)
+                    x-data="{
+                        slide: 0,
+                        total: {{ count($projectImages) }},
+                        paused: false,
+                        timer: null,
+                        start() { this.timer = setInterval(() => { if (!this.paused) this.slide = (this.slide + 1) % this.total; }, 4000); },
+                        stop() { if (this.timer) clearInterval(this.timer); },
+                        init() { this.start(); },
+                        destroy() { this.stop(); }
+                    }"
+                    @@mouseenter="paused = true"
+                    @@mouseleave="paused = false"
+                    @endif
+                >
+                    @if(count($projectImages) > 1)
+                        @foreach($projectImages as $pi => $img)
+                        <img src="{{ asset('storage/' . $img) }}" alt="{{ $project->title }}" class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out"
+                             :class="slide === {{ $pi }} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'"
+                             loading="lazy">
+                        @endforeach
+                    @else
+                        <img src="{{ asset('storage/' . $image) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                    @endif
+                    <div class="overlay-gradient absolute inset-0 z-[2]"></div>
+                    {{-- Dots for multi-image --}}
+                    @if(count($projectImages) > 1)
+                    <div class="absolute top-3 right-3 z-20 flex gap-1">
+                        @foreach($projectImages as $pi => $img)
+                        <button @@click.stop="slide = {{ $pi }}; paused = true; setTimeout(() => paused = false, 5000)"
+                                class="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                                :class="slide === {{ $pi }} ? 'bg-[var(--gold)] w-3' : 'bg-white/40 hover:bg-white/70'"></button>
+                        @endforeach
+                    </div>
+                    @endif
                     {{-- Like --}}
-                    <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-4 left-4 z-10" @@click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
+                    <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-4 left-4 z-10" @@click.stop="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
                         <button class="flex items-center gap-1.5 px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all">
                             <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
                             <span class="text-xs font-medium" x-text="count">0</span>
                         </button>
                     </div>
-                    <div class="absolute bottom-0 right-0 left-0 p-6 text-right">
+                    {{-- Favorite --}}
+                    <button type="button" @click.stop="toggleFavorite('project', {{ $project->id }})"
+                            :class="isFavorite('project', {{ $project->id }}) ? 'text-red-400' : 'text-white/70'"
+                            class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                            title="{{ __('Add to Favorites') }}">
+                        <i class="text-xs" :class="isFavorite('project', {{ $project->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                    </button>
+                    <div class="absolute bottom-0 right-0 left-0 p-6 text-right z-[2]">
                         <span class="text-xs text-white font-bold bg-[var(--gold)]/80 px-3 py-1 rounded-full inline-block mb-2">
                             @if($project->services->count())
                                 {{ $project->services->first()->name }}
@@ -81,7 +124,7 @@
                             <p class="text-[var(--text-light)] text-sm"><x-icon name="user" class="w-4 h-4 inline-block ml-1 align-middle" /> {{ $project->client_name }}</p>
                         @endif
                     </div>
-                    <a href="{{ route('project.show', $project->slug) }}" class="absolute inset-0 flex items-center justify-center bg-[var(--gold)]/80 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <a href="{{ route('project.show', $project->slug) }}" class="absolute inset-0 z-[3] flex items-center justify-center bg-[var(--gold)]/80 opacity-0 group-hover:opacity-100 transition-all duration-300">
                         <span class="text-white text-lg font-bold border-2 border-white px-6 py-3 rounded-lg">
                             <x-icon name="eye" class="w-5 h-5 inline-block ml-2 align-middle" /> {{ __('View Project') }}
                         </span>
