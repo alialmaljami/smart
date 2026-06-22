@@ -3,15 +3,27 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Project;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ProjectController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $projects = Project::where('is_active', true)->with(['services', 'materialCategories'])->latest()->paginate(12);
-        return view('frontend.projects.index', compact('projects'));
+        $query = Project::where('is_active', true)->with(['services', 'materialCategories']);
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        $projects = $query->latest()->paginate(12);
+        $categories = Category::whereHas('projects', function ($q) {
+            $q->where('is_active', true);
+        })->orderBy('name')->get();
+
+        return view('frontend.projects.index', compact('projects', 'categories'));
     }
 
     public function show(string $slug): View

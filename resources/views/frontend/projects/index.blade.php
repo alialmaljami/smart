@@ -1,6 +1,7 @@
 @php
     $services = App\Models\Service::where('is_active', true)->orderBy('sort_order')->get();
     $materialCategories = App\Models\Category::where('type', 'material')->where('is_active', true)->orderBy('sort_order')->get();
+    $currentCategoryId = request('category_id');
 @endphp
 
 @extends('layouts.app')
@@ -26,27 +27,40 @@
     </div>
 </section>
 
-{{-- Filters --}}
-<section class="py-8 bg-[var(--white)] border-b border-[var(--stone)] sticky top-20 z-30">
+{{-- Category Chips --}}
+<section class="py-6 bg-[var(--white)] border-b border-[var(--stone)] sticky top-20 z-30">
     <div class="container mx-auto px-4">
-        <form method="GET" action="{{ route('projects') }}" class="flex flex-wrap gap-4 items-center justify-center">
-            <select name="service_id" class="px-4 py-2 border border-[var(--stone)] rounded-lg text-sm focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none bg-white text-[var(--text-light)]">
+        <div class="flex flex-wrap justify-center gap-2 mb-4">
+            <a href="{{ route('projects') }}"
+               class="px-4 py-2 rounded-full text-xs font-bold transition-all {{ !$currentCategoryId ? 'bg-[var(--gold)] text-black' : 'bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)]/20 hover:text-[var(--gold)]' }}">
+                {{ __('All') }}
+            </a>
+            @foreach($categories as $cat)
+                <a href="{{ route('projects', array_merge(request()->query(), ['category_id' => $cat->id])) }}"
+                   class="px-4 py-2 rounded-full text-xs font-bold transition-all {{ $currentCategoryId == $cat->id ? 'bg-[var(--gold)] text-black' : 'bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)]/20 hover:text-[var(--gold)]' }}">
+                    {{ $cat->name }}
+                </a>
+            @endforeach
+        </div>
+        <form method="GET" action="{{ route('projects') }}" class="flex flex-wrap gap-3 items-center justify-center">
+            <input type="hidden" name="category_id" value="{{ $currentCategoryId }}">
+            <select name="service_id" class="px-3 py-1.5 border border-[var(--stone)] rounded-lg text-xs focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none bg-white text-[var(--text-light)]">
                 <option value="">{{ __('All Services') }}</option>
                 @foreach($services as $s)
                     <option value="{{ $s->id }}" {{ request('service_id') == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
                 @endforeach
             </select>
-            <select name="material_category_id" class="px-4 py-2 border border-[var(--stone)] rounded-lg text-sm focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none bg-white text-[var(--text-light)]">
+            <select name="material_category_id" class="px-3 py-1.5 border border-[var(--stone)] rounded-lg text-xs focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none bg-white text-[var(--text-light)]">
                 <option value="">{{ __('All Materials') }}</option>
                 @foreach($materialCategories as $mc)
                     <option value="{{ $mc->id }}" {{ request('material_category_id') == $mc->id ? 'selected' : '' }}>{{ $mc->name }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="btn-primary px-6 py-2 rounded-lg font-bold text-sm">
+            <button type="submit" class="btn-primary px-4 py-1.5 rounded-lg font-bold text-xs">
                 <i class="fas fa-filter ml-1"></i> {{ __('Filter') }}
             </button>
-            @if(request('service_id') || request('material_category_id'))
-                <a href="{{ route('projects') }}" class="text-[var(--text-light)] hover:text-[var(--gold)] text-sm">
+            @if(request('service_id') || request('material_category_id') || $currentCategoryId)
+                <a href="{{ route('projects') }}" class="text-[var(--text-light)] hover:text-[var(--gold)] text-xs">
                     <i class="fas fa-times ml-1"></i> {{ __('Reset') }}
                 </a>
             @endif
