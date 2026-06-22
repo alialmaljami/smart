@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Services\WatermarkService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
@@ -29,12 +28,6 @@ trait ImageUploadHelper
         $relativePath = $directory . '/' . $filename;
 
         $image = $manager->decodePath($file->getRealPath());
-        try {
-            $watermark = new WatermarkService();
-            $watermark->apply($image);
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('Watermark failed: ' . $e->getMessage());
-        }
         $this->ensureDirectoryExists($directory);
         $image->save(storage_path('app/public/' . $relativePath));
 
@@ -42,12 +35,6 @@ trait ImageUploadHelper
             $this->ensureDirectoryExists($directory . '/' . $size);
             $resized = $manager->decodePath($file->getRealPath());
             $resized->cover($width, $height);
-            try {
-                $watermark ??= new WatermarkService();
-                $watermark->apply($resized);
-            } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::warning('Watermark failed on size: ' . $e->getMessage());
-            }
             $sizePath = $directory . '/' . $size . '/' . $filename;
             $resized->save(storage_path('app/public/' . $sizePath), quality: $this->quality);
         }

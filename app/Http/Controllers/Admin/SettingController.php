@@ -33,11 +33,7 @@ class SettingController extends Controller
             'jeddah_meta_title', 'jeddah_meta_description',
             'mecca_meta_title', 'mecca_meta_description',
             'google_search_console', 'google_analytics_id',
-            'watermark_enabled', 'watermark_type', 'watermark_text',
-            'watermark_opacity', 'watermark_position', 'watermark_size',
         ];
-
-        $keys[] = 'watermark_logo';
 
         foreach ($keys as $key) {
             if ($request->hasFile($key)) {

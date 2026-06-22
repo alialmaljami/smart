@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -19,9 +18,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\VisitorQuestionController;
 use App\Http\Controllers\Admin\AboutPageController;
 use App\Http\Controllers\Admin\AdminUserController;
-use App\Services\WatermarkService;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
+
 
 Route::middleware('web')->prefix('admin')->group(function () {
     // Guest routes
@@ -98,80 +95,8 @@ Route::middleware('web')->prefix('admin')->group(function () {
 
             Route::resource('/admins', AdminUserController::class, ['as' => 'admin']);
 
-            Route::get('/watermark-regenerate', function () {
-                $artisan = Artisan::call('watermark:regenerate');
-                $output = Artisan::output();
-                return redirect()->route('admin.settings')->with('success', nl2br(e($output)));
-            })->name('admin.watermark.regenerate');
 
-            Route::get('/watermark-diagnostic', function () {
-                $watermark = new WatermarkService();
-                $info = [];
-
-                $info['font_path'] = $watermark->fontPath;
-                $info['font_exists'] = file_exists($watermark->fontPath);
-                $info['watermark_type'] = $watermark->type;
-                $info['watermark_opacity'] = $watermark->opacity;
-                $info['watermark_position'] = $watermark->position;
-                $info['watermark_size'] = $watermark->size;
-
-                $info['public_storage_exists'] = is_dir(public_path('storage'));
-                $info['public_storage_is_link'] = is_link(public_path('storage'));
-                if ($info['public_storage_is_link']) {
-                    $info['public_storage_target'] = readlink(public_path('storage'));
-                }
-                $info['storage_app_public'] = storage_path('app/public');
-
-                $lastGallery = \App\Models\Gallery::latest()->first();
-                if ($lastGallery) {
-                    $info['gallery_id'] = $lastGallery->id;
-                    $info['gallery_image_db'] = $lastGallery->image;
-                    $info['gallery_file_exists'] = file_exists(storage_path('app/public/' . $lastGallery->image)) ? 'YES' : 'NO';
-                    $info['gallery_url'] = asset('storage/' . $lastGallery->image);
-                    $info['gallery_fullpath'] = storage_path('app/public/' . $lastGallery->image);
-                }
-
-                $html = '<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>Diagnostic</title><style>body{font-family:sans-serif;padding:20px;background:#1a1a2e;color:#fff}table{width:100%;border-collapse:collapse;margin-bottom:20px}td,th{padding:10px;border:1px solid #333;text-align:right}th{background:#16213e}.ok{color:#4ade80}.fail{color:#f87171}</style></head><body><h1>تشخيص العلامة المائية والتخزين</h1>';
-                $html .= '<table><tr><th>المعلومة</th><th>القيمة</th></tr>';
-                foreach ($info as $k => $v) {
-                    $vStr = is_bool($v) ? ($v ? 'true' : 'false') : (string)$v;
-                    $cls = ($k === 'font_exists' && !$v) || ($k === 'gallery_file_exists' && $v === 'NO') ? 'fail' : 'ok';
-                    $html .= "<tr><td>$k</td><td class=\"$cls\">$vStr</td></tr>";
-                }
-                $html .= '</table>';
-
-                if (isset($info['gallery_id'])) {
-                    $html .= '<h2>اختبار عرض الصورة</h2>';
-                    $html .= '<img src="' . $info['gallery_url'] . '" style="max-width:400px;border:2px solid #333;border-radius:8px" onerror="this.after(document.createTextNode(\' ❌ الصورة لا تظهر (رابط معطل)\'));this.style.display=\'none\'">';
-                    $html .= '<br><br><a href="' . route('admin.storage-test', $info['gallery_id']) . '" style="color:#fbbf24" target="_blank">🔗 عرض عبر Laravel route (اختبار المسار البديل)</a>';
-                }
-
-                $html .= '</body></html>';
-                return response($html);
-            })->name('admin.watermark-diagnostic');
-
-            Route::get('/storage-test/{id}', function ($id) {
-                $gallery = \App\Models\Gallery::find($id);
-                if (!$gallery || !$gallery->image) abort(404);
-                $fullPath = storage_path('app/public/' . $gallery->image);
-                if (!file_exists($fullPath)) abort(404, 'File not found: ' . $fullPath);
-                $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
-                $mime = match($ext) { 'webp' => 'image/webp', 'png' => 'image/png', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', default => 'application/octet-stream' };
-                return response()->file($fullPath, ['Content-Type' => $mime, 'Content-Disposition' => 'inline']);
-            })->name('admin.storage-test');
         });
-
-        // Watermark preview (generates a sample image with current watermark settings)
-        Route::get('/watermark-preview', function () {
-            $manager = new ImageManager(new Driver());
-            $img = $manager->createImage(800, 600);
-            $gd = $img->core()->native();
-            imagefill($gd, 0, 0, imagecolorallocate($gd, 40, 40, 60));
-            $watermark = new WatermarkService();
-            $watermark->enabled = true;
-            $watermark->apply($img);
-            return response($img->encodeUsingFileExtension('webp', quality: 90)->toString())->header('Content-Type', 'image/webp');
-        })->name('admin.watermark-preview');
 
         // Blog Posts
         Route::resource('/blog-posts', BlogPostController::class, ['as' => 'admin']);
