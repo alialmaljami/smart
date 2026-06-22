@@ -26,11 +26,20 @@ class WatermarkService
         $this->position = Setting::getValue('watermark_position', 'bottom-center');
         $this->size = Setting::getValue('watermark_size', 'medium');
 
-        $fontPath = storage_path('app/public/fonts/Cairo-Bold.ttf');
-        if (file_exists($fontPath)) {
-            $this->fontPath = $fontPath;
-        } else {
-            $this->fontPath = 'C:\Windows\Fonts\arabtype.ttf';
+        $fontPaths = [
+            resource_path('fonts/Cairo-Bold.ttf'),
+            storage_path('app/public/fonts/Cairo-Bold.ttf'),
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+            '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',
+            'C:\Windows\Fonts\arialbd.ttf',
+            'C:\Windows\Fonts\arabtype.ttf',
+        ];
+        $this->fontPath = $fontPaths[0];
+        foreach ($fontPaths as $path) {
+            if (file_exists($path)) {
+                $this->fontPath = $path;
+                break;
+            }
         }
     }
 
