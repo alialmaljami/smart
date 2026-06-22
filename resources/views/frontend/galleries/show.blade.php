@@ -57,8 +57,8 @@
             <div class="rounded-2xl overflow-hidden bg-[var(--navy-dark)] mb-6 md:mb-8 relative">
                 <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->alt_text ?: $item->title }}" class="w-full h-auto max-h-[50vh] sm:max-h-[70vh] md:max-h-[80vh] object-contain" loading="lazy">
                 <button type="button" @click.stop="toggleFavorite('gallery', {{ $item->id }})"
-                        :class="isFavorite('gallery', {{ $item->id }}) ? 'text-red-400' : 'text-white/70'"
-                        class="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                        :class="isFavorite('gallery', {{ $item->id }}) ? 'text-red-400' : 'text-white'"
+                        class="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                         title="{{ __('Add to Favorites') }}">
                     <i class="text-xs" :class="isFavorite('gallery', {{ $item->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
                 </button>
@@ -124,7 +124,7 @@
                 @foreach($related as $rel)
                     <a href="{{ route('gallery.show', [$rel->id, $rel->slug]) }}" class="group relative rounded-xl overflow-hidden h-32 sm:h-40 md:h-48 block w-full">
                         <img src="{{ asset('storage/' . $rel->image) }}" alt="{{ $rel->alt_text ?: $rel->title }}" class="w-full h-full object-cover" loading="lazy">
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                        <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
                             <i class="fas fa-search-plus text-white text-lg md:text-2xl"></i>
                         </div>
                     </a>

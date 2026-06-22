@@ -65,14 +65,14 @@
                             <div class="relative img-zoom h-48">
                                 <img src="{{ asset('storage/' . $material->image) }}" alt="{{ $material->name }}" class="w-full h-full object-cover" loading="lazy">
                                 <div x-data="{ liked: {{ $material->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $material->likeCount() }} }" class="absolute top-3 left-3 z-10" @click.stop="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'material', id: {{ $material->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
-                                    <button class="flex items-center gap-1 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-xs">
-                                        <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
+                                    <button class="flex items-center gap-1 px-2.5 py-1 bg-black/80 backdrop-blur-sm rounded-full text-white hover:bg-black/90 transition-all text-xs">
+                                        <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white'"></i>
                                         <span x-text="count">0</span>
                                     </button>
                                 </div>
                                 <button type="button" @click.stop="toggleFavorite('material', {{ $material->id }})"
-                                        :class="isFavorite('material', {{ $material->id }}) ? 'text-red-400' : 'text-white/70'"
-                                        class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                        :class="isFavorite('material', {{ $material->id }}) ? 'text-red-400' : 'text-white'"
+                                        class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                                         title="{{ __('Add to Favorites') }}">
                                     <i class="text-xs" :class="isFavorite('material', {{ $material->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
                                 </button>
@@ -81,14 +81,14 @@
                             <div class="relative img-zoom h-48">
                                 <img src="{{ asset('storage/' . $material->images[0]) }}" alt="{{ $material->name }}" class="w-full h-full object-cover" loading="lazy">
                                 <div x-data="{ liked: {{ $material->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $material->likeCount() }} }" class="absolute top-3 left-3 z-10" @click.stop="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'material', id: {{ $material->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
-                                    <button class="flex items-center gap-1 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-xs">
-                                        <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
+                                    <button class="flex items-center gap-1 px-2.5 py-1 bg-black/80 backdrop-blur-sm rounded-full text-white hover:bg-black/90 transition-all text-xs">
+                                        <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white'"></i>
                                         <span x-text="count">0</span>
                                     </button>
                                 </div>
                                 <button type="button" @click.stop="toggleFavorite('material', {{ $material->id }})"
-                                        :class="isFavorite('material', {{ $material->id }}) ? 'text-red-400' : 'text-white/70'"
-                                        class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                        :class="isFavorite('material', {{ $material->id }}) ? 'text-red-400' : 'text-white'"
+                                        class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                                         title="{{ __('Add to Favorites') }}">
                                     <i class="text-xs" :class="isFavorite('material', {{ $material->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
                                 </button>
@@ -129,14 +129,14 @@
                         <img src="{{ asset('storage/' . $img) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
                         <div class="overlay-gradient absolute inset-0"></div>
                         <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-3 left-3 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
-                            <button class="flex items-center gap-1 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-xs">
-                                <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
+                            <button class="flex items-center gap-1 px-2.5 py-1 bg-black/80 backdrop-blur-sm rounded-full text-white hover:bg-black/90 transition-all text-xs">
+                                <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white'"></i>
                                 <span x-text="count">0</span>
                             </button>
                         </div>
                         <button type="button" @click.stop="toggleFavorite('project', {{ $project->id }})"
-                                :class="isFavorite('project', {{ $project->id }}) ? 'text-red-400' : 'text-white/70'"
-                                class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                :class="isFavorite('project', {{ $project->id }}) ? 'text-red-400' : 'text-white'"
+                                class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                                 title="{{ __('Add to Favorites') }}">
                             <i class="text-xs" :class="isFavorite('project', {{ $project->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
                         </button>

@@ -50,8 +50,8 @@
                         >
                             {{-- Favorite --}}
                             <button type="button" @click.stop="toggleFavorite('blog', {{ $post->id }})"
-                                    :class="isFavorite('blog', {{ $post->id }}) ? 'text-red-400' : 'text-white/70'"
-                                    class="absolute top-3 left-3 z-20 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                    :class="isFavorite('blog', {{ $post->id }}) ? 'text-red-400' : 'text-white'"
+                                    class="absolute top-3 left-3 z-20 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                                     title="{{ __('Add to Favorites') }}">
                                 <i class="text-xs" :class="isFavorite('blog', {{ $post->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
                             </button>

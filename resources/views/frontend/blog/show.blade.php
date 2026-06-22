@@ -84,8 +84,8 @@
                 <div class="rounded-2xl overflow-hidden mb-6 md:mb-8 h-48 sm:h-64 md:h-96 w-full relative">
                     <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover" loading="lazy">
                     <button type="button" @click.stop="toggleFavorite('blog', {{ $post->id }})"
-                            :class="isFavorite('blog', {{ $post->id }}) ? 'text-red-400' : 'text-white/70'"
-                            class="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                            :class="isFavorite('blog', {{ $post->id }}) ? 'text-red-400' : 'text-white'"
+                            class="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                             title="{{ __('Add to Favorites') }}">
                         <i class="text-xs" :class="isFavorite('blog', {{ $post->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
                     </button>

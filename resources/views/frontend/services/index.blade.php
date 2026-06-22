@@ -35,14 +35,14 @@
                     @if($service->image)
                         <div class="img-zoom h-48 relative">
                             <div x-data="{ liked: {{ $service->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $service->likeCount() }} }" class="absolute top-3 left-3 z-20" @click.prevent="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'service', id: {{ $service->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
-                                <button class="flex items-center gap-1.5 px-3 py-1.5 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all">
-                                    <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
+                                <button class="flex items-center gap-1.5 px-3 py-1.5 bg-black/80 backdrop-blur-sm rounded-full text-white hover:bg-black/90 transition-all">
+                                    <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white'"></i>
                                     <span class="text-xs font-medium" x-text="count"></span>
                                 </button>
                             </div>
                             <button type="button" @click.stop="toggleFavorite('service', {{ $service->id }})"
-                                    :class="isFavorite('service', {{ $service->id }}) ? 'text-red-400' : 'text-white/70'"
-                                    class="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                    :class="isFavorite('service', {{ $service->id }}) ? 'text-red-400' : 'text-white'"
+                                    class="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                                     title="{{ __('Add to Favorites') }}">
                                 <i class="text-xs" :class="isFavorite('service', {{ $service->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
                             </button>

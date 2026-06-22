@@ -268,14 +268,14 @@
                         @endif
                         <div class="overlay-gradient absolute inset-0"></div>
                         <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-4 left-4 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
-                            <button class="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-xs">
-                                <i class="fas fa-heart text-xs" :class="liked ? 'text-red-400' : 'text-white/70'"></i>
+                            <button class="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/80 backdrop-blur-sm rounded-full text-white hover:bg-black/90 transition-all text-xs">
+                                <i class="fas fa-heart text-xs" :class="liked ? 'text-red-400' : 'text-white'"></i>
                                 <span x-text="count">0</span>
                             </button>
                         </div>
                         <button type="button" @click.stop="toggleFavorite('project', {{ $project->id }})"
-                                :class="isFavorite('project', {{ $project->id }}) ? 'text-red-400' : 'text-white/70'"
-                                class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                :class="isFavorite('project', {{ $project->id }}) ? 'text-red-400' : 'text-white'"
+                                class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                                 title="{{ __('Add to Favorites') }}">
                             <i class="text-xs" :class="isFavorite('project', {{ $project->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
                         </button>

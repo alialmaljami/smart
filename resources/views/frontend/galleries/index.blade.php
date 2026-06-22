@@ -59,14 +59,14 @@
                          onclick="location.href='{{ route('gallery.show', [$gallery->id, $gallery->slug]) }}'">
                         <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->alt_text ?: $gallery->title }}" class="w-full h-full object-cover" loading="lazy">
                         <div x-data="{ liked: {{ $gallery->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $gallery->likeCount() }} }" class="absolute top-3 left-3 z-10" @click.stop="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'gallery', id: {{ $gallery->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
-                            <button class="flex items-center gap-1 px-2.5 py-1 bg-black/40 backdrop-blur-sm rounded-full text-white hover:bg-black/60 transition-all text-xs pointer-events-none">
-                                <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white/70'"></i>
+                            <button class="flex items-center gap-1 px-2.5 py-1 bg-black/80 backdrop-blur-sm rounded-full text-white hover:bg-black/90 transition-all text-xs pointer-events-none">
+                                <i class="fas fa-heart" :class="liked ? 'text-red-500' : 'text-white'"></i>
                                 <span x-text="count">0</span>
                             </button>
                         </div>
                         <button type="button" @click.stop="toggleFavorite('gallery', {{ $gallery->id }})"
-                                :class="isFavorite('gallery', {{ $gallery->id }}) ? 'text-red-400' : 'text-white/70'"
-                                class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                                :class="isFavorite('gallery', {{ $gallery->id }}) ? 'text-red-400' : 'text-white'"
+                                class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                                 title="{{ __('Add to Favorites') }}">
                             <i class="text-xs" :class="isFavorite('gallery', {{ $gallery->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
                         </button>
@@ -74,7 +74,7 @@
                             <div class="absolute bottom-0 right-0 left-0 p-5">
                                 <h3 class="text-white font-bold text-lg mb-1">{{ $gallery->title }}</h3>
                                 @if($gallery->description)
-                                    <p class="text-white/70 text-sm line-clamp-2">{{ $gallery->description }}</p>
+                                    <p class="text-white text-sm line-clamp-2">{{ $gallery->description }}</p>
                                 @endif
                             </div>
                             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
