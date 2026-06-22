@@ -54,4 +54,9 @@ class Category extends Model
     {
         return $this->belongsToMany(Service::class, 'service_material_category');
     }
+
+    public function blogPosts(): HasMany
+    {
+        return $this->hasMany(BlogPost::class, 'blog_category_id');
+    }
 }

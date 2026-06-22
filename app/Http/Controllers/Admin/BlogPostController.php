@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BlogPost;
+use App\Models\Category;
 use App\Traits\ImageUploadHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,8 @@ class BlogPostController extends Controller
 
     public function create(): View
     {
-        return view('admin.blog-posts.create');
+        $blogCategories = Category::where('type', 'blog')->where('is_active', true)->orderBy('name')->get();
+        return view('admin.blog-posts.create', compact('blogCategories'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -31,6 +33,7 @@ class BlogPostController extends Controller
             'content' => ['nullable', 'string'],
             'excerpt' => ['nullable', 'string'],
             'category' => ['nullable', 'string', 'max:255'],
+            'blog_category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'image' => ['nullable', 'image', 'max:10240'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'max:10240'],
@@ -42,6 +45,11 @@ class BlogPostController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+
+        if ($request->filled('blog_category_id')) {
+            $cat = Category::find($validated['blog_category_id']);
+            $validated['category'] = $cat ? $cat->name : ($validated['category'] ?? null);
+        }
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'blog');
@@ -62,7 +70,8 @@ class BlogPostController extends Controller
 
     public function edit(BlogPost $blogPost): View
     {
-        return view('admin.blog-posts.edit', compact('blogPost'));
+        $blogCategories = Category::where('type', 'blog')->where('is_active', true)->orderBy('name')->get();
+        return view('admin.blog-posts.edit', compact('blogPost', 'blogCategories'));
     }
 
     public function update(Request $request, BlogPost $blogPost): RedirectResponse
@@ -73,6 +82,7 @@ class BlogPostController extends Controller
             'content' => ['nullable', 'string'],
             'excerpt' => ['nullable', 'string'],
             'category' => ['nullable', 'string', 'max:255'],
+            'blog_category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'image' => ['nullable', 'image', 'max:10240'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'max:10240'],
@@ -84,6 +94,13 @@ class BlogPostController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+
+        if ($request->filled('blog_category_id')) {
+            $cat = Category::find($validated['blog_category_id']);
+            $validated['category'] = $cat ? $cat->name : ($validated['category'] ?? null);
+        } else {
+            $validated['blog_category_id'] = null;
+        }
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'blog', $blogPost->image);

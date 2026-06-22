@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\TracksViews;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BlogPost extends Model
 {
@@ -15,6 +16,7 @@ class BlogPost extends Model
         'content',
         'excerpt',
         'category',
+        'blog_category_id',
         'image',
         'images',
         'tags',
@@ -29,4 +31,9 @@ class BlogPost extends Model
         'is_active' => 'boolean',
         'images' => 'array',
     ];
+
+    public function blogCategory(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'blog_category_id');
+    }
 }

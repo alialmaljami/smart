@@ -7,7 +7,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
             <h1 class="text-lg sm:text-2xl font-bold text-gray-800">التصنيفات</h1>
-            <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">إدارة تصنيفات المشاريع ومعرض الصور ومواد الديكور</p>
+            <p class="text-gray-500 text-xs sm:text-sm mt-0.5 sm:mt-1">إدارة تصنيفات المشاريع ومعرض الصور ومواد الديكور والمدونة</p>
         </div>
         <a href="{{ route('admin.categories.create') }}" class="self-start sm:self-auto inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-gold-600 hover:bg-gold-700 text-white rounded-lg text-xs sm:text-sm font-medium transition-colors">
             <i class="fas fa-plus"></i>
@@ -49,7 +49,7 @@
                             <td class="px-4 py-3 text-sm text-gray-500">{{ $category->id }}</td>
                             <td class="px-4 py-3 text-sm font-medium text-gray-800">{{ $category->name }}</td>
                             <td class="px-4 py-3">
-                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium {{ $category->type == 'project' ? 'bg-blue-100 text-blue-700' : ($category->type == 'gallery' ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700') }}">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium {{ $category->type == 'project' ? 'bg-blue-100 text-blue-700' : ($category->type == 'gallery' ? 'bg-purple-100 text-purple-700' : ($category->type == 'material' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700')) }}">
                                     {{ $types[$category->type] ?? $category->type }}
                                 </span>
                             </td>

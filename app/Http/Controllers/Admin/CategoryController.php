@@ -12,7 +12,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request): View
     {
-        $types = ['project' => 'المشاريع', 'gallery' => 'معرض الصور', 'material' => 'مواد الديكور'];
+        $types = ['project' => 'المشاريع', 'gallery' => 'معرض الصور', 'material' => 'مواد الديكور', 'blog' => 'المدونة'];
         $query = Category::orderBy('type')->orderBy('sort_order');
 
         if ($request->filled('type')) {
@@ -34,7 +34,7 @@ class CategoryController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'unique:categories'],
             'description' => ['nullable', 'string'],
-            'type' => ['required', 'string', 'in:project,gallery,material'],
+            'type' => ['required', 'string', 'in:project,gallery,material,blog'],
             'image' => ['nullable', 'image', 'max:10240'],
             'tags' => ['nullable', 'string'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
@@ -67,7 +67,7 @@ class CategoryController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'unique:categories,slug,' . $category->id],
             'description' => ['nullable', 'string'],
-            'type' => ['required', 'string', 'in:project,gallery,material'],
+            'type' => ['required', 'string', 'in:project,gallery,material,blog'],
             'image' => ['nullable', 'image', 'max:10240'],
             'tags' => ['nullable', 'string'],
             'sort_order' => ['nullable', 'integer', 'min:0'],

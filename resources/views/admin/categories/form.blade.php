@@ -74,6 +74,7 @@
                                 <option value="project" {{ old('type', $category->type ?? '') == 'project' ? 'selected' : '' }}>تصنيف مشاريع</option>
                                 <option value="gallery" {{ old('type', $category->type ?? '') == 'gallery' ? 'selected' : '' }}>تصنيف معرض صور</option>
                                 <option value="material" {{ old('type', $category->type ?? '') == 'material' ? 'selected' : '' }}>تصنيف مواد ديكور</option>
+                                <option value="blog" {{ old('type', $category->type ?? '') == 'blog' ? 'selected' : '' }}>تصنيف مدونة</option>
                             </select>
                         @error('type')
                             <p class="mt-1.5 text-xs text-red-500 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i>{{ $message }}</p>

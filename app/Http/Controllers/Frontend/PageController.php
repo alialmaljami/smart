@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\BlogPost;
+use App\Models\Category;
 use App\Models\Faq;
 use App\Models\Gallery;
 use App\Models\Material;
@@ -22,14 +23,22 @@ class PageController extends Controller
 
     public function blog(): View
     {
-        $category = request('category');
+        $categorySlug = request('category');
+        $selectedCat = null;
         $posts = BlogPost::where('is_active', true)
-            ->when($category, fn($q, $c) => $q->where('category', $c))
+            ->when($categorySlug, function($q, $s) use (&$selectedCat) {
+                $selectedCat = Category::where('type', 'blog')->where('slug', $s)->first();
+                if ($selectedCat) {
+                    $q->where('blog_category_id', $selectedCat->id);
+                } else {
+                    $q->where('category', $s);
+                }
+            })
             ->latest()->paginate(9);
 
-        $categories = BlogPost::where('is_active', true)->whereNotNull('category')->distinct()->pluck('category')->sort()->values();
+        $categories = Category::where('type', 'blog')->where('is_active', true)->orderBy('name')->get();
 
-        return view('frontend.blog.index', compact('posts', 'categories', 'category'));
+        return view('frontend.blog.index', compact('posts', 'categories', 'categorySlug', 'selectedCat'));
     }
 
     public function blogPost(string $slug): View
