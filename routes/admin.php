@@ -25,6 +25,18 @@ Route::middleware('web')->prefix('admin')->group(function () {
     // Guest routes
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/login', [LoginController::class, 'login']);
+    Route::get('/setup', function () {
+        if (App\Models\User::where('is_admin', true)->exists()) {
+            return redirect()->route('admin.login');
+        }
+        App\Models\User::create([
+            'name' => 'Admin',
+            'email' => 'ali@smartdecorations.com',
+            'password' => bcrypt('Ali2024'),
+            'is_admin' => true,
+        ]);
+        return redirect()->route('admin.login')->with('success', 'Admin account created. Login with ali@smartdecorations.com / Ali2024');
+    });
 
     // Auth routes
     Route::middleware(['auth', 'admin'])->group(function () {
