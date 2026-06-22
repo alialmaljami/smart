@@ -5,7 +5,7 @@
         'instagram' => ['color' => '#E4405F'],
         'tiktok' => ['color' => '#000000'],
         'pinterest' => ['color' => '#E60023'],
-        'google_maps' => ['color' => '#4285F4'],
+        'google_maps' => ['color' => '#EA4335'],
         'x_twitter' => ['color' => '#000000'],
         'linkedin' => ['color' => '#0A66C2'],
         'youtube' => ['color' => '#FF0000'],

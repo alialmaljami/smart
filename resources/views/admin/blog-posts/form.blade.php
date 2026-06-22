@@ -189,7 +189,9 @@
     document.getElementById('title')?.addEventListener('input', function() {
         const slug = document.getElementById('slug');
         if (slug && !slug.dataset.manuallyEdited) {
-            slug.value = this.value.trim().toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            const raw = this.value.trim().toLowerCase();
+            const latin = raw.replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            slug.value = latin || 'post-' + Date.now();
         }
     });
     document.getElementById('slug')?.addEventListener('input', function() {

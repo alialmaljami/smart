@@ -83,21 +83,9 @@ class PageController extends Controller
 
     public function cityJeddah(): View
     {
-        $projects = Project::where('is_active', true)
-            ->where(function ($q) {
-                $q->where('title', 'like', '%جدة%')->orWhere('title', 'like', '%Jeddah%')
-                  ->orWhere('description', 'like', '%جدة%')->orWhere('description', 'like', '%Jeddah%');
-            })->latest()->take(6)->get();
-        $services = Service::where('is_active', true)
-            ->where(function ($q) {
-                $q->where('name', 'like', '%جدة%')->orWhere('name', 'like', '%Jeddah%')
-                  ->orWhere('description', 'like', '%جدة%')->orWhere('description', 'like', '%Jeddah%');
-            })->get();
-        $galleries = Gallery::where('is_active', true)
-            ->where(function ($q) {
-                $q->where('title', 'like', '%جدة%')->orWhere('title', 'like', '%Jeddah%')
-                  ->orWhere('tags', 'like', '%جدة%')->orWhere('tags', 'like', '%Jeddah%');
-            })->latest()->take(8)->get();
+        $projects = Project::where('is_active', true)->latest()->take(6)->get();
+        $services = Service::where('is_active', true)->get();
+        $galleries = Gallery::where('is_active', true)->latest()->take(8)->get();
         $breadcrumbs = [
             ['name' => __('Home'), 'url' => route('home')],
             ['name' => __('Jeddah Decorations'), 'url' => route('city.jeddah')],
@@ -107,21 +95,9 @@ class PageController extends Controller
 
     public function cityMecca(): View
     {
-        $projects = Project::where('is_active', true)
-            ->where(function ($q) {
-                $q->where('title', 'like', '%مكة%')->orWhere('title', 'like', '%Mecca%')
-                  ->orWhere('description', 'like', '%مكة%')->orWhere('description', 'like', '%Mecca%');
-            })->latest()->take(6)->get();
-        $services = Service::where('is_active', true)
-            ->where(function ($q) {
-                $q->where('name', 'like', '%مكة%')->orWhere('name', 'like', '%Mecca%')
-                  ->orWhere('description', 'like', '%مكة%')->orWhere('description', 'like', '%Mecca%');
-            })->get();
-        $galleries = Gallery::where('is_active', true)
-            ->where(function ($q) {
-                $q->where('title', 'like', '%مكة%')->orWhere('title', 'like', '%Mecca%')
-                  ->orWhere('tags', 'like', '%مكة%')->orWhere('tags', 'like', '%Mecca%');
-            })->latest()->take(8)->get();
+        $projects = Project::where('is_active', true)->latest()->take(6)->get();
+        $services = Service::where('is_active', true)->get();
+        $galleries = Gallery::where('is_active', true)->latest()->take(8)->get();
         $breadcrumbs = [
             ['name' => __('Home'), 'url' => route('home')],
             ['name' => __('Mecca Decorations'), 'url' => route('city.mecca')],

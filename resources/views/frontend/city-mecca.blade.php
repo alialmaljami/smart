@@ -37,6 +37,22 @@
                     لدينا فريق متخصص في تنفيذ ديكورات المنازل والفلل والشقق في مكة بأحدث التصاميم 
                     وأعلى معايير الجودة. نحرص على تلبية احتياجات عملائنا في مكة بأسعار تنافسية.
                 </p>
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-[var(--text-heading)] mb-3">نغطي جميع أحياء مكة:</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">أجياد</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">المسفلة</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">العزيزية</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">الشرائع</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">الزاهر</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">الشوقية</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">ولي العهد</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">العوالي</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">الحجون</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">العمرة</span>
+                        <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">وباقي المناطق</span>
+                    </div>
+                </div>
                 <div class="space-y-3">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)]"><i class="fas fa-check"></i></div>
@@ -72,34 +88,8 @@
     </div>
 </section>
 
-<section class="py-12 md:py-16 bg-[var(--white)]">
-    <div class="container mx-auto px-4 max-w-5xl">
-        <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
-            <h2 class="section-title text-[var(--text-heading)]">خدماتنا في مكة</h2>
-            <div class="section-divider"></div>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            <div class="card-elegant p-4 md:p-6 text-center">
-                <div class="w-12 h-12 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 rounded-full bg-[var(--gold)]/10 flex items-center justify-center"><i class="fas fa-home text-lg md:text-xl text-[var(--gold)]"></i></div>
-                <h3 class="font-bold text-[var(--text-heading)] mb-1 md:mb-2">ديكورات منازل</h3>
-                <p class="text-[var(--text-light)] text-sm">تصميم داخلي عصري للمنازل بمكة المكرمة</p>
-            </div>
-            <div class="card-elegant p-4 md:p-6 text-center">
-                <div class="w-12 h-12 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 rounded-full bg-[var(--gold)]/10 flex items-center justify-center"><i class="fas fa-building text-lg md:text-xl text-[var(--gold)]"></i></div>
-                <h3 class="font-bold text-[var(--text-heading)] mb-1 md:mb-2">ديكورات فلل</h3>
-                <p class="text-[var(--text-light)] text-sm">تصاميم فاخرة للفلل والقصور بمكة</p>
-            </div>
-            <div class="card-elegant p-4 md:p-6 text-center">
-                <div class="w-12 h-12 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 rounded-full bg-[var(--gold)]/10 flex items-center justify-center"><i class="fas fa-briefcase text-lg md:text-xl text-[var(--gold)]"></i></div>
-                <h3 class="font-bold text-[var(--text-heading)] mb-1 md:mb-2">ديكورات شقق</h3>
-                <p class="text-[var(--text-light)] text-sm">تشطيب وديكور الشقق السكنية بمكة</p>
-            </div>
-        </div>
-    </div>
-</section>
-
 @if($services->count())
-<section class="py-12 md:py-16 bg-[var(--white)]">
+<section class="py-12 md:py-16 bg-[var(--cream)]">
     <div class="container mx-auto px-4 max-w-6xl">
         <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
             <h2 class="section-title text-[var(--text-heading)]">{{ __('Services') }}</h2>
@@ -107,14 +97,31 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             @foreach($services as $s)
-                <a href="{{ route('service.show', $s->slug) }}" class="card-elegant p-4 md:p-6 text-center group hover:shadow-lg transition-all">
-                    <div class="w-10 h-10 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 rounded-full bg-[var(--gold)]/10 flex items-center justify-center group-hover:bg-[var(--gold)] group-hover:text-white transition-all">
-                        <i class="{{ $s->icon ?: 'fas fa-paint-roller' }} text-base md:text-xl text-[var(--gold)] group-hover:text-white"></i>
+                @php $imgs = array_values(array_filter(array_merge([$s->image], $s->images ?? []))); @endphp
+                <a href="{{ route('service.show', $s->slug) }}" class="card-elegant group overflow-hidden rounded-2xl">
+                    @if($imgs)
+                        <div class="aspect-[16/10] overflow-hidden relative"
+                             x-data="{ imgs: @js($imgs), idx: 0 }"
+                             x-init="if(imgs.length>1) setInterval(() => idx=(idx+1)%imgs.length, 3500)">
+                            <template x-for="(img, i) in imgs" :key="i">
+                                <img :src="'/storage/' + img"
+                                     x-show="idx === i"
+                                     x-transition:enter="transition ease-in-out duration-700"
+                                     x-transition:enter-start="opacity-0"
+                                     x-transition:enter-end="opacity-100"
+                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            </template>
+                        </div>
+                    @endif
+                    <div class="p-4 md:p-5">
+                        <h3 class="font-bold text-sm md:text-base text-[var(--text-heading)] mb-1">{{ $s->name }}</h3>
+                        <p class="text-[var(--text-secondary)] text-xs md:text-sm">{{ Str::limit($s->description, 80) }}</p>
                     </div>
-                    <h3 class="font-bold text-sm md:text-base text-[var(--text-heading)] mb-1 md:mb-2">{{ $s->name }}</h3>
-                    <p class="text-[var(--text-secondary)] text-xs md:text-sm">{{ Str::limit($s->description, 80) }}</p>
                 </a>
             @endforeach
+        </div>
+        <div data-aos="fade-up" class="text-center mt-8">
+            <a href="{{ route('services') }}" class="btn-outline px-6 py-3">عرض جميع الخدمات</a>
         </div>
     </div>
 </section>
@@ -134,12 +141,15 @@
                 </a>
             @endforeach
         </div>
+        <div data-aos="fade-up" class="text-center mt-8">
+            <a href="{{ route('gallery') }}" class="btn-outline px-6 py-3">عرض المعرض</a>
+        </div>
     </div>
 </section>
 @endif
 
 @if($projects->count())
-<section class="py-12 md:py-16 bg-[var(--white)]">
+<section class="py-12 md:py-16 bg-[var(--cream)]">
     <div class="container mx-auto px-4 max-w-6xl">
         <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
             <h2 class="section-title text-[var(--text-heading)]">{{ __('Recent Projects') }}</h2>
@@ -147,10 +157,20 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             @foreach($projects as $p)
+                @php $imgs = array_values(array_filter(array_merge([$p->image], $p->images ?? []))); @endphp
                 <a href="{{ route('project.show', $p->slug) }}" class="card-elegant group overflow-hidden">
-                    @if($p->image)
-                        <div class="aspect-[16/10] overflow-hidden">
-                            <img src="{{ asset('storage/' . $p->image) }}" alt="{{ $p->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+                    @if($imgs)
+                        <div class="aspect-[16/10] overflow-hidden relative"
+                             x-data="{ imgs: @js($imgs), idx: 0 }"
+                             x-init="if(imgs.length>1) setInterval(() => idx=(idx+1)%imgs.length, 3500)">
+                            <template x-for="(img, i) in imgs" :key="i">
+                                <img :src="'/storage/' + img"
+                                     x-show="idx === i"
+                                     x-transition:enter="transition ease-in-out duration-700"
+                                     x-transition:enter-start="opacity-0"
+                                     x-transition:enter-end="opacity-100"
+                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            </template>
                         </div>
                     @endif
                     <div class="p-4 md:p-5">
@@ -158,6 +178,9 @@
                     </div>
                 </a>
             @endforeach
+        </div>
+        <div data-aos="fade-up" class="text-center mt-8">
+            <a href="{{ route('projects') }}" class="btn-outline px-6 py-3">عرض جميع المشاريع</a>
         </div>
     </div>
 </section>

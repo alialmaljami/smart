@@ -36,7 +36,8 @@ class AboutPageController extends Controller
                 $path = $request->file($key)->store('about', 'public');
                 Setting::updateOrCreate(['key' => $key], ['value' => $path]);
             } elseif ($request->has($key)) {
-                Setting::updateOrCreate(['key' => $key], ['value' => $request->$key]);
+                $value = $request->input($key) ?? '';
+                Setting::updateOrCreate(['key' => $key], ['value' => $value]);
             }
         }
 

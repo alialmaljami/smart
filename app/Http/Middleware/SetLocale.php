@@ -14,8 +14,8 @@ class SetLocale
         if ($locale = $request->session()->get('locale')) {
             App::setLocale($locale);
         } else {
-            $browserLang = substr($request->server('HTTP_ACCEPT_LANGUAGE') ?? 'en', 0, 2);
-            $locale = in_array($browserLang, ['ar', 'en']) ? $browserLang : 'en';
+            $browserLang = substr($request->server('HTTP_ACCEPT_LANGUAGE') ?? 'ar', 0, 2);
+            $locale = in_array($browserLang, ['ar', 'en']) ? $browserLang : 'ar';
             App::setLocale($locale);
             $request->session()->put('locale', $locale);
         }

@@ -4,7 +4,7 @@
     $email = App\Models\Setting::getValue('email', 'info@smart-designer.com');
     $phone = App\Models\Setting::getValue('phone', '+966 50 000 0000');
     $address = App\Models\Setting::getValue('address', 'الرياض، المملكة العربية السعودية');
-    $mapEmbedSrc = $mapUrl ? (str_contains($mapUrl, '/maps/embed') ? $mapUrl : 'https://www.google.com/maps?q=' . urlencode($address) . '&output=embed') : '';
+    $mapEmbedSrc = $mapUrl ? (str_contains($mapUrl, '/maps/embed') ? $mapUrl : 'https://maps.google.com/maps?q=' . urlencode($address) . '&t=&z=15&ie=UTF8&iwloc=&output=embed') : '';
 @endphp
 
 @php

@@ -21,6 +21,10 @@ return new class extends Migration
             'visitor_questions' => ['question', 'slug', 'asked_by'],
         ];
 
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         foreach ($changes as $table => $columns) {
             if (!Schema::hasTable($table)) continue;
             foreach ($columns as $col) {

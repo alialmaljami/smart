@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Traits\ImageUploadHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class BlogPostController extends Controller
@@ -29,11 +30,11 @@ class BlogPostController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:blog_posts'],
+            'slug' => ['nullable', 'string', 'max:255', 'unique:blog_posts'],
             'content' => ['nullable', 'string'],
             'excerpt' => ['nullable', 'string'],
             'category' => ['nullable', 'string', 'max:255'],
-            'blog_category_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'blog_category_id' => ['nullable', 'integer'],
             'image' => ['nullable', 'image', 'max:10240'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'max:10240'],
@@ -44,11 +45,15 @@ class BlogPostController extends Controller
             'meta_keywords' => ['nullable', 'string'],
         ]);
 
+        if (empty($validated['slug'])) {
+            $validated['slug'] = Str::slug($validated['title']);
+        }
+
         $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->filled('blog_category_id')) {
             $cat = Category::find($validated['blog_category_id']);
-            $validated['category'] = $cat ? $cat->name : ($validated['category'] ?? null);
+            if (!$cat) $validated['blog_category_id'] = null;
         }
 
         if ($request->hasFile('image')) {
@@ -78,11 +83,11 @@ class BlogPostController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:blog_posts,slug,' . $blogPost->id],
+            'slug' => ['nullable', 'string', 'max:255', 'unique:blog_posts,slug,' . $blogPost->id],
             'content' => ['nullable', 'string'],
             'excerpt' => ['nullable', 'string'],
             'category' => ['nullable', 'string', 'max:255'],
-            'blog_category_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'blog_category_id' => ['nullable', 'integer'],
             'image' => ['nullable', 'image', 'max:10240'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'max:10240'],
@@ -93,11 +98,17 @@ class BlogPostController extends Controller
             'meta_keywords' => ['nullable', 'string'],
         ]);
 
+        if (empty($validated['slug'])) {
+            $validated['slug'] = Str::slug($validated['title']);
+        }
+
         $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->filled('blog_category_id')) {
             $cat = Category::find($validated['blog_category_id']);
-            $validated['category'] = $cat ? $cat->name : ($validated['category'] ?? null);
+            if (!$cat) {
+                $validated['blog_category_id'] = null;
+            }
         } else {
             $validated['blog_category_id'] = null;
         }

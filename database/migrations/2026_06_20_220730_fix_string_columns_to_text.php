@@ -7,6 +7,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         DB::statement('ALTER TABLE blog_posts ALTER COLUMN meta_keywords TYPE TEXT');
         DB::statement('ALTER TABLE blog_posts ALTER COLUMN meta_keywords DROP NOT NULL');
         DB::statement('ALTER TABLE blog_posts ALTER COLUMN meta_keywords DROP DEFAULT');
