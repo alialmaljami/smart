@@ -103,3 +103,67 @@ Route::get('/sitemap-blog.xml', [SitemapController::class, 'blog'])->name('sitem
 Route::get('/sitemap-services.xml', [SitemapController::class, 'services'])->name('sitemap.services');
 Route::get('/sitemap-materials.xml', [SitemapController::class, 'materials'])->name('sitemap.materials');
 Route::get('/sitemap-cities.xml', [SitemapController::class, 'cities'])->name('sitemap.cities');
+
+Route::get('/backup-now', function () {
+    $backupPath = storage_path('backup-temp-' . time());
+    mkdir($backupPath, 0755, true);
+
+    $models = [
+        'projects' => \App\Models\Project::all(),
+        'galleries' => \App\Models\Gallery::all(),
+        'blog_posts' => \App\Models\BlogPost::all(),
+        'services' => \App\Models\Service::all(),
+        'materials' => \App\Models\Material::all(),
+        'reviews' => \App\Models\Review::all(),
+        'contacts' => \App\Models\Contact::all(),
+        'visitor_questions' => \App\Models\VisitorQuestion::all(),
+        'faqs' => \App\Models\Faq::all(),
+        'settings' => \App\Models\Setting::all(),
+        'social_links' => \App\Models\SocialLink::all(),
+        'categories' => \App\Models\Category::all(),
+        'likes' => \App\Models\Like::all(),
+    ];
+
+    foreach ($models as $name => $data) {
+        file_put_contents(
+            "$backupPath/$name.json",
+            json_encode($data->toArray(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
+    }
+
+    $publicPath = storage_path('app/public');
+    $filesPath = "$backupPath/files";
+    if (is_dir($publicPath)) {
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($publicPath, \RecursiveDirectoryIterator::SKIP_DOTS)
+        );
+        foreach ($iterator as $file) {
+            $relative = substr($file->getRealPath(), strlen($publicPath) + 1);
+            $dest = "$filesPath/$relative";
+            $dir = dirname($dest);
+            if (!is_dir($dir)) mkdir($dir, 0755, true);
+            copy($file->getRealPath(), $dest);
+        }
+    }
+
+    $zipFile = storage_path("backup-" . date('Y-m-d-H-i-s') . ".zip");
+    $zip = new \ZipArchive();
+    if ($zip->open($zipFile, \ZipArchive::CREATE) === true) {
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($backupPath, \RecursiveDirectoryIterator::SKIP_DOTS)
+        );
+        foreach ($files as $file) {
+            $relative = substr($file->getRealPath(), strlen($backupPath) + 1);
+            $zip->addFile($file->getRealPath(), $relative);
+        }
+        $zip->close();
+    }
+
+    (new \Illuminate\Filesystem\Filesystem)->deleteDirectory($backupPath);
+
+    if (!file_exists($zipFile)) {
+        return response('Backup failed', 500);
+    }
+
+    return response()->download($zipFile)->deleteFileAfterSend(true);
+});
