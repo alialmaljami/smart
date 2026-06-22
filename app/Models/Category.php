@@ -47,12 +47,12 @@ class Category extends Model
 
     public function relatedProjects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'material_category_project');
+        return $this->belongsToMany(Project::class, 'material_category_project', 'material_category_id', 'project_id');
     }
 
     public function services(): BelongsToMany
     {
-        return $this->belongsToMany(Service::class, 'service_material_category');
+        return $this->belongsToMany(Service::class, 'service_material_category', 'material_category_id', 'service_id');
     }
 
     public function blogPosts(): HasMany
