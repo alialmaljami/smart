@@ -105,6 +105,16 @@ Route::middleware('web')->prefix('admin')->group(function () {
             })->name('admin.watermark.regenerate');
 
             Route::get('/watermark-diagnostic', [\App\Http\Controllers\Admin\WatermarkDiagnosticController::class, 'index'])->name('admin.watermark-diagnostic');
+
+            Route::get('/storage-test/{id}', function ($id) {
+                $gallery = \App\Models\Gallery::find($id);
+                if (!$gallery || !$gallery->image) abort(404);
+                $fullPath = storage_path('app/public/' . $gallery->image);
+                if (!file_exists($fullPath)) abort(404, 'File not found: ' . $fullPath);
+                $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+                $mime = match($ext) { 'webp' => 'image/webp', 'png' => 'image/png', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', default => 'application/octet-stream' };
+                return response()->file($fullPath, ['Content-Type' => $mime, 'Content-Disposition' => 'inline']);
+            })->name('admin.storage-test');
         });
 
         // Watermark preview (generates a sample image with current watermark settings)
