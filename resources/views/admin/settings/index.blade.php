@@ -385,6 +385,10 @@
                 <i class="fas fa-save"></i>
                 حفظ الإعدادات
             </button>
+            <a href="{{ route('admin.watermark.regenerate') }}" class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-xs sm:text-sm transition-all duration-300 shadow-sm hover:shadow-md w-full sm:w-auto" onclick="return confirm('هل تريد إضافة العلامة المائية على جميع الصور القديمة؟ قد يستغرق ذلك بعض الوقت.')">
+                <i class="fas fa-sync-alt"></i>
+                تطبيق على الصور القديمة
+            </a>
         </div>
     </form>
 </div>

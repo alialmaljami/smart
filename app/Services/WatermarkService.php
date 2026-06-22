@@ -20,6 +20,7 @@ class WatermarkService
     public function __construct()
     {
         $this->manager = new ImageManager(new Driver());
+        $this->enabled = true;
         $this->type = Setting::getValue('watermark_type', 'text');
         $this->opacity = (int) Setting::getValue('watermark_opacity', '40');
         $this->position = Setting::getValue('watermark_position', 'bottom-center');

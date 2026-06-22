@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -96,6 +97,12 @@ Route::middleware('web')->prefix('admin')->group(function () {
             Route::post('/about', [AboutPageController::class, 'update'])->name('admin.about.update');
 
             Route::resource('/admins', AdminUserController::class, ['as' => 'admin']);
+
+            Route::get('/watermark-regenerate', function () {
+                $artisan = Artisan::call('watermark:regenerate');
+                $output = Artisan::output();
+                return redirect()->route('admin.settings')->with('success', nl2br(e($output)));
+            })->name('admin.watermark.regenerate');
         });
 
         // Watermark preview (generates a sample image with current watermark settings)

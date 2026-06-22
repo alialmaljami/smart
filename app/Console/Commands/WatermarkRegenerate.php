@@ -31,11 +31,6 @@ class WatermarkRegenerate extends Command
     public function handle(): int
     {
         $watermark = new WatermarkService();
-        if (!$watermark->enabled) {
-            $this->warn('⚠ Watermark is disabled. Enable it in settings first.');
-            return self::FAILURE;
-        }
-
         $dryRun = $this->option('dry-run');
         $manager = new ImageManager(new Driver());
         $total = 0;
