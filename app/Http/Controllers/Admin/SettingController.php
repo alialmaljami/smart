@@ -44,7 +44,7 @@ class SettingController extends Controller
                 $path = $request->file($key)->store('settings', 'public');
                 Setting::updateOrCreate(['key' => $key], ['value' => $path]);
             } elseif ($request->has($key)) {
-                Setting::updateOrCreate(['key' => $key], ['value' => $request->$key]);
+                Setting::updateOrCreate(['key' => $key], ['value' => $request->input($key) ?? '']);
             }
         }
 
