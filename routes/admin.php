@@ -26,16 +26,33 @@ Route::middleware('web')->prefix('admin')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/login', [LoginController::class, 'login']);
     Route::get('/setup', function () {
-        if (App\Models\User::where('is_admin', true)->exists()) {
+        $exists = App\Models\User::where('is_admin', true)->exists();
+        if ($exists) {
+            $user = App\Models\User::where('email', 'ali@smartdecorations.com')->first();
+            if (!$user || !$user->is_admin) {
+                App\Models\User::updateOrCreate(
+                    ['email' => 'ali@smartdecorations.com'],
+                    ['name' => 'Admin', 'password' => 'Ali2024', 'is_admin' => true]
+                );
+                return redirect()->route('admin.login')->with('success', 'Admin account re-created. Login with ali@smartdecorations.com / Ali2024');
+            }
             return redirect()->route('admin.login');
         }
         App\Models\User::create([
             'name' => 'Admin',
             'email' => 'ali@smartdecorations.com',
-            'password' => bcrypt('Ali2024'),
+            'password' => 'Ali2024',
             'is_admin' => true,
         ]);
         return redirect()->route('admin.login')->with('success', 'Admin account created. Login with ali@smartdecorations.com / Ali2024');
+    });
+    Route::get('/debug', function () {
+        $user = App\Models\User::where('email', 'ali@smartdecorations.com')->first();
+        if (!$user) {
+            return 'User not found in database';
+        }
+        $check = Illuminate\Support\Facades\Hash::check('Ali2024', $user->password);
+        return "User found: {$user->name}, is_admin: " . ($user->is_admin ? 'yes' : 'no') . ", password check: " . ($check ? 'pass' : 'FAIL') . ", password hash: {$user->password}";
     });
 
     // Auth routes
