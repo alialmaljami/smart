@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Frontend\ServiceController;
@@ -122,6 +123,74 @@ Route::post('/api/upload-storage', function (\Illuminate\Http\Request $request) 
     if ($request->input('token') !== 'smart-restore-2026') {
         return response()->json(['error' => 'Unauthorized'], 401);
     }
+
+    if ($request->input('action') === 'list-images') {
+        $tables = ['services', 'projects', 'galleries', 'materials', 'posts', 'settings'];
+        $paths = [];
+        foreach ($tables as $table) {
+            try {
+                $rows = DB::table($table)->get();
+                foreach ($rows as $row) {
+                    foreach (['image', 'images', 'cover', 'logo', 'favicon', 'og_image'] as $col) {
+                        if (isset($row->$col) && $row->$col) {
+                            $val = $row->$col;
+                            if (is_string($val)) {
+                                $paths[] = ['table' => $table, 'id' => $row->id ?? 0, 'column' => $col, 'value' => $val];
+                            } elseif (is_string(json_decode($val, true))) {
+                                $paths[] = ['table' => $table, 'id' => $row->id ?? 0, 'column' => $col, 'value' => $val];
+                            }
+                        }
+                    }
+                }
+            } catch (\Exception $e) {}
+        }
+        return response()->json($paths);
+    }
+
+    if ($request->input('action') === 'fix-paths') {
+        $fixed = 0;
+        $tables = ['services', 'projects', 'galleries', 'materials', 'posts', 'settings'];
+        foreach ($tables as $table) {
+            try {
+                $rows = DB::table($table)->get();
+                foreach ($rows as $row) {
+                    foreach (['image', 'images', 'cover', 'logo', 'favicon', 'og_image'] as $col) {
+                        if (!isset($row->$col) || !$row->$col) continue;
+                        $val = $row->$col;
+                        if ($col === 'images' && is_string($val)) {
+                            $decoded = json_decode($val, true);
+                            if (is_array($decoded)) {
+                                $changed = false;
+                                foreach ($decoded as $k => $v) {
+                                    if (is_string($v) && str_ends_with($v, '.jpg')) {
+                                        $newV = preg_replace('/\.jpg$/i', '.webp', $v);
+                                        $fullPath = storage_path('app/public/' . $newV);
+                                        if (file_exists($fullPath)) {
+                                            $decoded[$k] = $newV;
+                                            $changed = true;
+                                        }
+                                    }
+                                }
+                                if ($changed) {
+                                    DB::table($table)->where('id', $row->id)->update([$col => json_encode($decoded)]);
+                                    $fixed++;
+                                }
+                            }
+                        } elseif (is_string($val) && str_ends_with($val, '.jpg')) {
+                            $newV = preg_replace('/\.jpg$/i', '.webp', $val);
+                            $fullPath = storage_path('app/public/' . $newV);
+                            if (file_exists($fullPath)) {
+                                DB::table($table)->where('id', $row->id)->update([$col => $newV]);
+                                $fixed++;
+                            }
+                        }
+                    }
+                }
+            } catch (\Exception $e) {}
+        }
+        return response()->json(['fixed' => $fixed]);
+    }
+
     if (!$request->hasFile('file')) {
         return response()->json(['error' => 'No file uploaded'], 400);
     }
