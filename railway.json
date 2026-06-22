@@ -4,7 +4,7 @@
     "buildCommand": "composer install --no-interaction --optimize-autoloader"
   },
   "deploy": {
-    "port": 8080,
+    "port": 3000,
     "startCommand": "mkdir -p storage/app/public/fonts storage/app/public/galleries storage/app/public/projects storage/app/public/services storage/app/public/materials storage/app/public/settings; cp -n resources/fonts/* storage/app/public/fonts/ 2>/dev/null; if [ -d public/storage ] && [ ! -L public/storage ]; then echo 'Migrating public/storage files...'; cp -rn public/storage/* storage/app/public/ 2>/dev/null; rm -rf public/storage; fi; php artisan storage:link --force || echo 'storage:link failed'; php artisan view:clear; php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-3000}"
   }
 }
