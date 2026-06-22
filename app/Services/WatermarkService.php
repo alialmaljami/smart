@@ -20,7 +20,6 @@ class WatermarkService
     public function __construct()
     {
         $this->manager = new ImageManager(new Driver());
-        $this->enabled = Setting::getValue('watermark_enabled', '1') === '1';
         $this->type = Setting::getValue('watermark_type', 'text');
         $this->opacity = (int) Setting::getValue('watermark_opacity', '40');
         $this->position = Setting::getValue('watermark_position', 'bottom-center');
@@ -45,10 +44,6 @@ class WatermarkService
 
     public function apply(ImageInterface $image): ImageInterface
     {
-        if (!$this->enabled) {
-            return $image;
-        }
-
         if ($this->type === 'logo' || $this->type === 'both') {
             $this->applyLogo($image);
         }
