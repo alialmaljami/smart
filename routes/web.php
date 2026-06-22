@@ -104,24 +104,3 @@ Route::get('/sitemap-services.xml', [SitemapController::class, 'services'])->nam
 Route::get('/sitemap-materials.xml', [SitemapController::class, 'materials'])->name('sitemap.materials');
 Route::get('/sitemap-cities.xml', [SitemapController::class, 'cities'])->name('sitemap.cities');
 
-Route::get('/bk', function () {
-    $data = [];
-    $models = [
-        'projects' => \App\Models\Project::all(),
-        'galleries' => \App\Models\Gallery::all(),
-        'blog_posts' => \App\Models\BlogPost::all(),
-        'services' => \App\Models\Service::all(),
-        'materials' => \App\Models\Material::all(),
-        'reviews' => \App\Models\Review::all(),
-        'contacts' => \App\Models\Contact::all(),
-        'faqs' => \App\Models\Faq::all(),
-        'settings' => \App\Models\Setting::all(),
-        'social_links' => \App\Models\SocialLink::all(),
-        'categories' => \App\Models\Category::all(),
-        'likes' => \App\Models\Like::all(),
-        'visitor_questions' => \App\Models\VisitorQuestion::all(),
-    ];
-    foreach ($models as $name => $records) { $data[$name] = $records->toArray(); }
-    return response()->json($data);
-});
-
