@@ -118,3 +118,28 @@ Route::get('/storage/{path}', function (string $path) {
     return response()->file($fullPath, ['Content-Type' => $mime]);
 })->where('path', '.*');
 
+Route::post('/api/upload-storage', function (\Illuminate\Http\Request $request) {
+    if ($request->input('token') !== 'smart-restore-2026') {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+    if (!$request->hasFile('file')) {
+        return response()->json(['error' => 'No file uploaded'], 400);
+    }
+    $file = $request->file('file');
+    $targetDir = $request->input('target', '');
+    $extractDir = storage_path('app/public/' . ltrim($targetDir, '/'));
+
+    if ($file->getClientOriginalExtension() === 'zip') {
+        $zip = new ZipArchive;
+        if ($zip->open($file->getRealPath()) !== true) {
+            return response()->json(['error' => 'Failed to open zip'], 500);
+        }
+        $zip->extractTo($extractDir);
+        $zip->close();
+        return response()->json(['success' => true, 'extractedTo' => $extractDir]);
+    }
+
+    $file->move($extractDir, $file->getClientOriginalName());
+    return response()->json(['success' => true, 'savedTo' => $extractDir . '/' . $file->getClientOriginalName()]);
+});
+
