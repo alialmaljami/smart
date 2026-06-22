@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Frontend\ServiceController;
@@ -106,4 +107,14 @@ Route::get('/sitemap-blog.xml', [SitemapController::class, 'blog'])->name('sitem
 Route::get('/sitemap-services.xml', [SitemapController::class, 'services'])->name('sitemap.services');
 Route::get('/sitemap-materials.xml', [SitemapController::class, 'materials'])->name('sitemap.materials');
 Route::get('/sitemap-cities.xml', [SitemapController::class, 'cities'])->name('sitemap.cities');
+
+// Fallback route for storage files (when symlink is missing on Railway)
+Route::get('/storage/{path}', function (string $path) {
+    $fullPath = storage_path('app/public/' . $path);
+    if (!file_exists($fullPath)) {
+        abort(404);
+    }
+    $mime = mime_content_type($fullPath);
+    return response()->file($fullPath, ['Content-Type' => $mime]);
+})->where('path', '.*');
 
