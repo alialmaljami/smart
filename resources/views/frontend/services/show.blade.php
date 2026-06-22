@@ -77,7 +77,7 @@
                                 :class="isFavorite('service', {{ $service->id }}) ? 'text-red-400' : 'text-white'"
                                 class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all shadow-lg"
                                 title="{{ __('Add to Favorites') }}">
-                            <i class="text-sm" :class="isFavorite('service', {{ $service->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="isFavorite('service', {{ $service->id }}) ? 'currentColor' : 'none'"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                         </button>
                         <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}" class="w-full h-80 object-cover" loading="lazy">
                     </div>

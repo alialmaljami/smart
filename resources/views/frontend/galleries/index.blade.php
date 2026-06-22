@@ -68,7 +68,7 @@
                                 :class="isFavorite('gallery', {{ $gallery->id }}) ? 'text-red-400' : 'text-white'"
                                 class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                                 title="{{ __('Add to Favorites') }}">
-                            <i class="text-xs" :class="isFavorite('gallery', {{ $gallery->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="isFavorite('gallery', {{ $gallery->id }}) ? 'currentColor' : 'none'"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                         </button>
                         <a href="{{ route('gallery.show', [$gallery->id, $gallery->slug]) }}" class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
                             <div class="absolute bottom-0 right-0 left-0 p-5">

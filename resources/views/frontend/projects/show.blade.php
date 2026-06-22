@@ -89,7 +89,7 @@
                                     :class="isFavorite('project', {{ $project->id }}) ? 'text-red-400' : 'text-white'"
                                     class="absolute top-2 sm:top-3 right-2 sm:right-3 md:top-4 md:right-4 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                                     title="{{ __('Add to Favorites') }}">
-                                <i class="text-xs" :class="isFavorite('project', {{ $project->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="isFavorite('project', {{ $project->id }}) ? 'currentColor' : 'none'"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                             </button>
 
                             @if($totalImages > 1)
@@ -249,7 +249,7 @@
                                 :class="isFavorite('project', {{ $related->id }}) ? 'text-red-400' : 'text-white'"
                                 class="absolute top-2 sm:top-3 right-2 sm:right-3 z-10 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
                                 title="{{ __('Add to Favorites') }}">
-                            <i class="text-[10px] sm:text-xs" :class="isFavorite('project', {{ $related->id }}) ? 'fas fa-heart' : 'far fa-heart'"></i>
+                            <svg class="w-3 sm:w-3.5 h-3 sm:h-3.5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="isFavorite('project', {{ $related->id }}) ? 'currentColor' : 'none'"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                         </button>
                         <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 left-2 sm:left-4">
                             <h3 class="text-white font-bold text-xs sm:text-base leading-tight break-words">{{ $related->title }}</h3>
