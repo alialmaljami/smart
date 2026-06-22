@@ -758,6 +758,13 @@
                             {{ __('Admin Panel') }}
                         </a>
                     </div>
+                    @else
+                    <div class="px-4">
+                        <a href="{{ route('admin.login') }}" class="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white/60 hover:text-[var(--gold)] hover:bg-white/5 transition-colors border border-white/10">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+                            {{ __('Login') }}
+                        </a>
+                    </div>
                     @endauth
                     <div class="px-4">
                         <p class="text-white/30 text-xs mb-3 tracking-wider uppercase">{{ __('Follow Us') }}</p>
@@ -816,6 +823,10 @@
                                 @auth
                                 <a href="{{ route('admin.dashboard') }}" class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--stone)] transition-all" title="لوحة التحكم">
                                     <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                </a>
+                                @else
+                                <a href="{{ route('admin.login') }}" class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--stone)] transition-all" title="{{ __('Login') }}">
+                                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                                 </a>
                                 @endauth
                             </div>
