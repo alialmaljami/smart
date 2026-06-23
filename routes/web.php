@@ -119,6 +119,17 @@ Route::get('/storage/{path}', function (string $path) {
     return response()->file($fullPath, ['Content-Type' => $mime]);
 })->where('path', '.*');
 
+Route::get('/storage/{path}', function (string $path) {
+    if (str_contains($path, '..')) {
+        abort(404);
+    }
+    $disk = \Illuminate\Support\Facades\Storage::disk('public');
+    if (!$disk->exists($path)) {
+        abort(404);
+    }
+    return response()->file($disk->path($path));
+})->where('path', '.*');
+
 Route::post('/api/upload-storage', function (\Illuminate\Http\Request $request) {
     if ($request->input('token') !== 'smart-restore-2026') {
         return response()->json(['error' => 'Unauthorized'], 401);
