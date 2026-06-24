@@ -4,7 +4,6 @@
     "buildCommand": "composer install --no-interaction --optimize-autoloader"
   },
   "deploy": {
-    "port": 3000,
-    "startCommand": "mkdir -p storage/app/public/galleries storage/app/public/projects storage/app/public/services storage/app/public/materials storage/app/public/settings; if [ -d public/storage ] && [ ! -L public/storage ]; then echo 'Migrating public/storage files...'; cp -rn public/storage/* storage/app/public/ 2>/dev/null; rm -rf public/storage; fi; php artisan storage:link --force || echo 'storage:link failed'; php artisan storage:extract-zips || echo 'extract-zips failed'; php artisan view:clear; php artisan migrate --force; php artisan route:clear; php artisan config:clear; php -d post_max_size=32M -d upload_max_filesize=32M -d max_execution_time=300 -S 0.0.0.0:${PORT:-3000} -t public server.php"
+    "startCommand": "mkdir -p storage/app/public/galleries storage/app/public/projects storage/app/public/services storage/app/public/materials storage/app/public/settings; if [ -d public/storage ] && [ ! -L public/storage ]; then echo 'Migrating public/storage files...'; cp -rn public/storage/* storage/app/public/ 2>/dev/null; rm -rf public/storage; fi; php artisan storage:link --force || echo 'storage:link failed'; php artisan storage:extract-zips || echo 'extract-zips failed'; php artisan migrate --force --no-interaction; php artisan view:clear; php artisan route:clear; php artisan config:clear; php -d post_max_size=32M -d upload_max_filesize=32M -d max_execution_time=300 -S 0.0.0.0:\${PORT:-3000} -t public server.php"
   }
 }

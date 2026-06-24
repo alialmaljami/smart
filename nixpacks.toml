@@ -12,4 +12,4 @@ PHP_INI_POST_MAX_SIZE = "100M"
 PHP_INI_UPLOAD_MAX_FILESIZE = "100M"
 
 [start]
-cmd = 'mkdir -p storage/app/public/galleries storage/app/public/projects storage/app/public/services storage/app/public/materials storage/app/public/settings; if [ -d public/storage ] && [ ! -L public/storage ]; then echo "Migrating public/storage files..."; cp -rn public/storage/* storage/app/public/ 2>/dev/null; rm -rf public/storage; fi; php artisan storage:link --force || echo "storage:link failed"; php artisan storage:extract-zips || echo "extract-zips failed"; php artisan view:clear; php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=3000'
+cmd = 'echo "Using railway.json startCommand"'
