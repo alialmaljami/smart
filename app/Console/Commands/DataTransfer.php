@@ -13,35 +13,45 @@ class DataTransfer extends Command
 
     public function handle()
     {
-        $sqlite = DB::connection('sqlite');
         $pgsql = DB::connection('pgsql');
+        $skip = ['migrations', 'sqlite_sequence', 'cache', 'cache_locks', 'sessions', 'failed_jobs', 'job_batches', 'password_reset_tokens', '__temp__blog_posts'];
 
-        $rows = $sqlite->select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE '%migrations%' AND name != 'sqlite_sequence' ORDER BY name");
-        $tables = array_values(array_filter(array_map(fn($r) => is_string($r) ? $r : $r->name, $rows), fn($n) => !str_contains($n, '__temp__')));
+        $allData = [];
+
+        $jsonPath = database_path('db_data.json');
+        if (file_exists($jsonPath)) {
+            $this->info('Loading data from JSON file');
+            $allData = json_decode(file_get_contents($jsonPath), true) ?? [];
+        } else {
+            $this->info('Loading data from SQLite');
+            config(['database.connections.sqlite.database' => database_path('database.sqlite')]);
+            $sqlite = DB::connection('sqlite');
+            $rows = $sqlite->select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE '%migrations%' AND name != 'sqlite_sequence' ORDER BY name");
+            $tables = array_values(array_filter(array_map(fn($r) => is_string($r) ? $r : $r->name, $rows), fn($n) => !in_array($n, $skip) && !str_contains($n, '__temp__')));
+            foreach ($tables as $t) {
+                $allData[$t] = $sqlite->table($t)->get()->map(fn($r) => (array) $r)->toArray();
+            }
+        }
 
         $pgsql->statement('DROP TABLE IF EXISTS "__temp__blog_posts"');
         $this->disableForeignKeys($pgsql);
 
-        foreach ($tables as $name) {
+        foreach ($allData as $name => $data) {
+            if (in_array($name, $skip)) continue;
             $pgCount = $pgsql->table($name)->count();
             if ($pgCount > 0 && !$this->option('force')) {
                 $this->warn("Skipping {$name} - {$pgCount} rows already exist");
                 continue;
             }
-
             if ($this->option('force') && $pgCount > 0) {
                 $pgsql->table($name)->truncate();
             }
-
-            $data = $sqlite->table($name)->get();
-
-            if ($data->isNotEmpty()) {
-                $chunks = $data->chunk(100);
+            if (!empty($data)) {
+                $chunks = array_chunk($data, 100);
                 foreach ($chunks as $chunk) {
-                    $rows = $chunk->map(fn($row) => (array) $row)->toArray();
-                    $pgsql->table($name)->insert($rows);
+                    $pgsql->table($name)->insert($chunk);
                 }
-                $this->info("Transferred {$data->count()} rows to {$name}");
+                $this->info("Transferred " . count($data) . " rows to {$name}");
                 try { $this->resetSequence($pgsql, $name); } catch (\Exception $e) {}
             } else {
                 $this->warn("No data in {$name}");
