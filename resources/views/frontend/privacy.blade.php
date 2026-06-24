@@ -22,7 +22,7 @@
     </div>
 </section>
 
-<section class="py-16 bg-[var(--cream)]">
+<section class="py-16 bg-[var(--navy)]">
     <div class="container mx-auto px-4 max-w-4xl">
         <div class="prose prose-lg max-w-none" style="color: var(--text-light);">
             <div class="card-elegant p-4 md:p-8 space-y-6">

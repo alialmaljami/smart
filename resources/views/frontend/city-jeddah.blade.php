@@ -26,7 +26,7 @@
     </div>
 </section>
 
-<section class="py-12 md:py-20 bg-[var(--cream)]">
+<section class="py-12 md:py-20 bg-[var(--navy)]">
     <div class="container mx-auto px-4 max-w-5xl">
         <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-12 md:mb-16">
             <div data-aos="fade-left">
@@ -54,34 +54,34 @@
                         <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">وباقي المناطق</span>
                     </div>
                 </div>
-                <div class="space-y-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)]"><i class="fas fa-check"></i></div>
-                        <span class="text-[var(--text-light)]">تصميم وتنفيذ ديكورات المنازل والفلل</span>
+                <div class="space-y-2 md:space-y-3">
+                    <div class="flex items-center gap-2 md:gap-3">
+                        <div class="w-7 h-7 md:w-10 md:h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)] shrink-0"><i class="fas fa-check text-xs md:text-base"></i></div>
+                        <span class="text-sm md:text-base text-[var(--text-light)]">تصميم وتنفيذ ديكورات المنازل والفلل</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)]"><i class="fas fa-check"></i></div>
-                        <span class="text-[var(--text-light)]">ديكورات المجلس والغرف والمعيشة</span>
+                    <div class="flex items-center gap-2 md:gap-3">
+                        <div class="w-7 h-7 md:w-10 md:h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)] shrink-0"><i class="fas fa-check text-xs md:text-base"></i></div>
+                        <span class="text-sm md:text-base text-[var(--text-light)]">ديكورات المجلس والغرف والمعيشة</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)]"><i class="fas fa-check"></i></div>
-                        <span class="text-[var(--text-light)]">ديكورات المطابخ والحمامات العصرية</span>
+                    <div class="flex items-center gap-2 md:gap-3">
+                        <div class="w-7 h-7 md:w-10 md:h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)] shrink-0"><i class="fas fa-check text-xs md:text-base"></i></div>
+                        <span class="text-sm md:text-base text-[var(--text-light)]">ديكورات المطابخ والحمامات العصرية</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)]"><i class="fas fa-check"></i></div>
-                        <span class="text-[var(--text-light)]">واجهات خارجية وحدائق منزلية</span>
+                    <div class="flex items-center gap-2 md:gap-3">
+                        <div class="w-7 h-7 md:w-10 md:h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[var(--gold)] shrink-0"><i class="fas fa-check text-xs md:text-base"></i></div>
+                        <span class="text-sm md:text-base text-[var(--text-light)]">واجهات خارجية وحدائق منزلية</span>
                     </div>
                 </div>
             </div>
-            <div data-aos="fade-right" class="rounded-2xl overflow-hidden h-64 md:h-96 bg-gradient-to-br from-[var(--navy)] to-[var(--navy)] flex items-center justify-center">
-                <div class="text-center p-6 md:p-8">
-                    <i class="fas fa-city text-4xl md:text-6xl text-[var(--gold)]/30 mb-4"></i>
-                    <p class="text-white/40 text-base md:text-lg">جدة - المملكة العربية السعودية</p>
+            <div data-aos="fade-right" class="rounded-2xl overflow-hidden h-48 md:h-96 bg-gradient-to-br from-[var(--navy)] to-[var(--navy)] flex items-center justify-center">
+                <div class="text-center p-4 md:p-8">
+                    <i class="fas fa-city text-3xl md:text-6xl text-[var(--gold)]/30 mb-2 md:mb-4"></i>
+                    <p class="text-white/40 text-sm md:text-lg">جدة - المملكة العربية السعودية</p>
                 </div>
             </div>
         </div>
 
-        <div data-aos="fade-up" class="text-center bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-[var(--stone)]">
+        <div data-aos="fade-up" class="text-center bg-[var(--white)] rounded-2xl p-5 md:p-10 shadow-sm border border-[var(--stone)]">
             <h3 class="text-2xl font-bold text-[var(--text-heading)] mb-4">احصل على استشارة مجانية في جدة</h3>
             <p class="text-[var(--text-light)] mb-8 max-w-xl mx-auto">تواصل معنا اليوم للحصول على استشارة مجانية لمشروعك في جدة</p>
             <a href="{{ route('contact') }}" class="btn-primary px-8 py-3">تواصل معنا</a>
@@ -90,7 +90,7 @@
 </section>
 
 @if($services->count())
-<section class="py-12 md:py-16 bg-[var(--cream)]">
+<section class="py-12 md:py-16 bg-[var(--white)]">
     <div class="container mx-auto px-4 max-w-6xl">
         <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
             <h2 class="section-title text-[var(--text-heading)]">{{ __('Services') }}</h2>
@@ -129,7 +129,7 @@
 @endif
 
 @if($galleries->count())
-<section class="py-12 md:py-16 bg-[var(--cream)]">
+<section class="py-12 md:py-16 bg-[var(--navy)]">
     <div class="container mx-auto px-4 max-w-6xl">
         <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
             <h2 class="section-title text-[var(--text-heading)]">{{ __('Gallery') }}</h2>
@@ -150,7 +150,7 @@
 @endif
 
 @if($projects->count())
-<section class="py-12 md:py-16 bg-[var(--cream)]">
+<section class="py-12 md:py-16 bg-[var(--white)]">
     <div class="container mx-auto px-4 max-w-6xl">
         <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
             <h2 class="section-title text-[var(--text-heading)]">{{ __('Recent Projects') }}</h2>
@@ -187,7 +187,7 @@
 </section>
 @endif
 
-<section class="py-12 md:py-16 bg-[var(--cream)]">
+<section class="py-12 md:py-16 bg-[var(--navy)]">
     <div class="container mx-auto px-4 text-center">
         <div data-aos="fade-up">
             <h2 class="section-title text-[var(--text-heading)] mb-4">أعمالنا في جدة</h2>

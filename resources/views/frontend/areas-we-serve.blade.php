@@ -23,7 +23,7 @@
     </div>
 </section>
 
-<section class="py-20 bg-[var(--cream)]">
+<section class="py-20 bg-[var(--navy)]">
     <div class="container mx-auto px-4 max-w-6xl">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <a href="{{ route('city.jeddah') }}" data-aos="fade-up" class="group bg-white rounded-2xl overflow-hidden border border-[var(--stone)]/20 hover:shadow-xl transition-all">

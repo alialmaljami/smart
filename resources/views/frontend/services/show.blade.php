@@ -39,7 +39,7 @@
 @section('content')
 
 {{-- Breadcrumb --}}
-<section class="pt-4 pb-4 bg-[var(--cream)]">
+<section class="pt-4 pb-4 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
         <nav class="flex items-center space-x-2 space-x-reverse text-sm text-[var(--text-light)]">
             <a href="{{ route('home') }}" class="hover:text-[var(--gold)] transition-colors">{{ __('Home') }}</a>
@@ -90,7 +90,7 @@
 
 {{-- Gallery --}}
 @if(count($images))
-    <section class="py-16 bg-[var(--cream)]">
+    <section class="py-16 bg-[var(--navy)]">
         <div class="container mx-auto px-4">
             <div data-aos="fade-up" class="text-center mb-12">
                 <h2 class="text-3xl font-black text-[var(--text-heading)]">{{ __('Images') }}</h2>
@@ -130,7 +130,7 @@
 
 {{-- Related Projects --}}
 @if($relatedProjects->count())
-    <section class="py-16 bg-[var(--cream)]">
+    <section class="py-16 bg-[var(--navy)]">
         <div class="container mx-auto px-4">
             <div data-aos="fade-up" class="text-center mb-12">
                 <h2 class="text-3xl font-black text-[var(--text-heading)]">{{ __('Related Projects') }}</h2>

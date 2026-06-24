@@ -22,7 +22,7 @@
 </section>
 
 {{-- Results --}}
-<section class="py-16 bg-[var(--cream)]">
+<section class="py-16 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
         @php $hasResults = $services->count() || $projects->count() || $posts->count() || $galleries->count() || $materials->count(); @endphp
 

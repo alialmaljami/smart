@@ -97,7 +97,7 @@
 
             {{-- Map --}}
             <div data-aos="fade-right">
-                <h2 class="text-3xl font-black text-[var(--gold)] mb-2">{{ __('Our Location') }}</h2>
+                <h2 class="text-2xl md:text-3xl font-black text-[var(--gold)] mb-2">{{ __('Our Location') }}</h2>
                 <div class="section-divider mb-6"></div>
                 @if($mapEmbedSrc)
                     <div class="rounded-2xl overflow-hidden h-64 md:h-96">

@@ -27,7 +27,7 @@
 </section>
 
 {{-- Categories Grid --}}
-<section class="py-20 bg-[var(--cream)]">
+<section class="py-20 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @forelse($categories as $category)

@@ -73,8 +73,8 @@
 @endif
 
 @if($related->count())
-    <section class="py-16 bg-[var(--cream)]">
-        <div class="container mx-auto px-4 max-w-4xl">
+<section class="py-16 bg-[var(--navy)]">
+    <div class="container mx-auto px-4 max-w-4xl">
             <h2 class="text-xl font-bold text-[var(--text-heading)] mb-6">{{ __('Related Questions') }}</h2>
             <div class="space-y-3">
                 @foreach($related as $rq)

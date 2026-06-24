@@ -13,7 +13,7 @@
 @section('content')
 
 {{-- Breadcrumb --}}
-<section class="pt-4 pb-4 bg-[var(--cream)]">
+<section class="pt-4 pb-4 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
         <nav class="flex items-center space-x-2 space-x-reverse text-sm text-[var(--stone)]">
             <a href="{{ route('home') }}" class="hover:text-[var(--gold)] transition-colors">{{ __('Home') }}</a>
@@ -52,7 +52,7 @@
 
 {{-- Materials Gallery --}}
 @if($materials->count())
-    <section class="py-16 bg-[var(--cream)]">
+    <section class="py-16 bg-[var(--navy)]">
         <div class="container mx-auto px-4">
             <div data-aos="fade-up" class="text-center mb-12">
                 <h2 class="text-3xl font-black text-[var(--text-heading)]">{{ __('Available Materials') }}</h2>
@@ -155,7 +155,7 @@
 
 {{-- Related Services --}}
 @if($relatedServices->count())
-    <section class="py-16 bg-[var(--cream)]">
+    <section class="py-16 bg-[var(--navy)]">
         <div class="container mx-auto px-4">
             <div data-aos="fade-up" class="text-center mb-12">
                 <h2 class="text-3xl font-black text-[var(--text-heading)]">{{ __('Related Services') }}</h2>
@@ -184,7 +184,7 @@
 
 {{-- Social Share --}}
 @php $shareSocialLinks = App\Models\SocialLink::where('is_active', true)->orderBy('sort_order')->get(); @endphp
-<section class="py-8 bg-[var(--cream)] border-t border-[var(--stone)]">
+<section class="py-8 bg-[var(--navy)] border-t border-[var(--stone)]">
     <div class="container mx-auto px-4 text-center">
         <span class="text-[var(--text-light)] ml-2">{{ __('Share this category:') }}</span>
         <div class="inline-flex space-x-2 space-x-reverse items-center" dir="ltr">

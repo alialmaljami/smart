@@ -15,7 +15,7 @@
 @section('content')
 
 {{-- Breadcrumb --}}
-<section class="pt-4 pb-4 bg-[var(--cream)]">
+<section class="pt-4 pb-4 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
         <nav class="flex items-center space-x-2 space-x-reverse text-sm text-[var(--stone)]">
             <a href="{{ route('home') }}" class="hover:text-[var(--gold)] transition-colors">{{ __('Home') }}</a>
@@ -32,7 +32,7 @@
 </section>
 
 {{-- Material Detail --}}
-<section class="py-12 bg-[var(--cream)]">
+<section class="py-12 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
         <div class="grid lg:grid-cols-2 gap-12 items-start">
             {{-- Image --}}
@@ -137,7 +137,7 @@
 
 {{-- Social Share --}}
 @php $shareSocialLinks = App\Models\SocialLink::where('is_active', true)->orderBy('sort_order')->get(); @endphp
-<section class="py-8 bg-[var(--cream)] border-t border-[var(--stone)]">
+<section class="py-8 bg-[var(--navy)] border-t border-[var(--stone)]">
     <div class="container mx-auto px-4 text-center">
         <span class="text-[var(--text-light)] ml-2">{{ __('Share') }}:</span>
         <div class="inline-flex space-x-2 space-x-reverse items-center" dir="ltr">

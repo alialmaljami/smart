@@ -22,7 +22,7 @@
     </div>
 </section>
 
-<section class="py-16 bg-[var(--cream)]">
+<section class="py-16 bg-[var(--navy)]">
     <div class="container mx-auto px-4 max-w-4xl">
         <div class="card-elegant p-4 md:p-8 space-y-6">
             <h2 class="text-2xl font-bold text-[var(--text-heading)]">مقدمة</h2>

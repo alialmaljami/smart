@@ -24,7 +24,7 @@
     </div>
 </section>
 
-<section class="py-20 bg-[var(--cream)]">
+<section class="py-20 bg-[var(--navy)]">
     <div class="container mx-auto px-4 max-w-4xl">
         <div class="space-y-4" data-aos="fade-up">
             @forelse($questions as $q)

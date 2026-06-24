@@ -64,7 +64,7 @@
 @section('content')
 
 {{-- Breadcrumb --}}
-<section class="pt-4 pb-4 bg-[var(--cream)] overflow-x-hidden">
+<section class="pt-4 pb-4 bg-[var(--navy)] overflow-x-hidden">
     <div class="container mx-auto px-4 max-w-full">
         <nav class="flex items-center flex-wrap gap-x-1 gap-y-1 text-[11px] sm:text-sm text-[var(--stone)]">
             <a href="{{ route('home') }}" class="text-[var(--text-muted)] hover:text-[var(--gold)] whitespace-nowrap">{{ __('Home') }}</a>
@@ -77,7 +77,7 @@
 </section>
 
 {{-- Post Content --}}
-<article class="py-6 md:py-12 bg-[var(--cream)] overflow-x-hidden">
+<article class="py-6 md:py-12 bg-[var(--navy)] overflow-x-hidden">
     <div class="container mx-auto px-4 max-w-full">
         <div class="max-w-4xl mx-auto min-w-0 max-w-full">
             @if($post->image)
@@ -159,7 +159,7 @@
 
 {{-- Related Posts --}}
 @if($relatedPosts->count())
-    <section class="py-10 md:py-16 bg-[var(--cream)] overflow-x-hidden">
+    <section class="py-10 md:py-16 bg-[var(--navy)] overflow-x-hidden">
         <div class="container mx-auto px-4 max-w-full">
             <div class="text-center mb-6 md:mb-12">
                 <h2 class="text-xl md:text-3xl font-black text-[var(--gold)]">{{ __('Related Articles') }}</h2>

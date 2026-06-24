@@ -40,9 +40,9 @@
 </section>
 
 {{-- Blog Posts --}}
-<section class="py-10 bg-[var(--cream)]">
+<section class="py-10 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8">
             @forelse($posts as $post)
                 @php
                     $postImages = is_array($post->images) ? array_values(array_filter($post->images)) : [];
@@ -96,19 +96,19 @@
                             <i class="fas fa-newspaper text-6xl text-white opacity-50"></i>
                         </div>
                     @endif
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 text-sm text-[var(--text-light)] mb-3">
+                    <div class="p-5 md:p-6">
+                        <div class="flex items-center gap-2 text-xs md:text-sm text-[var(--text-light)] mb-2 md:mb-3">
                             <span><x-icon name="star" class="w-3 h-3 text-[var(--gold)] inline-block ml-1 align-middle" /> {{ $post->created_at->format('d M Y') }}</span>
                         </div>
-                        <h2 class="text-xl font-bold text-[var(--text-heading)] mb-3 leading-relaxed">
+                        <h2 class="text-lg md:text-xl font-bold text-[var(--text-heading)] mb-2 md:mb-3 leading-relaxed">
                             <a href="{{ route('blog.post', $post->slug) }}" class="hover:text-[var(--gold)] transition-colors">
                                 {{ $post->title }}
                             </a>
                         </h2>
                         @if($post->excerpt)
-                            <p class="text-[var(--text-light)] text-sm leading-relaxed mb-4">{{ Str::limit($post->excerpt, 120) }}</p>
+                            <p class="text-[var(--text-light)] text-xs md:text-sm leading-relaxed mb-3 md:mb-4">{{ Str::limit($post->excerpt, 120) }}</p>
                         @endif
-                        <a href="{{ route('blog.post', $post->slug) }}" class="inline-flex items-center text-[var(--gold)] font-bold text-sm hover:gap-2 transition-all">
+                        <a href="{{ route('blog.post', $post->slug) }}" class="inline-flex items-center text-[var(--gold)] font-bold text-xs md:text-sm hover:gap-2 transition-all">
                             {{ __('Read More') }} <i class="fas fa-arrow-left mr-1"></i>
                         </a>
                     </div>

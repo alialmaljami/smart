@@ -33,7 +33,7 @@
 @section('content')
 
 {{-- Breadcrumb --}}
-<section class="pt-4 pb-4 bg-[var(--cream)] overflow-x-hidden">
+<section class="pt-4 pb-4 bg-[var(--navy)] overflow-x-hidden">
     <div class="container mx-auto px-4 max-w-full">
         <nav class="flex items-center flex-wrap gap-x-1 gap-y-1 text-[11px] sm:text-sm text-[var(--stone)]">
             <a href="{{ route('home') }}" class="text-[var(--text-muted)] hover:text-[var(--gold)] whitespace-nowrap">{{ __('Home') }}</a>
@@ -50,7 +50,7 @@
 </section>
 
 {{-- Image Detail --}}
-<section class="py-6 md:py-12 bg-[var(--cream)] overflow-x-hidden">
+<section class="py-6 md:py-12 bg-[var(--navy)] overflow-x-hidden">
     <div class="container mx-auto px-4 max-w-full">
         <div class="max-w-5xl mx-auto min-w-0 max-w-full">
             {{-- Main Image --}}
@@ -136,7 +136,7 @@
 
 {{-- Social Share --}}
 @php $shareSocialLinks = App\Models\SocialLink::where('is_active', true)->orderBy('sort_order')->get(); @endphp
-<section class="py-6 md:py-8 bg-[var(--cream)] border-t border-[var(--stone)] overflow-x-hidden">
+<section class="py-6 md:py-8 bg-[var(--navy)] border-t border-[var(--stone)] overflow-x-hidden">
     <div class="container mx-auto px-4 max-w-full text-center">
         <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
             <span class="text-xs sm:text-base text-[var(--text-light)]">{{ __('Share') }}:</span>

@@ -225,7 +225,7 @@
 
 {{-- Related Projects --}}
 @if($relatedProjects->count())
-    <section class="py-10 md:py-16 bg-[var(--cream)]">
+    <section class="py-10 md:py-16 bg-[var(--navy)]">
         <div class="container mx-auto px-4 max-w-full">
             <div class="text-center mb-6 md:mb-12">
                 <h2 class="text-xl md:text-3xl font-black text-[var(--gold)]">{{ __('Similar Projects') }}</h2>
@@ -266,7 +266,7 @@
 
 {{-- Social Share --}}
 @php $shareSocialLinks = App\Models\SocialLink::where('is_active', true)->orderBy('sort_order')->get(); @endphp
-<section class="py-6 md:py-8 bg-[var(--cream)] border-t border-[var(--stone)]">
+<section class="py-6 md:py-8 bg-[var(--navy)] border-t border-[var(--stone)]">
     <div class="container mx-auto px-4 max-w-full text-center">
         <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
             <span class="text-xs sm:text-base text-[var(--text-light)]">{{ __('Share this project:') }}</span>

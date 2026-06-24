@@ -371,6 +371,25 @@
             .grid { gap: 0.75rem !important; }
         }
 
+        /* Mobile-friendly header: reduce height on small screens */
+        @media (max-width: 480px) {
+            header .h-20 { height: 3.5rem !important; }
+            main { padding-top: 3.5rem !important; }
+            header .logo-inner .text-xl { font-size: 1rem; }
+            header .logo-inner .text-[10px] { font-size: 8px; }
+            .sidebar-menu { width: 100%; right: -100%; }
+            .sticky.top-20 { top: 56px !important; }
+        }
+
+        @media (max-width: 640px) {
+            .sticky.top-20 { top: 56px !important; }
+        }
+
+        /* Blog card image optimization for mobile */
+        @media (max-width: 480px) {
+            .card-elegant .h-52 { height: 11rem !important; }
+        }
+
         .section-divider {
             width: 48px;
             height: 2px;

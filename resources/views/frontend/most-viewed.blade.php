@@ -32,7 +32,7 @@
 </section>
 
 @if($projects->count())
-<section class="py-16 bg-[var(--cream)]">
+<section class="py-16 bg-[var(--white)]">
     <div class="container mx-auto px-4">
         <h2 class="section-title text-center mb-12">{{ __('Most Viewed Projects') }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -68,7 +68,7 @@
 @endif
 
 @if($posts->count())
-<section class="py-16 bg-[var(--cream)]">
+<section class="py-16 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
         <h2 class="section-title text-center mb-12">{{ __('Most Read Articles') }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -104,7 +104,7 @@
 @endif
 
 @if($services->count())
-<section class="py-16 bg-[var(--cream)]">
+<section class="py-16 bg-[var(--white)]">
     <div class="container mx-auto px-4">
         <h2 class="section-title text-center mb-12">{{ __('Most Popular Services') }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -140,7 +140,7 @@
 @endif
 
 @if($galleries->count())
-<section class="py-16 bg-[var(--cream)]">
+<section class="py-16 bg-[var(--navy)]">
     <div class="container mx-auto px-4">
         <h2 class="section-title text-center mb-12">{{ __('Most Viewed Gallery') }}</h2>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -166,7 +166,7 @@
 @endif
 
 @if($materials->count())
-<section class="py-16 bg-[var(--cream)]">
+<section class="py-16 bg-[var(--white)]">
     <div class="container mx-auto px-4">
         <h2 class="section-title text-center mb-12">{{ __('Most Viewed Materials') }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
