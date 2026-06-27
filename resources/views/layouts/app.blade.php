@@ -358,13 +358,25 @@
             .section-padding { padding-top: 4rem !important; padding-bottom: 4rem !important; }
             .container-wide { padding-left: 1rem; padding-right: 1rem; }
             section[class*="py-32"] { padding-top: 5rem !important; padding-bottom: 5rem !important; }
+            section[class*="py-28"] { padding-top: 4.5rem !important; padding-bottom: 4.5rem !important; }
+            section[class*="py-24"] { padding-top: 4rem !important; padding-bottom: 4rem !important; }
             section[class*="py-20"]:not(.hero-section) { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+            section[class*="py-16"] { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+            section[class*="py-12"] { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+            section[class*="py-10"] { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+            section[class*="py-6"] { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
         }
 
         @media (max-width: 480px) {
             .hero-section { padding-top: 4rem !important; padding-bottom: 4rem !important; }
             section[class*="py-32"] { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+            section[class*="py-28"] { padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
             section[class*="py-24"] { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+            section[class*="py-20"]:not(.hero-section) { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+            section[class*="py-16"] { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+            section[class*="py-12"] { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+            section[class*="py-10"] { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+            section[class*="py-6"] { padding-top: 1rem !important; padding-bottom: 1rem !important; }
         }
 
         /* Ensure cards stack properly on very small screens */
