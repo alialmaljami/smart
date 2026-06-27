@@ -27,7 +27,7 @@ class FavoriteController extends Controller
         if (isset($types['project'])) {
             $result['project'] = Project::whereIn('id', $types['project'])
                 ->where('is_active', true)
-                ->get(['id', 'title', 'slug', 'image', 'images', 'client_name', 'created_at']);
+                ->get(['id', 'title', 'slug', 'image', 'images', 'tags', 'created_at']);
         }
         if (isset($types['blog'])) {
             $result['blog'] = BlogPost::whereIn('id', $types['blog'])

@@ -134,8 +134,12 @@
                             @endif
                         </span>
                         <h3 class="text-xl font-bold text-white">{{ $project->title }}</h3>
-                        @if($project->client_name)
-                            <p class="text-[var(--text-light)] text-sm"><x-icon name="user" class="w-4 h-4 inline-block ml-1 align-middle" /> {{ $project->client_name }}</p>
+                        @if(is_array($project->tags) && count($project->tags))
+                            <div class="flex flex-wrap gap-1 mt-1">
+                                @foreach(array_slice($project->tags, 0, 3) as $tag)
+                                    <a href="{{ route('tag', urlencode($tag)) }}" class="text-[10px] font-bold text-[var(--gold)] bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20 px-2 py-0.5 rounded-full transition-colors">{{ $tag }}</a>
+                                @endforeach
+                            </div>
                         @endif
                     </div>
                     <a href="{{ route('project.show', $project->slug) }}" class="absolute inset-0 z-[3] flex items-center justify-center bg-[var(--gold)]/80 opacity-0 group-hover:opacity-100 transition-all duration-300">

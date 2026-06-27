@@ -36,6 +36,7 @@ class Material extends Model
             'images' => 'array',
             'is_active' => 'boolean',
             'is_indexed' => 'boolean',
+            'tags' => 'array',
         ];
     }
 

@@ -25,7 +25,7 @@ class DashboardController extends Controller
         $contactsCount = Contact::count();
 
         $recentServices = Service::latest()->take(5)->get();
-        $recentProjects = Project::latest()->take(5)->get();
+        $recentProjects = Project::orderBy('sort_order', 'desc')->take(5)->get();
         $recentPosts = BlogPost::latest()->take(5)->get();
         $recentContacts = Contact::where('is_active', true)->get();
 

@@ -11,4 +11,4 @@ Disallow: /storage/thumb/
 Disallow: /storage/*/thumb/
 Disallow: /_debugbar/
 
-Sitemap: {{ url('/sitemap.xml') }}
+Sitemap: https://web-production-d6d74.up.railway.app/sitemap.xml

@@ -52,6 +52,7 @@ class MaterialController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'materials');
@@ -93,6 +94,7 @@ class MaterialController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'materials', $material->image);

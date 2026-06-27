@@ -70,7 +70,7 @@
                             title: d.title || d.name,
                             img: img ? '/storage/' + img : '',
                             desc: d.description ? d.description.substring(0, 100) + '...' : '',
-                            meta: d.client_name || ''
+                            meta: d.tags && d.tags.length ? d.tags.slice(0, 3).join(', ') : ''
                         });
                     });
                 }

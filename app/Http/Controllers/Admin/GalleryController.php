@@ -49,6 +49,7 @@ class GalleryController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['title']);
@@ -90,6 +91,7 @@ class GalleryController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['title']);

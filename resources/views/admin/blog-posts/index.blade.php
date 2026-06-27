@@ -78,11 +78,7 @@
             </table>
         </div>
 
-        @if(isset($posts) && method_exists($posts, 'links'))
-            <div class="px-4 py-3 border-t border-gray-200">
-                {{ $posts->links() }}
-            </div>
-        @endif
+
     </div>
 </div>
 @endsection

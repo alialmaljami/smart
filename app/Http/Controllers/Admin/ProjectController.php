@@ -18,7 +18,7 @@ class ProjectController extends Controller
     {
         $services = Service::where('is_active', true)->orderBy('sort_order')->get();
         $materialCategories = Category::where('type', 'material')->where('is_active', true)->orderBy('sort_order')->get();
-        $projects = Project::with(['services', 'materialCategories', 'category'])->latest()->get();
+        $projects = Project::with(['services', 'materialCategories', 'category'])->orderBy('sort_order', 'desc')->get();
         return view('admin.projects.index', compact('projects', 'services', 'materialCategories'));
     }
 
@@ -40,8 +40,8 @@ class ProjectController extends Controller
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'max:10240'],
             'videos' => ['nullable', 'string'],
-            'client_name' => ['nullable', 'string', 'max:255'],
-            'completion_date' => ['nullable', 'date'],
+            'sort_order' => ['nullable', 'integer', 'min:0'],
+            'tags' => ['nullable', 'string'],
             'is_active' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string'],
@@ -56,6 +56,8 @@ class ProjectController extends Controller
 
         $validated['is_active'] = $request->boolean('is_active');
         $validated['is_indexed'] = $request->boolean('is_indexed', true);
+        $validated['sort_order'] = $request->filled('sort_order') ? (int) $request->sort_order : 0;
+        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'projects');
@@ -104,8 +106,8 @@ class ProjectController extends Controller
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'max:10240'],
             'videos' => ['nullable', 'string'],
-            'client_name' => ['nullable', 'string', 'max:255'],
-            'completion_date' => ['nullable', 'date'],
+            'sort_order' => ['nullable', 'integer', 'min:0'],
+            'tags' => ['nullable', 'string'],
             'category_id' => ['nullable', 'exists:categories,id'],
             'is_active' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
@@ -121,6 +123,8 @@ class ProjectController extends Controller
 
         $validated['is_active'] = $request->boolean('is_active');
         $validated['is_indexed'] = $request->boolean('is_indexed', true);
+        $validated['sort_order'] = $request->filled('sort_order') ? (int) $request->sort_order : 0;
+        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'projects', $project->image);

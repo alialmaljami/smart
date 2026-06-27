@@ -37,6 +37,7 @@ class SettingController extends Controller
 
         foreach ($keys as $key) {
             if ($request->hasFile($key)) {
+                $request->validate([$key => 'image|mimes:jpeg,png,gif,webp|max:2048']);
                 $path = $request->file($key)->store('settings', 'public');
                 Setting::updateOrCreate(['key' => $key], ['value' => $path]);
             } elseif ($request->has($key)) {

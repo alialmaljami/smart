@@ -54,6 +54,8 @@
                         <th class="text-right px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">المشروع</th>
                         <th class="text-right px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">الخدمات</th>
                         <th class="text-right px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">تصنيف المواد</th>
+                        <th class="text-center px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">الترتيب</th>
+                        <th class="text-right px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">الوسوم</th>
                         <th class="text-right px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">الحالة</th>
                         <th class="text-center px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">الإجراءات</th>
                     </tr>
@@ -83,6 +85,12 @@
                             </td>
                             <td class="px-4 py-3.5 text-sm text-gray-500 max-w-[150px]">
                                 <span class="truncate block">{{ $project->materialCategories->pluck('name')->implode(', ') ?: '--' }}</span>
+                            </td>
+                            <td class="px-4 py-3.5 text-center text-sm text-gray-500">
+                                {{ $project->sort_order ?? 0 }}
+                            </td>
+                            <td class="px-4 py-3.5 text-sm text-gray-500 max-w-[150px]">
+                                <span class="truncate block">{{ is_array($project->tags) ? implode(', ', $project->tags) : ($project->tags ?: '--') }}</span>
                             </td>
                             <td class="px-4 py-3.5">
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium {{ $project->is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600' }}">
@@ -116,7 +124,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-16 text-center">
+                            <td colspan="8" class="px-4 py-16 text-center">
                                 <div class="flex flex-col items-center gap-3">
                                     <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
                                         <i class="fas fa-briefcase text-3xl text-gray-300"></i>

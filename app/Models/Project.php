@@ -19,8 +19,8 @@ class Project extends Model
         'image',
         'images',
         'videos',
-        'client_name',
-        'completion_date',
+        'sort_order',
+        'tags',
         'service_id',
         'category_id',
         'views',
@@ -33,7 +33,8 @@ class Project extends Model
     protected $casts = [
         'images' => 'array',
         'videos' => 'array',
-        'completion_date' => 'date',
+        'tags' => 'array',
+        'sort_order' => 'integer',
         'is_active' => 'boolean',
     ];
 

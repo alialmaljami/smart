@@ -84,7 +84,7 @@
                     <div>
                         <label for="tags" class="block text-sm font-medium text-gray-700 mb-1.5">الوسوم Tags</label>
                         <input type="text" name="tags" id="tags"
-                               value="{{ old('tags', $gallery->tags ?? '') }}"
+                               value="{{ old('tags', isset($gallery) && is_array($gallery->tags) ? implode(', ', $gallery->tags) : ($gallery->tags ?? '')) }}"
                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
                                placeholder="وسم1, وسم2, وسم3">
                         @error('tags')

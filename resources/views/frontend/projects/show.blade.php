@@ -5,7 +5,7 @@
     $totalVideos = count($videos);
     $relatedProjects = App\Models\Project::where('is_active', true)
         ->where('id', '!=', $project->id)
-        ->latest()
+        ->orderBy('sort_order', 'desc')
         ->take(3)
         ->get();
     $descLines = preg_split('/\n\s*\n/', trim($project->description));
@@ -111,7 +111,7 @@
                             <div class="flex gap-2 overflow-x-auto pb-2" dir="ltr" style="scrollbar-width:none;-ms-overflow-style:none;">
                                 @foreach($images as $idx => $img)
                                     <button type="button" @click="activeImage = {{ $idx }}" class="flex-shrink-0 w-16 h-12 sm:w-14 sm:h-10 md:w-20 md:h-16 rounded-lg overflow-hidden border-2 transition-all" :class="activeImage === {{ $idx }} ? 'border-[var(--gold)]' : 'border-transparent'">
-                                        <img src="{{ $img }}" alt="" class="w-full h-full object-cover" loading="lazy">
+                                        <img src="{{ $img }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
                                     </button>
                                 @endforeach
                             </div>
@@ -163,25 +163,18 @@
                 <div class="bg-[var(--cream)] rounded-[var(--radius-lg)] p-4 md:p-6 lg:sticky top-28 border border-[var(--stone)]">
                     <h3 class="text-base md:text-xl font-bold text-[var(--gold)] mb-3 md:mb-6">{{ __('Project Information') }}</h3>
                     <div class="space-y-2 md:space-y-4">
-                        @if($project->client_name)
-                            <div class="flex items-center gap-2 md:gap-3">
-                                <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0">
-                                    <x-icon name="user" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
+                        @if(is_array($project->tags) && count($project->tags))
+                            <div class="flex items-start gap-2 md:gap-3">
+                                <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0 mt-0.5">
+                                    <x-icon name="tag" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
                                 </div>
                                 <div class="min-w-0 max-w-full">
-                                    <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Client') }}</span>
-                                    <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate max-w-full">{{ $project->client_name }}</p>
-                                </div>
-                            </div>
-                        @endif
-                        @if($project->completion_date)
-                            <div class="flex items-center gap-2 md:gap-3">
-                                <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0">
-                                    <x-icon name="calendar" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
-                                </div>
-                                <div class="min-w-0 max-w-full">
-                                    <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Completion Date') }}</span>
-                                    <p class="font-bold text-[var(--gold)] text-sm md:text-base">{{ $project->completion_date->format('d / m / Y') }}</p>
+                                    <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Tags') }}</span>
+                                    <div class="flex flex-wrap gap-1 mt-1">
+                                        @foreach($project->tags as $tag)
+                                            <a href="{{ route('tag', urlencode($tag)) }}" class="text-[11px] font-bold text-[var(--gold)] bg-[var(--gold)]/5 hover:bg-[var(--gold)]/20 px-2 py-0.5 rounded-full truncate max-w-full transition-colors">{{ $tag }}</a>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
                         @endif
@@ -193,7 +186,7 @@
                                 <div class="min-w-0 max-w-full">
                                     <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Services') }}</span>
                                     @foreach($project->services as $service)
-                                        <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate max-w-full">{{ $service->name }}</p>
+                                        <a href="{{ route('service.show', $service->slug) }}" class="font-bold text-[var(--gold)] hover:text-[var(--gold)]/70 text-sm md:text-base truncate max-w-full block transition-colors">{{ $service->name }}</a>
                                     @endforeach
                                 </div>
                             </div>
@@ -206,7 +199,7 @@
                                 <div class="min-w-0 max-w-full">
                                     <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Materials Used') }}</span>
                                     @foreach($project->materialCategories as $mc)
-                                        <p class="font-bold text-[var(--gold)] text-sm md:text-base truncate max-w-full">{{ $mc->name }}</p>
+                                        <a href="{{ route('material.category.show', $mc->slug) }}" class="font-bold text-[var(--gold)] hover:text-[var(--gold)]/70 text-sm md:text-base truncate max-w-full block transition-colors">{{ $mc->name }}</a>
                                     @endforeach
                                 </div>
                             </div>

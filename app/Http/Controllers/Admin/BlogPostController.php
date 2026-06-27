@@ -16,7 +16,7 @@ class BlogPostController extends Controller
     use ImageUploadHelper;
     public function index(): View
     {
-        $posts = BlogPost::latest()->paginate(15);
+        $posts = BlogPost::orderBy('id')->get();
         return view('admin.blog-posts.index', compact('posts'));
     }
 
@@ -50,6 +50,7 @@ class BlogPostController extends Controller
         }
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
 
         if ($request->filled('blog_category_id')) {
             $cat = Category::find($validated['blog_category_id']);
@@ -103,6 +104,7 @@ class BlogPostController extends Controller
         }
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
 
         if ($request->filled('blog_category_id')) {
             $cat = Category::find($validated['blog_category_id']);

@@ -85,20 +85,20 @@ Route::get('/materials/{slug}', [MaterialCategoryController::class, 'show'])->na
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
 Route::get('/projects/{slug}', [ProjectController::class, 'show'])->name('project.show');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
-Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
+Route::post('/contact/send', [ContactController::class, 'send'])->middleware('throttle:contact')->name('contact.send');
 Route::get('/blog', [PageController::class, 'blog'])->name('blog');
 Route::get('/blog/{slug}', [PageController::class, 'blogPost'])->name('blog.post');
 Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery');
 Route::get('/material/{slug}', [MaterialCategoryController::class, 'showMaterial'])->name('material.show');
 Route::get('/gallery/{id}/{slug?}', [GalleryController::class, 'show'])->name('gallery.show');
-Route::post('/review/submit', [HomeController::class, 'submitReview'])->name('review.submit');
+Route::post('/review/submit', [HomeController::class, 'submitReview'])->middleware('throttle:reviews')->name('review.submit');
 Route::post('/favorites/items', [FavoriteController::class, 'items'])->name('favorites.items');
 Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
 Route::post('/like/toggle', [LikeController::class, 'toggle'])->name('like.toggle');
 Route::get('/most-viewed', [PageController::class, 'mostViewed'])->name('most-viewed');
 Route::get('/questions', [VisitorQuestionController::class, 'index'])->name('questions');
 Route::get('/q/{slug}', [VisitorQuestionController::class, 'show'])->name('q.show');
-Route::post('/questions', [VisitorQuestionController::class, 'store'])->name('questions.store');
+Route::post('/questions', [VisitorQuestionController::class, 'store'])->middleware('throttle:questions')->name('questions.store');
 Route::get('/areas-we-serve', [PageController::class, 'areasWeServe'])->name('areas.we.serve');
 Route::get('/tag/{tag}', [PageController::class, 'tag'])->name('tag');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.index');
@@ -130,96 +130,5 @@ Route::get('/storage/{path}', function (string $path) {
     return response()->file($disk->path($path));
 })->where('path', '.*');
 
-Route::post('/api/upload-storage', function (\Illuminate\Http\Request $request) {
-    if ($request->input('token') !== 'smart-restore-2026') {
-        return response()->json(['error' => 'Unauthorized'], 401);
-    }
 
-    if ($request->input('action') === 'list-images') {
-        $tables = ['services', 'projects', 'galleries', 'materials', 'posts', 'settings'];
-        $paths = [];
-        foreach ($tables as $table) {
-            try {
-                $rows = DB::table($table)->get();
-                foreach ($rows as $row) {
-                    foreach (['image', 'images', 'cover', 'logo', 'favicon', 'og_image'] as $col) {
-                        if (isset($row->$col) && $row->$col) {
-                            $val = $row->$col;
-                            if (is_string($val)) {
-                                $paths[] = ['table' => $table, 'id' => $row->id ?? 0, 'column' => $col, 'value' => $val];
-                            } elseif (is_string(json_decode($val, true))) {
-                                $paths[] = ['table' => $table, 'id' => $row->id ?? 0, 'column' => $col, 'value' => $val];
-                            }
-                        }
-                    }
-                }
-            } catch (\Exception $e) {}
-        }
-        return response()->json($paths);
-    }
-
-    if ($request->input('action') === 'fix-paths') {
-        $fixed = 0;
-        $tables = ['services', 'projects', 'galleries', 'materials', 'posts', 'settings'];
-        foreach ($tables as $table) {
-            try {
-                $rows = DB::table($table)->get();
-                foreach ($rows as $row) {
-                    foreach (['image', 'images', 'cover', 'logo', 'favicon', 'og_image'] as $col) {
-                        if (!isset($row->$col) || !$row->$col) continue;
-                        $val = $row->$col;
-                        if ($col === 'images' && is_string($val)) {
-                            $decoded = json_decode($val, true);
-                            if (is_array($decoded)) {
-                                $changed = false;
-                                foreach ($decoded as $k => $v) {
-                                    if (is_string($v) && str_ends_with($v, '.jpg')) {
-                                        $newV = preg_replace('/\.jpg$/i', '.webp', $v);
-                                        $fullPath = storage_path('app/public/' . $newV);
-                                        if (file_exists($fullPath)) {
-                                            $decoded[$k] = $newV;
-                                            $changed = true;
-                                        }
-                                    }
-                                }
-                                if ($changed) {
-                                    DB::table($table)->where('id', $row->id)->update([$col => json_encode($decoded)]);
-                                    $fixed++;
-                                }
-                            }
-                        } elseif (is_string($val) && str_ends_with($val, '.jpg')) {
-                            $newV = preg_replace('/\.jpg$/i', '.webp', $val);
-                            $fullPath = storage_path('app/public/' . $newV);
-                            if (file_exists($fullPath)) {
-                                DB::table($table)->where('id', $row->id)->update([$col => $newV]);
-                                $fixed++;
-                            }
-                        }
-                    }
-                }
-            } catch (\Exception $e) {}
-        }
-        return response()->json(['fixed' => $fixed]);
-    }
-
-    if (!$request->hasFile('file')) {
-        return response()->json(['error' => 'No file uploaded'], 400);
-    }
-    $file = $request->file('file');
-    $targetDir = $request->input('target', '');
-    $extractDir = storage_path('app/public/' . ltrim($targetDir, '/'));
-
-    if ($file->getClientOriginalExtension() === 'zip') {
-        $zip = new ZipArchive;
-        if ($zip->open($file->getRealPath()) !== true) {
-            return response()->json(['error' => 'Failed to open zip'], 500);
-        }
-        $zip->extractTo($extractDir);
-        $zip->close();
-        return response()->json(['success' => true, 'extractedTo' => $extractDir]);
-    }
-
-    $file->move($extractDir, $file->getClientOriginalName());
-    return response()->json(['success' => true, 'savedTo' => $extractDir . '/' . $file->getClientOriginalName()]);
-});
 

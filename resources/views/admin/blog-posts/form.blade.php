@@ -102,7 +102,7 @@
             <div>
                 <label for="tags" class="block text-sm font-medium text-gray-700 mb-1">الكلمات المفتاحية (Tags)</label>
                 <input type="text" name="tags" id="tags"
-                       value="{{ old('tags', $post->tags ?? '') }}"
+                       value="{{ old('tags', isset($post) && is_array($post->tags) ? implode(', ', $post->tags) : ($post->tags ?? '')) }}"
                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none transition-colors text-sm"
                        placeholder="tag1, tag2, tag3">
                 @error('tags')

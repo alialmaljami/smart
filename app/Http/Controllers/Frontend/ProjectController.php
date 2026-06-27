@@ -18,7 +18,7 @@ class ProjectController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        $projects = $query->latest()->paginate(12);
+        $projects = $query->orderBy('sort_order', 'desc')->paginate(12);
         $categories = Category::whereHas('projects', function ($q) {
             $q->where('is_active', true);
         })->orderBy('name')->get();

@@ -124,16 +124,17 @@
                         $content = '<p>' . preg_replace('/\n\n+/', '</p><p>', trim($content)) . '</p>';
                         $content = str_replace(["\r\n", "\n"], '<br>', $content);
                     }
+                    $content = strip_tags($content, '<p><br><strong><em><u><a><ul><ol><li><h1><h2><h3><h4><h5><h6><img><blockquote><pre><code><table><tr><td><th><span><div><hr><sup><sub>');
                 @endphp
                 {!! $content !!}
             </div>
 
             {{-- Tags --}}
-            @if($post->tags)
+            @if($post->tags && is_array($post->tags))
                 <div class="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-[var(--stone)]">
                     <div class="flex flex-wrap gap-1.5 md:gap-2">
-                        @foreach(explode(',', $post->tags) as $tag)
-                            <a href="{{ route('tag', trim($tag)) }}" class="px-3 md:px-4 py-1 rounded-full text-[11px] md:text-sm bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white transition-colors">#{{ trim($tag) }}</a>
+                        @foreach($post->tags as $tag)
+                            <a href="{{ route('tag', $tag) }}" class="px-3 md:px-4 py-1 rounded-full text-[11px] md:text-sm bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white transition-colors">#{{ $tag }}</a>
                         @endforeach
                     </div>
                 </div>

@@ -25,7 +25,7 @@ class PageController extends Controller
     {
         $categorySlug = request('category');
         $selectedCat = null;
-        $posts = BlogPost::where('is_active', true)
+        $posts = BlogPost::with('blogCategory')->where('is_active', true)
             ->when($categorySlug, function($q, $s) use (&$selectedCat) {
                 $selectedCat = Category::where('type', 'blog')->where('slug', $s)->first();
                 if ($selectedCat) {
@@ -83,7 +83,7 @@ class PageController extends Controller
 
     public function cityJeddah(): View
     {
-        $projects = Project::where('is_active', true)->latest()->take(6)->get();
+        $projects = Project::where('is_active', true)->orderBy('sort_order', 'desc')->take(6)->get();
         $services = Service::where('is_active', true)->get();
         $galleries = Gallery::where('is_active', true)->latest()->take(8)->get();
         $breadcrumbs = [
@@ -95,7 +95,7 @@ class PageController extends Controller
 
     public function cityMecca(): View
     {
-        $projects = Project::where('is_active', true)->latest()->take(6)->get();
+        $projects = Project::where('is_active', true)->orderBy('sort_order', 'desc')->take(6)->get();
         $services = Service::where('is_active', true)->get();
         $galleries = Gallery::where('is_active', true)->latest()->take(8)->get();
         $breadcrumbs = [
@@ -154,33 +154,34 @@ class PageController extends Controller
             ->where(function ($q) use ($tag) {
                 $q->where('name', 'like', "%{$tag}%")
                   ->orWhere('description', 'like', "%{$tag}%");
-            })->get();
+            })->orderBy('sort_order')->get();
 
         $projects = Project::where('is_active', true)
             ->where(function ($q) use ($tag) {
-                $q->where('title', 'like', "%{$tag}%")
+                $q->whereJsonContains('tags', $tag)
+                  ->orWhere('title', 'like', "%{$tag}%")
                   ->orWhere('description', 'like', "%{$tag}%");
-            })->latest()->take(6)->get();
+            })->orderBy('sort_order', 'desc')->take(6)->get();
 
         $posts = BlogPost::where('is_active', true)
             ->where(function ($q) use ($tag) {
-                $q->where('title', 'like', "%{$tag}%")
-                  ->orWhere('content', 'like', "%{$tag}%")
-                  ->orWhere('tags', 'like', "%{$tag}%");
+                $q->whereJsonContains('tags', $tag)
+                  ->orWhere('title', 'like', "%{$tag}%")
+                  ->orWhere('content', 'like', "%{$tag}%");
             })->latest()->take(6)->get();
 
         $galleries = Gallery::where('is_active', true)
             ->where(function ($q) use ($tag) {
-                $q->where('title', 'like', "%{$tag}%")
-                  ->orWhere('description', 'like', "%{$tag}%")
-                  ->orWhere('tags', 'like', "%{$tag}%");
+                $q->whereJsonContains('tags', $tag)
+                  ->orWhere('title', 'like', "%{$tag}%")
+                  ->orWhere('description', 'like', "%{$tag}%");
             })->latest()->take(8)->get();
 
         $materials = Material::where('is_active', true)
             ->where(function ($q) use ($tag) {
-                $q->where('name', 'like', "%{$tag}%")
-                  ->orWhere('description', 'like', "%{$tag}%")
-                  ->orWhere('tags', 'like', "%{$tag}%");
+                $q->whereJsonContains('tags', $tag)
+                  ->orWhere('name', 'like', "%{$tag}%")
+                  ->orWhere('description', 'like', "%{$tag}%");
             })->get();
 
         $breadcrumbs = [

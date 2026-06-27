@@ -88,17 +88,17 @@
                         </select>
                     </div>
                     <div>
-                        <label for="client_name" class="block text-sm font-medium text-gray-700 mb-1.5">اسم العميل</label>
-                        <input type="text" name="client_name" id="client_name"
-                               value="{{ old('client_name', $project->client_name ?? '') }}"
+                        <label for="sort_order" class="block text-sm font-medium text-gray-700 mb-1.5">ترتيب العرض</label>
+                        <input type="number" name="sort_order" id="sort_order" min="0"
+                               value="{{ old('sort_order', $project->sort_order ?? 0) }}"
                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                     </div>
-
                     <div>
-                        <label for="completion_date" class="block text-sm font-medium text-gray-700 mb-1.5">تاريخ الإنجاز</label>
-                        <input type="date" name="completion_date" id="completion_date"
-                               value="{{ old('completion_date', isset($project) && $project->completion_date ? $project->completion_date->format('Y-m-d') : '') }}"
-                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
+                        <label for="tags" class="block text-sm font-medium text-gray-700 mb-1.5">الوسوم (tags)</label>
+                        <input type="text" name="tags" id="tags"
+                               value="{{ old('tags', isset($project) && is_array($project->tags) ? implode(', ', $project->tags) : '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
+                               placeholder="وسم1, وسم2, وسم3">
                     </div>
                 </div>
 

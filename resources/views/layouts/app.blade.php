@@ -36,7 +36,9 @@
         $otherUrl = url()->current();
         if ($routeName && !str_contains($routeName, 'admin.')) {
             try {
-                $otherUrl = route($routeName, array_merge($routeParams, ['_locale' => $otherLocale]));
+                $current = url()->current();
+                $separator = str_contains($current, '?') ? '&' : '?';
+                $otherUrl = $current . $separator . 'lang=' . $otherLocale;
             } catch (\Exception $e) {}
         }
     @endphp
@@ -69,7 +71,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- Preload hero image if on home page --}}
     @if(request()->routeIs('home'))
@@ -963,26 +965,39 @@
                     {{-- Column 5 --}}
                     <div>
                         <h3 class="text-xs font-bold mb-6 text-white/50 tracking-[0.2em] uppercase">{{ __('Contact Us') }}</h3>
-                        <ul class="space-y-4 text-sm text-white/40">
-                            <li class="flex items-start">
-                                <a href="{{ $settings['map_url'] }}" target="_blank" class="flex items-start gap-3 hover:text-[var(--gold)] transition-colors group w-full">
-                                    <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg" style="background: #E07A5F; color: white;"><x-icon name="location" class="w-3.5 h-3.5" /></span>
-                                    <span class="mt-1.5">{{ $settings['address'] }}</span>
-                                </a>
-                            </li>
-                            <li class="flex items-center">
-                                <a href="tel:{{ str_replace(' ', '', $settings['phone']) }}" class="flex items-center gap-3 hover:text-[var(--gold)] transition-colors group w-full">
+                        <div class="text-sm text-white/40 space-y-3">
+                            <p class="text-white/60 font-semibold">فريق ديكورات المصمم الذكي في خدمتك</p>
+                            <div class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background: #E07A5F; color: white;"><x-icon name="location" class="w-3.5 h-3.5" /></span>
+                                <span>الزاهر 1 – الضيافة، مكة المكرمة، المملكة العربية السعودية</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background: #E07A5F; color: white;"><x-icon name="clock" class="w-3.5 h-3.5" /></span>
+                                <span>أوقات الدوام: 24 ساعة/كل الأسبوع</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background: #E07A5F; color: white;"><x-icon name="location" class="w-3.5 h-3.5" /></span>
+                                <span>عناويننا: مكة، جدة</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <a href="tel:0541232717" class="flex items-center gap-3 hover:text-[var(--gold)] transition-colors group w-full">
                                     <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg" style="background: #34A853; color: white;"><x-icon name="phone" class="w-3.5 h-3.5" /></span>
-                                    <span dir="ltr">{{ $settings['phone'] }}</span>
+                                    <span dir="ltr">054 123 2717</span>
                                 </a>
-                            </li>
-                            <li class="flex items-center">
-                                <a href="mailto:{{ $settings['email'] }}" class="flex items-center gap-3 hover:text-[var(--gold)] transition-colors group w-full">
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <a href="https://wa.me/966541232717" target="_blank" class="flex items-center gap-3 hover:text-[var(--gold)] transition-colors group w-full">
+                                    <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg" style="background: #25D366; color: white;"><x-icon name="whatsapp" class="w-3.5 h-3.5" /></span>
+                                    <span dir="ltr">+966 54 123 2717</span>
+                                </a>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <a href="mailto:Smartdecorat1@gmail.com" class="flex items-center gap-3 hover:text-[var(--gold)] transition-colors group w-full">
                                     <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg" style="background: #EA4335; color: white;"><x-icon name="email" class="w-3.5 h-3.5" /></span>
-                                    <span>{{ $settings['email'] }}</span>
+                                    <span>Smartdecorat1@gmail.com</span>
                                 </a>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

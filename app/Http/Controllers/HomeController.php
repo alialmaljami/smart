@@ -19,7 +19,7 @@ class HomeController extends Controller
     public function index(): View
     {
         $services = Service::where('is_active', true)->orderBy('sort_order')->get();
-        $projects = Project::where('is_active', true)->latest()->take(6)->get();
+        $projects = Project::where('is_active', true)->orderBy('sort_order', 'desc')->take(6)->get();
         $settings = Setting::all()->keyBy('key');
         $sections = HomepageSection::where('is_active', true)->orderBy('sort_order')->get()->keyBy('key');
 

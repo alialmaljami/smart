@@ -281,8 +281,12 @@
                         </button>
                         <div class="absolute bottom-0 right-0 left-0 p-6 z-[2]">
                             <h3 class="text-lg font-bold text-white mb-1">{{ $project->title }}</h3>
-                            @if($project->client_name)
-                                <span class="text-white/50 text-xs flex items-center gap-1.5"><x-icon name="user" class="w-3 h-3 text-[var(--gold)]" /> {{ $project->client_name }}</span>
+                            @if(is_array($project->tags) && count($project->tags))
+                                <div class="flex flex-wrap gap-1">
+                                    @foreach(array_slice($project->tags, 0, 3) as $tag)
+                                        <a href="{{ route('tag', urlencode($tag)) }}" class="text-[10px] font-bold text-[var(--gold)] bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20 px-2 py-0.5 rounded-full transition-colors">{{ $tag }}</a>
+                                    @endforeach
+                                </div>
                             @endif
                         </div>
                         <a href="{{ route('project.show', $project->slug) }}" class="absolute inset-0 z-[3] flex items-center justify-center bg-[var(--gold)]/90 opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm">

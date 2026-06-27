@@ -171,7 +171,7 @@
                             </div>
                             <div>
                                 <span class="text-sm font-medium text-gray-700">{{ $project->title }}</span>
-                                <p class="text-xs text-gray-400">{{ $project->client_name ? "عميل: $project->client_name" : '' }}</p>
+                                <p class="text-xs text-gray-400">{{ is_array($project->tags) && count($project->tags) ? 'وسوم: ' . implode(', ', array_slice($project->tags, 0, 3)) : '' }}</p>
                             </div>
                         </div>
                         <span class="text-xs px-2.5 py-1 rounded-full font-medium {{ $project->is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600' }}">
