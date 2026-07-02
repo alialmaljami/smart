@@ -109,7 +109,25 @@ Route::get('/sitemap-services.xml', [SitemapController::class, 'services'])->nam
 Route::get('/sitemap-materials.xml', [SitemapController::class, 'materials'])->name('sitemap.materials');
 Route::get('/sitemap-cities.xml', [SitemapController::class, 'cities'])->name('sitemap.cities');
 
-// Fallback route for storage files - serves original or WebP with on-the-fly conversion
+// WebP conversion endpoint - visit /webp-convert to convert all images
+Route::get('/webp-convert', function () {
+    $dir = storage_path('app/public');
+    $count = 0;
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+    foreach ($iterator as $file) {
+        if ($file->isFile() && preg_match('/\.(jpg|jpeg|png)$/i', $file->getFilename())) {
+            $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $file->getPathname());
+            if (!file_exists($webpPath)) {
+                \App\Services\ImageService::generateWebP($file->getPathname(), $webpPath);
+                if (file_exists($webpPath)) $count++;
+            }
+        }
+    }
+    return response("Converted $count images to WebP.");
+});
+
+// Serve WebP automatically when visiting /storage/... paths
+Route::get('/storage/{path}', function (string $path) {
 Route::get('/storage/{path}', function (string $path) {
     if (str_contains($path, '..')) {
         abort(404);
