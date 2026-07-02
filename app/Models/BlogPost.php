@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Traits\TracksViews;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BlogPost extends Model
@@ -33,12 +32,6 @@ class BlogPost extends Model
         'images' => 'array',
         'tags' => 'array',
     ];
-
-    protected static function booted(): void
-    {
-        static::saved(fn() => Cache::forget('latest_posts.3'));
-        static::deleted(fn() => Cache::forget('latest_posts.3'));
-    }
 
     public function blogCategory(): BelongsTo
     {

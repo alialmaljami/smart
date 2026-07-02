@@ -7,7 +7,7 @@
                 <a href="{{ route('project.show', $rp->slug) }}" class="card-elegant group overflow-hidden">
                     @if($rp->image)
                         <div class="aspect-[16/10] overflow-hidden">
-                            <img src="{{ asset('storage/' . $rp->image) }}" alt="{{ $rp->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+                            <img src="{{ \App\Services\ImageService::asset($rp->image) }}" alt="{{ $rp->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
                         </div>
                     @endif
                     <div class="p-4">
@@ -29,7 +29,7 @@
                 <a href="{{ route('blog.post', $rp->slug) }}" class="card-elegant group overflow-hidden">
                     @if($rp->image)
                         <div class="aspect-[16/10] overflow-hidden">
-                            <img src="{{ asset('storage/' . $rp->image) }}" alt="{{ $rp->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+                            <img src="{{ \App\Services\ImageService::asset($rp->image) }}" alt="{{ $rp->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
                         </div>
                     @endif
                     <div class="p-4">
@@ -69,7 +69,7 @@
                 <a href="{{ route('material.show', $rm->slug) }}" class="card-elegant group overflow-hidden">
                     @if($rm->image)
                         <div class="aspect-[4/3] overflow-hidden">
-                            <img src="{{ asset('storage/' . $rm->image) }}" alt="{{ $rm->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+                            <img src="{{ \App\Services\ImageService::asset($rm->image) }}" alt="{{ $rm->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
                         </div>
                     @endif
                     <div class="p-4">

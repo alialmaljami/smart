@@ -25,7 +25,7 @@ class PageController extends Controller
     {
         $categorySlug = request('category');
         $selectedCat = null;
-        $posts = BlogPost::with('blogCategory')->where('is_active', true)
+        $posts = BlogPost::where('is_active', true)
             ->when($categorySlug, function($q, $s) use (&$selectedCat) {
                 $selectedCat = Category::where('type', 'blog')->where('slug', $s)->first();
                 if ($selectedCat) {

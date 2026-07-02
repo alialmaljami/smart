@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 
 class SocialLink extends Model
 {
@@ -21,11 +20,5 @@ class SocialLink extends Model
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];
-    }
-
-    protected static function booted(): void
-    {
-        static::saved(fn() => Cache::forget('social_links.active'));
-        static::deleted(fn() => Cache::forget('social_links.active'));
     }
 }

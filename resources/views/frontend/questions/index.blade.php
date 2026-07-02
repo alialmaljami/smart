@@ -28,7 +28,7 @@
     <div class="container mx-auto px-4 max-w-4xl">
         <div class="space-y-4" data-aos="fade-up">
             @forelse($questions as $q)
-                <a href="{{ route('q.show', $q->slug) }}" class="block bg-white rounded-xl p-5 hover:shadow-md transition-all border border-[var(--stone)]/20 group">
+                <a href="{{ route('q.show', $q->slug) }}" class="block bg-[var(--navy)] rounded-xl p-5 hover:shadow-md transition-all border border-[var(--stone)]/20 group">
                     <h3 class="font-bold text-[var(--text-heading)] group-hover:text-[var(--gold)] transition-colors">{{ $q->question }}</h3>
                     @if($q->answer)
                         <p class="text-sm text-[var(--text-secondary)] mt-2 line-clamp-2">{{ strip_tags($q->answer) }}</p>
@@ -49,7 +49,7 @@
     </div>
 </section>
 
-<section class="py-16 bg-white">
+<section class="py-16 bg-[var(--navy)]">
     <div class="container mx-auto px-4 max-w-2xl">
         <div data-aos="fade-up" class="text-center mb-10">
             <h2 class="text-2xl font-bold text-[var(--text-heading)] mb-2">{{ __('Ask a Question') }}</h2>

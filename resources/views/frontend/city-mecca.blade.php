@@ -26,7 +26,7 @@
     </div>
 </section>
 
-<section class="py-12 md:py-20 bg-[var(--navy)]">
+<section class="py-12 md:py-20 bg-[var(--navy)] overflow-x-hidden">
     <div class="container mx-auto px-4 max-w-5xl">
         <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-12 md:mb-16">
             <div data-aos="fade-left">
@@ -39,7 +39,7 @@
                 </p>
                 <div class="mb-6">
                     <h3 class="text-sm font-bold text-[var(--text-heading)] mb-3">نغطي جميع أحياء مكة:</h3>
-                    <div class="flex flex-wrap gap-2">
+                    <div class="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
                         <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">أجياد</span>
                         <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">أجياد السد</span>
                         <span class="px-3 py-1 text-xs rounded-full bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20">أجياد المصافي</span>
@@ -186,7 +186,7 @@
             <div data-aos="fade-right" class="rounded-2xl overflow-hidden h-48 md:h-96 bg-gradient-to-br from-[var(--navy)] to-[var(--navy)] flex items-center justify-center">
                 <div class="text-center p-4 md:p-8">
                     <i class="fas fa-mosque text-3xl md:text-6xl text-[var(--gold)]/30 mb-2 md:mb-4"></i>
-                    <p class="text-white/40 text-sm md:text-lg">مكة المكرمة - المملكة العربية السعودية</p>
+                    <p class="text-[var(--text-light)] text-sm md:text-lg">مكة المكرمة - المملكة العربية السعودية</p>
                 </div>
             </div>
         </div>
@@ -200,7 +200,7 @@
 </section>
 
 @if($services->count())
-<section class="py-12 md:py-16 bg-[var(--white)]">
+<section class="py-12 md:py-16 bg-[var(--white)] overflow-x-hidden">
     <div class="container mx-auto px-4 max-w-6xl">
         <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
             <h2 class="section-title text-[var(--text-heading)]">{{ __('Services') }}</h2>
@@ -239,7 +239,7 @@
 @endif
 
 @if($galleries->count())
-<section class="py-12 md:py-16 bg-[var(--navy)]">
+<section class="py-12 md:py-16 bg-[var(--navy)] overflow-x-hidden">
     <div class="container mx-auto px-4 max-w-6xl">
         <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
             <h2 class="section-title text-[var(--text-heading)]">{{ __('Gallery') }}</h2>
@@ -248,7 +248,7 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             @foreach($galleries as $g)
                 <a href="{{ route('gallery.show', [$g->id, $g->slug]) }}" class="group aspect-square overflow-hidden rounded-xl">
-                    <img src="{{ asset('storage/' . $g->image) }}" alt="{{ $g->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy">
+                    <img src="{{ \App\Services\ImageService::asset($g->image) }}" alt="{{ $g->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy">
                 </a>
             @endforeach
         </div>
@@ -260,7 +260,7 @@
 @endif
 
 @if($projects->count())
-<section class="py-12 md:py-16 bg-[var(--white)]">
+<section class="py-12 md:py-16 bg-[var(--white)] overflow-x-hidden">
     <div class="container mx-auto px-4 max-w-6xl">
         <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
             <h2 class="section-title text-[var(--text-heading)]">{{ __('Recent Projects') }}</h2>
@@ -297,7 +297,7 @@
 </section>
 @endif
 
-<section class="py-12 md:py-16 bg-[var(--navy)]">
+<section class="py-12 md:py-16 bg-[var(--navy)] overflow-x-hidden">
     <div class="container mx-auto px-4 text-center">
         <div data-aos="fade-up">
             <h2 class="section-title text-[var(--text-heading)] mb-4">{{ __('Contact Us') }}</h2>

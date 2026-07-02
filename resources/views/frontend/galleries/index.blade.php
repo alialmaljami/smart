@@ -57,7 +57,7 @@
                     <div data-aos="zoom-in" data-aos-delay="{{ $loop->index * 50 }}" class="gallery-item group relative rounded-2xl overflow-hidden img-zoom h-72 cursor-pointer"
                          data-category="{{ $catName }}"
                          onclick="location.href='{{ route('gallery.show', [$gallery->id, $gallery->slug]) }}'">
-                        <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->alt_text ?: $gallery->title }}" class="w-full h-full object-cover" loading="lazy">
+                        <img src="{{ \App\Services\ImageService::asset($gallery->image) }}" alt="{{ $gallery->alt_text ?: $gallery->title }}" class="w-full h-full object-cover" loading="lazy">
                         <div x-data="{ liked: {{ $gallery->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $gallery->likeCount() }} }" class="absolute top-3 left-3 z-10" @click.stop="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'gallery', id: {{ $gallery->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
                             <button class="flex items-center gap-1 px-2.5 py-1 bg-black/80 backdrop-blur-sm rounded-full text-white hover:bg-black/90 transition-all text-xs pointer-events-none">
                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="liked ? 'currentColor' : 'none'"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>

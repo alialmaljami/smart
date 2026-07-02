@@ -36,9 +36,7 @@
         $otherUrl = url()->current();
         if ($routeName && !str_contains($routeName, 'admin.')) {
             try {
-                $current = url()->current();
-                $separator = str_contains($current, '?') ? '&' : '?';
-                $otherUrl = $current . $separator . 'lang=' . $otherLocale;
+                $otherUrl = route($routeName, array_merge($routeParams, ['_locale' => $otherLocale]));
             } catch (\Exception $e) {}
         }
     @endphp
@@ -63,25 +61,25 @@
     <meta name="twitter:description" content="@yield('description', __('Smart Designer Decorations - Professional interior design and decoration services in Saudi Arabia'))" />
     <meta name="twitter:image" content="@yield('image', url('/storage/settings/og-default.jpg'))" />
 
-    {{-- Preload critical fonts & assets --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&amp;family=Outfit:wght@300;400;500;600;700;800&amp;family=Tajawal:wght@300;400;500;700;800;900&amp;display=swap" />
-    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    {{-- Preload hero image if on home page --}}
+    {{-- Preload hero image (early for LCP) --}}
     @if(request()->routeIs('home'))
-        @php $heroImgs = []; @endphp
         @isset($heroImages)
             @foreach(array_slice($heroImages, 0, 1) as $hero)
                 <link rel="preload" as="image" href="{{ $hero }}" fetchpriority="high" />
             @endforeach
         @endisset
     @endif
+
+    {{-- Font Awesome (non-blocking) --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+
+    {{-- Google Fonts (non-blocking) --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"></noscript>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- Google Search Console --}}
     @php $gsc = App\Models\Setting::getValue('google_search_console', ''); @endphp
@@ -110,7 +108,7 @@
             --gold: #EAB308;
             --gold-glow: rgba(234, 179, 8, 0.2);
             --gold-light: #FEF08A;
-            --white: #000000;
+            --white: #F1F5F9;
             --text-heading: #0F172A;
             --text-secondary: #334155;
             --text-muted: #64748B;
@@ -131,10 +129,10 @@
             --gold: #EAB308;
             --gold-glow: rgba(234, 179, 8, 0.4);
             --gold-light: #FEF08A;
-            --white: #FFFFFF;
+            --white: #1E293B;
             --text-heading: #F8FAFC;
             --text-secondary: #CBD5E1;
-            --text-muted: #64748B;
+            --text-muted: #94A3B8;
             --glass-bg: rgba(255, 255, 255, 0.02);
             --glass-border: rgba(255, 255, 255, 0.08);
             --glass-border-hover: rgba(234, 179, 8, 0.4);
@@ -358,25 +356,13 @@
             .section-padding { padding-top: 4rem !important; padding-bottom: 4rem !important; }
             .container-wide { padding-left: 1rem; padding-right: 1rem; }
             section[class*="py-32"] { padding-top: 5rem !important; padding-bottom: 5rem !important; }
-            section[class*="py-28"] { padding-top: 4.5rem !important; padding-bottom: 4.5rem !important; }
-            section[class*="py-24"] { padding-top: 4rem !important; padding-bottom: 4rem !important; }
             section[class*="py-20"]:not(.hero-section) { padding-top: 4rem !important; padding-bottom: 4rem !important; }
-            section[class*="py-16"] { padding-top: 3rem !important; padding-bottom: 3rem !important; }
-            section[class*="py-12"] { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
-            section[class*="py-10"] { padding-top: 2rem !important; padding-bottom: 2rem !important; }
-            section[class*="py-6"] { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
         }
 
         @media (max-width: 480px) {
             .hero-section { padding-top: 4rem !important; padding-bottom: 4rem !important; }
             section[class*="py-32"] { padding-top: 4rem !important; padding-bottom: 4rem !important; }
-            section[class*="py-28"] { padding-top: 3.5rem !important; padding-bottom: 3.5rem !important; }
             section[class*="py-24"] { padding-top: 3rem !important; padding-bottom: 3rem !important; }
-            section[class*="py-20"]:not(.hero-section) { padding-top: 3rem !important; padding-bottom: 3rem !important; }
-            section[class*="py-16"] { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
-            section[class*="py-12"] { padding-top: 2rem !important; padding-bottom: 2rem !important; }
-            section[class*="py-10"] { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
-            section[class*="py-6"] { padding-top: 1rem !important; padding-bottom: 1rem !important; }
         }
 
         /* Ensure cards stack properly on very small screens */
@@ -613,8 +599,9 @@
         .sidebar-menu {
             position: fixed;
             top: 0;
-            right: -320px;
-            width: 320px;
+            right: -100%;
+            width: 80vw;
+            max-width: 320px;
             height: 100vh;
             background: rgba(3, 7, 18, 0.85);
             backdrop-filter: blur(20px);
@@ -623,9 +610,10 @@
             z-index: 9999;
             transition: right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
             overflow-y: auto;
+            visibility: hidden;
         }
 
-        .sidebar-menu.open { right: 0; }
+        .sidebar-menu.open { right: 0; visibility: visible; }
 
         .sidebar-overlay {
             position: fixed;
@@ -742,14 +730,14 @@
     }" @fav-updated.window="favorites = JSON.parse(localStorage.getItem('sm_favorites') || '{}')">
 
         {{-- Mobile Sidebar Overlay --}}
-        <div class="sidebar-overlay" :class="{ 'open': mobileMenu }" @click="mobileMenu = false"></div>
+        <div class="sidebar-overlay" :class="{ 'open': mobileMenu }" @click="mobileMenu = false" aria-label="{{ __('Close menu') }}" role="button" tabindex="0"></div>
 
         {{-- Mobile Sidebar --}}
         <div class="sidebar-menu" :class="{ 'open': mobileMenu }">
             <div class="p-8">
                 <div class="flex justify-between items-center mb-10">
                     <span class="text-lg font-bold text-[var(--gold)]" style="font-family: 'Playfair Display', serif;">{{ __('Smart Designer') }}</span>
-                    <button @click="mobileMenu = false" class="w-8 h-8 flex items-center justify-center text-white/40 hover:text-[var(--gold)] transition-colors rounded-lg hover:bg-white/5">
+                    <button @click="mobileMenu = false" class="w-8 h-8 flex items-center justify-center text-white/40 hover:text-[var(--gold)] transition-colors rounded-lg hover:bg-white/5" aria-label="{{ __('Close menu') }}">
                         <x-icon name="times" class="w-4 h-4" />
                     </button>
                 </div>
@@ -850,7 +838,7 @@
                                 <a href="{{ route('lang.switch', app()->getLocale() === 'ar' ? 'en' : 'ar') }}" class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--stone)] transition-all text-[10px] md:text-xs font-bold" title="{{ app()->getLocale() === 'ar' ? __('English') : __('Arabic') }}">
                                     {{ app()->getLocale() === 'ar' ? 'EN' : 'AR' }}
                                 </a>
-                                <button type="button" @click="document.documentElement.classList.toggle('dark'); localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'))" class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--stone)] transition-all" title="{{ __('Dark Mode') }}">
+                                <button type="button" @click="document.documentElement.classList.toggle('dark'); localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'))" class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-lg text-[var(--text-muted)] hover:text-[var(--gold)] hover:bg-[var(--stone)] transition-all" aria-label="{{ __('Dark Mode') }}" title="{{ __('Dark Mode') }}">
                                     <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                                 </button>
                                 @auth
@@ -872,7 +860,7 @@
                                 <span x-show="favCount() > 0" x-cloak class="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 rounded-full text-[8px] flex items-center justify-center text-white font-bold" x-text="favCount()"></span>
                             </a>
                             {{-- Search --}}
-                            <button type="button" @@click="searchOpen = true" class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--gold)] hover:bg-[var(--cream)] rounded-lg sm:rounded-xl transition-all" title="{{ __('Search') }}">
+                            <button type="button" @@click="searchOpen = true" class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--gold)] hover:bg-[var(--cream)] rounded-lg sm:rounded-xl transition-all" aria-label="{{ __('Search') }}" title="{{ __('Search') }}">
                                 <x-icon name="search" class="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" />
                             </button>
                             {{-- Contact Button (sm+) --}}
@@ -880,7 +868,7 @@
                                 {{ __('Contact Us') }}
                             </a>
                             {{-- Mobile Toggle --}}
-                            <button @click="mobileMenu = !mobileMenu" class="lg:hidden w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-heading)] hover:bg-[var(--stone)] rounded-lg sm:rounded-xl transition-all">
+                            <button @click="mobileMenu = !mobileMenu" class="lg:hidden w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-heading)] hover:bg-[var(--stone)] rounded-lg sm:rounded-xl transition-all" aria-label="{{ __('Toggle menu') }}" :aria-expanded="mobileMenu">
                                 <x-icon name="bars" class="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-5 md:h-5" />
                             </button>
                         </div>
@@ -897,10 +885,10 @@
                     <form action="{{ route('search') }}" method="GET" class="relative">
                         <input type="text" name="q" x-model="query" placeholder="{{ __('Search for services, projects, materials, articles...') }}"
                                class="input-elegant w-full px-6 py-4 pr-14 text-base shadow-[0_0_30px_rgba(234,179,8,0.1)]">
-                        <button type="submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--gold)] hover:text-[var(--text-heading)] transition-colors">
+                        <button type="submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--gold)] hover:text-[var(--text-heading)] transition-colors" aria-label="{{ __('Search') }}">
                             <x-icon name="search" class="w-5 h-5" />
                         </button>
-                        <button type="button" @@click="searchOpen = false" class="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-heading)] transition-colors">
+                        <button type="button" @@click="searchOpen = false" class="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-heading)] transition-colors" aria-label="{{ __('Close search') }}">
                             <x-icon name="times" class="w-5 h-5" />
                         </button>
                     </form>
@@ -981,7 +969,7 @@
                             <p class="text-white/60 font-semibold">فريق ديكورات المصمم الذكي في خدمتك</p>
                             <div class="flex items-start gap-3">
                                 <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background: #E07A5F; color: white;"><x-icon name="location" class="w-3.5 h-3.5" /></span>
-                                <span>الزاهر 1 – الضيافة، مكة المكرمة، المملكة العربية السعودية</span>
+                                <a href="https://maps.google.com/?q=الزاهر+1+الضيافة+مكة+المكرمة" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--gold)] transition-colors">الزاهر 1 – الضيافة، مكة المكرمة، المملكة العربية السعودية</a>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background: #E07A5F; color: white;"><x-icon name="clock" class="w-3.5 h-3.5" /></span>
@@ -1025,7 +1013,7 @@
                         <a href="{{ route('blog.post', $post->slug) }}" class="group flex items-center gap-4 p-3 rounded-xl transition-all duration-300 hover:bg-white/[0.03] hover:scale-[1.02]">
                             <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
                                 @if($post->image)
-                                    <img src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">
+                                    <img src="{{ \App\Services\ImageService::asset($post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">
                                 @else
                                     <div class="w-full h-full bg-white/5 flex items-center justify-center text-white/20"><i class="fas fa-newspaper"></i></div>
                                 @endif

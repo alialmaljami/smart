@@ -57,7 +57,7 @@
                             <div data-aos="fade-up" class="card-elegant group overflow-hidden">
                                 @if($img)
                                     <div class="img-zoom h-48">
-                                        <img src="{{ asset('storage/' . $img) }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
+                                        <img src="{{ \App\Services\ImageService::asset($img) }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
                                     </div>
                                 @endif
                                 <div class="p-6">
@@ -83,7 +83,7 @@
                             <div data-aos="fade-up" class="card-elegant group overflow-hidden">
                                 @if($bImg)
                                     <div class="img-zoom h-48">
-                                        <img src="{{ asset('storage/' . $bImg) }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
+                                        <img src="{{ \App\Services\ImageService::asset($bImg) }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
                                     </div>
                                 @endif
                                 <div class="p-6">
@@ -107,7 +107,7 @@
                         @foreach($galleries as $item)
                             <div data-aos="fade-up" class="card-elegant group overflow-hidden">
                                 <div class="img-zoom aspect-square">
-                                    <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
+                                    <img src="{{ \App\Services\ImageService::asset($item->image) }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
                                 </div>
                                 <div class="p-4">
                                     <h3 class="text-sm font-bold text-[var(--text-heading)]">{{ $item->title }}</h3>
@@ -128,7 +128,7 @@
                             <div data-aos="fade-up" class="card-elegant group overflow-hidden">
                                 @if($item->image)
                                     <div class="img-zoom h-48">
-                                        <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" class="w-full h-full object-cover" loading="lazy">
+                                        <img src="{{ \App\Services\ImageService::asset($item->image) }}" alt="{{ $item->name }}" class="w-full h-full object-cover" loading="lazy">
                                     </div>
                                 @endif
                                 <div class="p-6">

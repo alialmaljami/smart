@@ -17,7 +17,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center gap-3">
                                 @if($review->image)
-                                    <img src="{{ asset('storage/' . $review->image) }}" alt="{{ $review->name }}" class="w-10 h-10 rounded-full object-cover border border-[var(--stone)]" loading="lazy">
+                                    <img src="{{ \App\Services\ImageService::asset($review->image) }}" alt="{{ $review->name }}" class="w-10 h-10 rounded-full object-cover border border-[var(--stone)]" loading="lazy">
                                 @else
                                     <div class="w-10 h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[#E07A5F] font-bold text-sm border border-[var(--stone)]/30">
                                         {{ mb_substr($review->name, 0, 1) }}

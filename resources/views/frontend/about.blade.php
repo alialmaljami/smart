@@ -50,7 +50,7 @@
             <div data-aos="fade-right" class="relative">
                 <div class="rounded-2xl overflow-hidden h-64 md:h-96 border border-[var(--stone)]/20">
                     @if(!empty($settings['about_image']))
-                        <img src="{{ asset('storage/' . $settings['about_image']) }}" alt="{{ $settings['about_title'] ?? __('About Us') }}" class="w-full h-full object-cover" loading="lazy">
+                        <img src="{{ \App\Services\ImageService::asset($settings['about_image']) }}" alt="{{ $settings['about_title'] ?? __('About Us') }}" class="w-full h-full object-cover" loading="lazy">
                     @else
                         <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-[var(--gold)] to-[var(--gold)]">
                             <div class="text-center text-white p-8">

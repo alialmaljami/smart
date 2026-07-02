@@ -148,7 +148,7 @@
                 <a href="{{ route('gallery.show', [$gallery->id, $gallery->slug]) }}" data-aos="fade-up" class="card-elegant group overflow-hidden">
                     @if($gallery->image)
                         <div class="aspect-square">
-                            <img src="{{ asset('storage/' . $gallery->image) }}" alt="{{ $gallery->alt_text ?? $gallery->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+                            <img src="{{ \App\Services\ImageService::asset($gallery->image) }}" alt="{{ $gallery->alt_text ?? $gallery->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
                         </div>
                     @endif
                     <div class="p-3">

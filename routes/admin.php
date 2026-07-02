@@ -25,7 +25,6 @@ Route::middleware('web')->prefix('admin')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:login');
 
-
     // Auth routes
     Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -80,7 +79,7 @@ Route::middleware('web')->prefix('admin')->group(function () {
 
         // Reviews
         Route::resource('/reviews', ReviewController::class, ['as' => 'admin']);
-        Route::post('/reviews/{review}/toggle-active', [ReviewController::class, 'toggleActive'])->name('admin.reviews.toggle-active');
+        Route::put('/reviews/{review}/toggle-active', [ReviewController::class, 'toggleActive'])->name('admin.reviews.toggle-active');
 
         // Homepage Sections
         Route::resource('/homepage-sections', HomepageSectionController::class, ['as' => 'admin']);

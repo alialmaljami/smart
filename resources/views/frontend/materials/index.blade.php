@@ -34,7 +34,7 @@
                 <div data-aos="fade-up" data-aos-delay="{{ $loop->index * 30 }}" class="card-elegant">
                     <div class="img-zoom h-56">
                         @if($category->image)
-                            <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover" loading="lazy">
+                            <img src="{{ \App\Services\ImageService::asset($category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover" loading="lazy">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-[var(--stone)]">
                                 <i class="fas fa-box text-6xl text-[var(--text-light)]"></i>

@@ -28,8 +28,12 @@ class ContactController extends Controller
             'message' => ['required', 'string'],
         ]);
 
-        // Store contact message (optional functionality)
-        // ContactMessage::create($request->all());
+        Contact::create([
+            'type' => 'contact_message',
+            'value' => $request->message,
+            'label' => $request->name . ' | ' . $request->email . ($request->phone ? ' | ' . $request->phone : ''),
+            'is_active' => false,
+        ]);
 
         return redirect()->route('contact')->with('success', 'Your message has been sent successfully.');
     }

@@ -18,15 +18,4 @@ class Setting extends Model
         $setting = static::where('key', $key)->first();
         return $setting ? $setting->value : $default;
     }
-
-    protected static function booted(): void
-    {
-        static::saved(function () {
-            Cache::flush();
-        });
-
-        static::deleted(function () {
-            Cache::flush();
-        });
-    }
 }

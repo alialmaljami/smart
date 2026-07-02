@@ -9,7 +9,11 @@ class SchemaService
 {
     public static function localBusiness(): array
     {
-        return [
+        $address = Setting::getValue('address', '');
+        $phone = Setting::getValue('phone', '');
+        $email = Setting::getValue('email', '');
+
+        $schema = [
             '@context' => 'https://schema.org',
             '@type' => 'LocalBusiness',
             '@id' => url('/') . '#organization',
@@ -21,12 +25,43 @@ class SchemaService
             'address' => [
                 '@type' => 'PostalAddress',
                 'addressRegion' => 'Saudi Arabia',
+                'addressLocality' => 'Makkah',
+                'streetAddress' => $address,
             ],
-            'telephone' => Setting::getValue('phone', ''),
-            'email' => Setting::getValue('email', ''),
+            'telephone' => $phone,
+            'email' => $email,
             'sameAs' => self::getSocialLinks(),
             'priceRange' => 'SAR 5,000 - SAR 500,000',
+            'openingHoursSpecification' => [
+                ['@type' => 'OpeningHoursSpecification', 'dayOfWeek' => ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'], 'opens' => '00:00', 'closes' => '23:59'],
+            ],
+            'areaServed' => [
+                ['@type' => 'City', 'name' => 'Makkah'],
+                ['@type' => 'City', 'name' => 'Jeddah'],
+            ],
         ];
+
+        $avgRating = self::getAverageRating();
+        if ($avgRating !== null) {
+            $schema['aggregateRating'] = [
+                '@type' => 'AggregateRating',
+                'ratingValue' => $avgRating,
+                'bestRating' => 5,
+                'ratingCount' => Setting::getValue('review_count', 5),
+            ];
+        }
+
+        return $schema;
+    }
+
+    private static function getAverageRating(): ?float
+    {
+        try {
+            $avg = \App\Models\Review::where('is_active', true)->avg('stars');
+            return $avg ? round($avg, 1) : null;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     public static function breadcrumbList(array $items): array

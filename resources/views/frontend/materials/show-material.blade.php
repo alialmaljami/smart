@@ -39,7 +39,7 @@
             <div data-aos="fade-left">
                 @if($material->image)
                     <div class="rounded-2xl overflow-hidden h-96 card-elegant relative">
-                        <img src="{{ asset('storage/' . $material->image) }}" alt="{{ $material->name }}" class="w-full h-full object-cover" loading="lazy">
+                        <img src="{{ \App\Services\ImageService::asset($material->image) }}" alt="{{ $material->name }}" class="w-full h-full object-cover" loading="lazy">
                         <button type="button" @click.stop="toggleFavorite('material', {{ $material->id }})"
                                 :class="isFavorite('material', {{ $material->id }}) ? 'text-red-400' : 'text-white'"
                                 class="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
@@ -53,7 +53,7 @@
                     <div class="grid grid-cols-4 gap-3 mt-4">
                         @foreach($material->images as $img)
                             <div class="rounded-xl overflow-hidden h-24">
-                                <img src="{{ asset('storage/' . $img) }}" alt="{{ $material->name }}" class="w-full h-full object-cover" loading="lazy">
+                                <img src="{{ \App\Services\ImageService::asset($img) }}" alt="{{ $material->name }}" class="w-full h-full object-cover" loading="lazy">
                             </div>
                         @endforeach
                     </div>
@@ -84,14 +84,28 @@
                 @endif
 
                 {{-- Tags --}}
-                @if($material->tags)
-                    <div class="mb-6">
-                        <div class="flex flex-wrap gap-2">
-                            @foreach(explode(',', $material->tags) as $tag)
-                                <a href="{{ route('tag', trim($tag)) }}" class="px-3 py-1 rounded-full text-sm bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white transition-colors">#{{ trim($tag) }}</a>
-                            @endforeach
+                @if($material->tags && is_array($material->tags))
+                    @php
+                        $allTags = [];
+                        foreach($material->tags as $tag) {
+                            foreach(explode('،', $tag) as $part) {
+                                foreach(explode(',', $part) as $p) {
+                                    $t = trim($p);
+                                    if($t !== '') $allTags[] = $t;
+                                }
+                            }
+                        }
+                        $allTags = array_unique($allTags);
+                    @endphp
+                    @if(count($allTags))
+                        <div class="mb-6">
+                            <div class="flex flex-wrap gap-2">
+                                @foreach($allTags as $tag)
+                                    <a href="{{ route('tag', urlencode($tag)) }}" class="px-3 py-1 rounded-full text-sm bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white transition-colors">#{{ $tag }}</a>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 @endif
 
                 <a href="{{ route('contact') }}" class="btn-primary inline-flex items-center px-8 py-4 rounded-xl font-bold text-lg">
@@ -115,7 +129,7 @@
                     <div data-aos="fade-up" class="card-elegant overflow-hidden">
                         @if($rel->image)
                             <div class="img-zoom h-44">
-                                <img src="{{ asset('storage/' . $rel->image) }}" alt="{{ $rel->name }}" class="w-full h-full object-cover" loading="lazy">
+                                <img src="{{ \App\Services\ImageService::asset($rel->image) }}" alt="{{ $rel->name }}" class="w-full h-full object-cover" loading="lazy">
                             </div>
                         @else
                             <div class="h-44 flex items-center justify-center bg-[var(--stone)]">

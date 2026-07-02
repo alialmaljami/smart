@@ -95,12 +95,12 @@
                 >
                     @if(count($projectImages) > 1)
                         @foreach($projectImages as $pi => $img)
-                        <img src="{{ asset('storage/' . $img) }}" alt="{{ $project->title }}" class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out"
+                        <img src="{{ \App\Services\ImageService::asset($img) }}" alt="{{ $project->title }}" class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out"
                              :class="slide === {{ $pi }} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'"
                              loading="lazy">
                         @endforeach
                     @else
-                        <img src="{{ asset('storage/' . $image) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                        <img src="{{ \App\Services\ImageService::asset($image) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
                     @endif
                     <div class="overlay-gradient absolute inset-0 z-[2]"></div>
                     {{-- Dots for multi-image --}}

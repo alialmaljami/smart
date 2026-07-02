@@ -49,7 +49,7 @@
 </section>
 
 @if($q->answer)
-    <section class="py-16 bg-white">
+    <section class="py-16 bg-[var(--navy)]">
         <div class="container mx-auto px-4 max-w-4xl">
             <div data-aos="fade-up" class="bg-[var(--cream)] rounded-2xl p-8 border border-[var(--stone)]/20">
                 <div class="flex items-center gap-3 mb-4">
@@ -65,7 +65,7 @@
         </div>
     </section>
 @else
-    <section class="py-16 bg-white">
+    <section class="py-16 bg-[var(--navy)]">
         <div class="container mx-auto px-4 max-w-4xl text-center">
             <p class="text-[var(--text-secondary)] text-lg">{{ __('This question has not been answered yet') }}</p>
         </div>
@@ -78,7 +78,7 @@
             <h2 class="text-xl font-bold text-[var(--text-heading)] mb-6">{{ __('Related Questions') }}</h2>
             <div class="space-y-3">
                 @foreach($related as $rq)
-                    <a href="{{ route('q.show', $rq->slug) }}" class="block bg-white rounded-xl p-4 hover:shadow-md transition-all border border-[var(--stone)]/20 group">
+                    <a href="{{ route('q.show', $rq->slug) }}" class="block bg-[var(--navy)] rounded-xl p-4 hover:shadow-md transition-all border border-[var(--stone)]/20 group">
                         <h3 class="font-bold text-[var(--text-heading)] group-hover:text-[var(--gold)] transition-colors text-sm">{{ $rq->question }}</h3>
                     </a>
                 @endforeach
@@ -87,7 +87,7 @@
     </section>
 @endif
 
-<section class="py-16 bg-white">
+<section class="py-16 bg-[var(--navy)]">
     <div class="container mx-auto px-4 max-w-2xl">
         <div data-aos="fade-up" class="text-center mb-10">
             <h2 class="text-2xl font-bold text-[var(--text-heading)] mb-2">{{ __('Ask a Question') }}</h2>

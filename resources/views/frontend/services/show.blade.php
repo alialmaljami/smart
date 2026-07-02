@@ -79,7 +79,7 @@
                                 title="{{ __('Add to Favorites') }}">
                             <svg class="w-5 h-5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="isFavorite('service', {{ $service->id }}) ? 'currentColor' : 'none'"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                         </button>
-                        <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}" class="w-full h-80 object-cover" loading="lazy">
+                        <img src="{{ \App\Services\ImageService::asset($service->image) }}" alt="{{ $service->name }}" class="w-full h-80 object-cover" loading="lazy">
                     </div>
                     <div class="absolute -bottom-4 -left-4 w-24 h-24 bg-[var(--gold)] rounded-2xl -z-10"></div>
                 </div>
@@ -99,7 +99,7 @@
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach($images as $image)
                     <div data-aos="zoom-in" data-aos-delay="{{ $loop->index * 50 }}" class="img-zoom rounded-xl overflow-hidden h-48">
-                        <img src="{{ asset('storage/' . $image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover" loading="lazy">
+                        <img src="{{ \App\Services\ImageService::asset($image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover" loading="lazy">
                     </div>
                 @endforeach
             </div>
@@ -140,7 +140,7 @@
                 @foreach($relatedProjects as $project)
                     @php $img = is_array($project->images) ? ($project->images[0] ?? '') : $project->images; @endphp
                     <div data-aos="fade-up" class="group relative rounded-xl overflow-hidden img-zoom h-64">
-                        <img src="{{ asset('storage/' . $img) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                        <img src="{{ \App\Services\ImageService::asset($img) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
                         <div class="overlay-gradient absolute inset-0"></div>
                         <div class="absolute bottom-4 right-4">
                             <h3 class="text-white font-bold text-lg">{{ $project->title }}</h3>
@@ -168,7 +168,7 @@
                     <div data-aos="fade-up" class="card-elegant bg-[var(--white)] rounded-xl overflow-hidden">
                         @if($category->image)
                             <div class="img-zoom h-40">
-                                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover" loading="lazy">
+                                <img src="{{ \App\Services\ImageService::asset($category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover" loading="lazy">
                             </div>
                         @endif
                         <div class="p-4">

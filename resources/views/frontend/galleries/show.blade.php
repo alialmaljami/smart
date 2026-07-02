@@ -55,7 +55,7 @@
         <div class="max-w-5xl mx-auto min-w-0 max-w-full">
             {{-- Main Image --}}
             <div class="rounded-2xl overflow-hidden bg-[var(--navy-dark)] mb-6 md:mb-8 relative">
-                <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->alt_text ?: $item->title }}" class="w-full h-auto max-h-[50vh] sm:max-h-[70vh] md:max-h-[80vh] object-contain" loading="lazy">
+                <img src="{{ \App\Services\ImageService::asset($item->image) }}" alt="{{ $item->alt_text ?: $item->title }}" class="w-full h-auto max-h-[50vh] sm:max-h-[70vh] md:max-h-[80vh] object-contain" loading="lazy">
                 <button type="button" @click.stop="toggleFavorite('gallery', {{ $item->id }})"
                         :class="isFavorite('gallery', {{ $item->id }}) ? 'text-red-400' : 'text-white'"
                         class="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
@@ -71,12 +71,26 @@
                     <p class="text-[var(--text-light)] text-sm sm:text-base md:text-lg leading-relaxed mb-4 md:mb-6 break-words">{{ $item->description }}</p>
                 @endif
 
-                @if($item->tags)
-                    <div class="flex flex-wrap justify-center gap-1.5 md:gap-2 mb-4 md:mb-6">
-                        @foreach(explode(',', $item->tags) as $tag)
-                            <a href="{{ route('tag', trim($tag)) }}" class="px-2.5 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-medium bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20 hover:bg-[var(--gold)] hover:text-white transition-colors">{{ trim($tag) }}</a>
-                        @endforeach
-                    </div>
+                @if($item->tags && is_array($item->tags))
+                    @php
+                        $allTags = [];
+                        foreach($item->tags as $tag) {
+                            foreach(explode('،', $tag) as $part) {
+                                foreach(explode(',', $part) as $p) {
+                                    $t = trim($p);
+                                    if($t !== '') $allTags[] = $t;
+                                }
+                            }
+                        }
+                        $allTags = array_unique($allTags);
+                    @endphp
+                    @if(count($allTags))
+                        <div class="flex flex-wrap justify-center gap-1.5 md:gap-2 mb-4 md:mb-6">
+                            @foreach($allTags as $tag)
+                                <a href="{{ route('tag', urlencode($tag)) }}" class="px-2.5 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-medium bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20 hover:bg-[var(--gold)] hover:text-white transition-colors">{{ $tag }}</a>
+                            @endforeach
+                        </div>
+                    @endif
                 @endif
 
                 @if($item->service || $item->project)
@@ -123,7 +137,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                 @foreach($related as $rel)
                     <a href="{{ route('gallery.show', [$rel->id, $rel->slug]) }}" class="group relative rounded-xl overflow-hidden h-32 sm:h-40 md:h-48 block w-full">
-                        <img src="{{ asset('storage/' . $rel->image) }}" alt="{{ $rel->alt_text ?: $rel->title }}" class="w-full h-full object-cover" loading="lazy">
+                        <img src="{{ \App\Services\ImageService::asset($rel->image) }}" alt="{{ $rel->alt_text ?: $rel->title }}" class="w-full h-full object-cover" loading="lazy">
                         <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
                             <i class="fas fa-search-plus text-white text-lg md:text-2xl"></i>
                         </div>

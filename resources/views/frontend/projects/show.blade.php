@@ -1,5 +1,5 @@
 @php
-    $images = collect(is_array($project->images) ? $project->images : [])->map(fn($i) => asset('storage/' . $i))->values()->toArray();
+    $images = collect(is_array($project->images) ? $project->images : [])->map(fn($i) => \App\Services\ImageService::asset($i))->values()->toArray();
     $videos = is_array($project->videos) ? $project->videos : [];
     $totalImages = count($images);
     $totalVideos = count($videos);
@@ -229,7 +229,7 @@
                     @php $rImg = is_array($related->images) ? ($related->images[0] ?? '') : $related->images; @endphp
                     <div class="group relative rounded-[var(--radius-lg)] overflow-hidden shadow-lg bg-[var(--navy-dark)]">
                         <div class="h-44 sm:h-52 md:h-64 w-full">
-                            <img src="{{ asset('storage/' . $rImg) }}" alt="{{ $related->title }}" class="w-full h-full object-cover" loading="lazy">
+                            <img src="{{ \App\Services\ImageService::asset($rImg) }}" alt="{{ $related->title }}" class="w-full h-full object-cover" loading="lazy">
                         </div>
                         <div class="overlay-gradient absolute inset-0"></div>
                         <div x-data="{ liked: {{ $related->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $related->likeCount() }} }" class="absolute top-2 sm:top-3 left-2 sm:left-3 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $related->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">

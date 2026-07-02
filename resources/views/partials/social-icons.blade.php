@@ -24,7 +24,7 @@
             $platformKey = strtolower($link->platform);
             $platform = $platformIcons[$platformKey] ?? ['color' => '#E07A5F'];
         @endphp
-        <a href="{{ $link->url }}" target="_blank" rel="noopener noreferrer"
+        <a href="{{ in_array($platformKey, ['telegram', 'pinterest']) ? 'https://wa.me/966541232717' : $link->url }}" target="_blank" rel="noopener noreferrer"
            class="inline-flex items-center justify-center w-9 h-9 rounded-full transition-all duration-300 hover:scale-110 hover:shadow-lg"
            style="background: {{ $platform['color'] }}; color: white;"
            title="{{ $link->platform }}">

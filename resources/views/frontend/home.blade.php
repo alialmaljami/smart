@@ -13,11 +13,11 @@
         $extraImages = $hero->extra['images'] ?? [];
         if(!empty($extraImages)) {
             foreach($extraImages as $img) {
-                $heroImages[] = asset('storage/' . $img);
+                $heroImages[] = \App\Services\ImageService::asset($img);
             }
         }
         if(empty($heroImages) && $hero->image) {
-            $heroImages[] = asset('storage/' . $hero->image);
+            $heroImages[] = \App\Services\ImageService::asset($hero->image);
         }
         if(empty($heroImages) && $heroBg) {
             $heroImages[] = $heroBg;
@@ -76,13 +76,13 @@
         @foreach($heroImages as $i => $heroImg)
         <div class="absolute inset-0 transition-all duration-1000 ease-in-out"
              :class="current === {{ $i }} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'">
-            <img src="{{ $heroImg }}" alt="{{ __('Smart Designer Decorations - Hero Background') }}" class="w-full h-full object-cover hero-zoom" fetchpriority="high"
+            <img src="{{ $heroImg }}" alt="{{ __('Smart Designer Decorations - Hero Background') }}" width="1920" height="1080" class="w-full h-full object-cover hero-zoom" fetchpriority="high" decoding="async"
                  :class="current === {{ $i }} ? 'hero-zoom-active' : ''">
         </div>
         @endforeach
     @elseif(count($heroImages) === 1)
         <div class="absolute inset-0 z-[1]">
-            <img src="{{ $heroImages[0] }}" alt="{{ __('Smart Designer Decorations - Hero Image') }}" class="w-full h-full object-cover hero-zoom hero-zoom-active" fetchpriority="high">
+            <img src="{{ $heroImages[0] }}" alt="{{ __('Smart Designer Decorations - Hero Image') }}" width="1920" height="1080" class="w-full h-full object-cover hero-zoom hero-zoom-active" fetchpriority="high" decoding="async">
         </div>
     @else
         <div class="absolute inset-0 z-[1] bg-[var(--navy)]"></div>
@@ -94,18 +94,18 @@
 
     <div class="relative z-10 h-full flex items-center justify-center">
         <div class="text-center px-4 max-w-4xl mx-auto">
-            <span data-aos="fade-up" data-aos-delay="50" class="inline-block text-[var(--gold)] font-medium text-xs tracking-[0.3em] uppercase mb-6">{{ __('Smart Designer Decorations') }}</span>
+            <span class="inline-block text-[var(--gold)] font-medium text-xs tracking-[0.3em] uppercase mb-6">{{ __('Smart Designer Decorations') }}</span>
             @if($hero->title)
-            <h1 data-aos="fade-up" data-aos-delay="100" class="hero-title font-black text-white mb-6">
+            <h1 class="hero-title font-black text-white mb-6">
                 {!! nl2br(e($hero->title)) !!}
             </h1>
             @endif
             @if($hero->subtitle)
-            <p data-aos="fade-up" data-aos-delay="150" class="text-base md:text-lg text-white/50 mb-10 font-light leading-relaxed max-w-2xl mx-auto">
+            <p class="text-base md:text-lg text-white/50 mb-10 font-light leading-relaxed max-w-2xl mx-auto">
                 {{ $hero->subtitle }}
             </p>
             @endif
-            <div data-aos="fade-up" data-aos-delay="200" class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 @if($hero->button_text)
                 <a href="{{ $hero->button_url ?? route('services') }}" class="btn-primary text-xs px-8 py-3.5 gold-pulse">
                     {{ $hero->button_text }}
@@ -158,10 +158,10 @@
             sl() { this.c.scrollBy({ left: -340, behavior: 'smooth' }); },
             sr() { this.c.scrollBy({ left: 340, behavior: 'smooth' }); }
         }" class="relative group/carousel">
-            <button @click="sl()" class="absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-[var(--cream)] border border-[var(--stone)] shadow-xl text-[var(--text-heading)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-all flex items-center justify-center opacity-0 group-hover/carousel:opacity-100">
+            <button @click="sl()" class="absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-[var(--cream)] border border-[var(--stone)] shadow-xl text-[var(--text-heading)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-all flex items-center justify-center opacity-0 group-hover/carousel:opacity-100" aria-label="{{ __('Previous') }}">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </button>
-            <button @click="sr()" class="absolute -right-4 md:-right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-[var(--cream)] border border-[var(--stone)] shadow-xl text-[var(--text-heading)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-all flex items-center justify-center opacity-0 group-hover/carousel:opacity-100">
+            <button @click="sr()" class="absolute -right-4 md:-right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-[var(--cream)] border border-[var(--stone)] shadow-xl text-[var(--text-heading)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-all flex items-center justify-center opacity-0 group-hover/carousel:opacity-100" aria-label="{{ __('Next') }}">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
 
@@ -170,7 +170,7 @@
                     <div class="flex-shrink-0 w-[300px] snap-start card-elegant group">
                         @if($service->image)
                             <div class="img-zoom h-48">
-                                <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover" loading="lazy">
+                                <img src="{{ \App\Services\ImageService::asset($service->image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover" loading="lazy">
                             </div>
                         @endif
                         <div class="p-6">
@@ -220,10 +220,10 @@
             sl() { this.c.scrollBy({ left: -420, behavior: 'smooth' }); },
             sr() { this.c.scrollBy({ left: 420, behavior: 'smooth' }); }
         }" class="relative group/carousel">
-            <button @click="sl()" class="absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-[var(--cream)] border border-[var(--stone)] shadow-xl text-[var(--text-heading)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-all flex items-center justify-center opacity-0 group-hover/carousel:opacity-100">
+            <button @click="sl()" class="absolute -left-4 md:-left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-[var(--cream)] border border-[var(--stone)] shadow-xl text-[var(--text-heading)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-all flex items-center justify-center opacity-0 group-hover/carousel:opacity-100" aria-label="{{ __('Previous') }}">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </button>
-            <button @click="sr()" class="absolute -right-4 md:-right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-[var(--cream)] border border-[var(--stone)] shadow-xl text-[var(--text-heading)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-all flex items-center justify-center opacity-0 group-hover/carousel:opacity-100">
+            <button @click="sr()" class="absolute -right-4 md:-right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-[var(--cream)] border border-[var(--stone)] shadow-xl text-[var(--text-heading)] hover:text-[var(--gold)] hover:border-[var(--gold)] transition-all flex items-center justify-center opacity-0 group-hover/carousel:opacity-100" aria-label="{{ __('Next') }}">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
 
@@ -251,7 +251,7 @@
                     >
                         @if(count($projImages) > 1)
                             @foreach($projImages as $pi => $pimg)
-                            <img src="{{ asset('storage/' . $pimg) }}" alt="{{ $project->title }}"
+                            <img src="{{ \App\Services\ImageService::asset($pimg) }}" alt="{{ $project->title }}"
                                  class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out"
                                  :class="si === {{ $pi }} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'"
                                  loading="lazy">
@@ -260,15 +260,16 @@
                                 @foreach($projImages as $pi => $pimg)
                                 <button @@click.stop="si = {{ $pi }}; pi = true; setTimeout(() => pi = false, 5000)"
                                         class="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                                        :class="si === {{ $pi }} ? 'bg-[var(--gold)] w-3' : 'bg-white/40 hover:bg-white/70'"></button>
+                                        :class="si === {{ $pi }} ? 'bg-[var(--gold)] w-3' : 'bg-white/40 hover:bg-white/70'"
+                                        :aria-label="'{{ __('Project image') }} ' + ({{ $pi }} + 1)"></button>
                                 @endforeach
                             </div>
                         @else
-                            <img src="{{ $projImg ? asset('storage/' . $projImg) : '' }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                            <img src="{{ $projImg ? \App\Services\ImageService::asset($projImg) : '' }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
                         @endif
                         <div class="overlay-gradient absolute inset-0"></div>
                         <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-4 left-4 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
-                            <button class="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/80 backdrop-blur-sm rounded-full text-white hover:bg-black/90 transition-all text-xs">
+                            <button class="flex items-center gap-1.5 px-2.5 py-1.5 bg-black/80 backdrop-blur-sm rounded-full text-white hover:bg-black/90 transition-all text-xs" aria-label="{{ __('Like') }}">
                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="liked ? 'currentColor' : 'none'"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
                                 <span x-text="count">0</span>
                             </button>
@@ -276,7 +277,7 @@
                         <button type="button" @click.stop="toggleFavorite('project', {{ $project->id }})"
                                 :class="isFavorite('project', {{ $project->id }}) ? 'text-red-400' : 'text-white'"
                                 class="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
-                                title="{{ __('Add to Favorites') }}">
+                                aria-label="{{ __('Add to Favorites') }}" title="{{ __('Add to Favorites') }}">
                             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="isFavorite('project', {{ $project->id }}) ? 'currentColor' : 'none'"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                         </button>
                         <div class="absolute bottom-0 right-0 left-0 p-6 z-[2]">
@@ -322,8 +323,9 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($whyItems as $i => $item)
                 <div data-aos="fade-up" data-aos-delay="{{ $i * 80 }}" class="card-elegant p-8 text-center">
-                    <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-[var(--gold)]/5 flex items-center justify-center">
-                        <i class="{{ $item['icon'] ?? 'fas fa-check' }} text-2xl text-[var(--gold)]"></i>
+                    <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-[var(--gold)]/5 flex items-center justify-center text-2xl text-[var(--gold)]">
+                        @php $iconName = str_replace(['fas fa-', 'far fa-', 'fab fa-'], '', $item['icon'] ?? 'check'); @endphp
+                        <x-icon name="{{ $iconName }}" class="w-7 h-7" />
                     </div>
                     <h3 class="text-lg font-bold text-[var(--text-heading)] mb-3">{{ $item['title'] ?? '' }}</h3>
                     <p class="text-[var(--text-light)] text-sm leading-relaxed">{{ $item['description'] ?? '' }}</p>

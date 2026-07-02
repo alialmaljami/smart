@@ -75,7 +75,7 @@
                             </button>
                             @if(count($postImages) > 1)
                                 @foreach($postImages as $bi => $bImg)
-                                <img src="{{ asset('storage/' . $bImg) }}" alt="{{ $post->title }}"
+                                <img src="{{ \App\Services\ImageService::asset($bImg) }}" alt="{{ $post->title }}"
                                      class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out"
                                      :class="s === {{ $bi }} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'"
                                      loading="lazy">
@@ -88,7 +88,7 @@
                                     @endforeach
                                 </div>
                             @else
-                                <img src="{{ asset('storage/' . $singleImage) }}" alt="{{ $post->title }}" class="w-full h-full object-cover" loading="lazy">
+                                <img src="{{ \App\Services\ImageService::asset($singleImage) }}" alt="{{ $post->title }}" class="w-full h-full object-cover" loading="lazy">
                             @endif
                         </div>
                     @else

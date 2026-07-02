@@ -17,7 +17,7 @@
     </div>
 
     {{-- Stats cards --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <div class="stat-card bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-lg hover:border-gold-200/50">
             <div class="flex items-center justify-between mb-4">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
@@ -71,6 +71,32 @@
             </div>
             <p class="text-3xl font-black text-gray-800">{{ $blogPostsCount ?? 0 }}</p>
             <p class="text-sm text-gray-500 mt-1">المقالات</p>
+        </div>
+
+        <div class="stat-card bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-lg hover:border-gold-200/50">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
+                    <i class="fas fa-star text-white text-lg"></i>
+                </div>
+                <span class="text-xs font-medium text-{{ $pendingReviewsCount > 0 ? 'red' : 'emerald' }}-500 bg-{{ $pendingReviewsCount > 0 ? 'red' : 'emerald' }}-50 px-2 py-0.5 rounded-full">
+                    {{ $pendingReviewsCount > 0 ? $pendingReviewsCount . ' بانتظار' : 'إجمالي' }}
+                </span>
+            </div>
+            <p class="text-3xl font-black text-gray-800">{{ $reviewsCount ?? 0 }}</p>
+            <p class="text-sm text-gray-500 mt-1">التقييمات</p>
+        </div>
+
+        <div class="stat-card bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-lg hover:border-gold-200/50">
+            <div class="flex items-center justify-between mb-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-sky-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+                    <i class="fas fa-envelope text-white text-lg"></i>
+                </div>
+                <span class="text-xs font-medium text-{{ $pendingMessagesCount > 0 ? 'red' : 'emerald' }}-500 bg-{{ $pendingMessagesCount > 0 ? 'red' : 'emerald' }}-50 px-2 py-0.5 rounded-full">
+                    {{ $pendingMessagesCount > 0 ? $pendingMessagesCount . ' جديدة' : 'إجمالي' }}
+                </span>
+            </div>
+            <p class="text-3xl font-black text-gray-800">{{ $contactsCount ?? 0 }}</p>
+            <p class="text-sm text-gray-500 mt-1">جهات الاتصال</p>
         </div>
     </div>
 
@@ -220,37 +246,89 @@
             </div>
         </div>
 
-        {{-- Recent contacts --}}
+        {{-- Pending reviews --}}
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
             <div class="flex items-center justify-between mb-5">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-                        <i class="fas fa-envelope text-white text-sm"></i>
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
+                        <i class="fas fa-star text-white text-sm"></i>
                     </div>
-                    <h3 class="font-bold text-gray-800">آخر رسائل الاتصال</h3>
+                    <h3 class="font-bold text-gray-800">تقييمات بانتظار الموافقة</h3>
+                    @if($pendingReviewsCount > 0)
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-bold">{{ $pendingReviewsCount }}</span>
+                    @endif
                 </div>
-                <a href="{{ route('admin.contacts.index') }}" class="text-sm text-gold-600 hover:text-gold-700 font-medium transition-colors">عرض الكل <i class="fas fa-arrow-left mr-1 text-xs"></i></a>
+                <a href="{{ route('admin.reviews.index') }}" class="text-sm text-gold-600 hover:text-gold-700 font-medium transition-colors">عرض الكل <i class="fas fa-arrow-left mr-1 text-xs"></i></a>
             </div>
             <div class="space-y-1">
-                @forelse($recentContacts ?? [] as $contact)
+                @forelse($pendingReviews ?? [] as $review)
                     <div class="flex items-center justify-between py-2.5 px-3 rounded-lg hover:bg-gray-50 transition-colors">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center">
-                                <i class="fas fa-envelope text-emerald-600 text-sm"></i>
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center text-orange-600 font-bold text-sm">
+                                {{ mb_substr($review->name, 0, 1) }}
                             </div>
-                            <div>
-                                <p class="text-sm font-medium text-gray-700">{{ $contact->value }}</p>
-                                <p class="text-xs text-gray-400">{{ $contact->type }}</p>
+                            <div class="min-w-0">
+                                <p class="text-sm font-medium text-gray-700 truncate max-w-[200px]">{{ $review->name }}</p>
+                                <p class="text-xs text-gray-400 truncate max-w-[200px]">{{ $review->text }}</p>
                             </div>
                         </div>
-                        <span class="text-xs px-2.5 py-1 rounded-full font-medium {{ $contact->is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600' }}">
-                            {{ $contact->is_active ? 'نشط' : 'غير نشط' }}
-                        </span>
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-0.5">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="fas fa-star text-xs {{ $i <= $review->stars ? 'text-amber-400' : 'text-gray-200' }}"></i>
+                                @endfor
+                            </div>
+                            <form action="{{ route('admin.reviews.toggle-active', $review) }}" method="POST" class="inline">
+                                @csrf
+                                @method('PUT')
+                                <button type="submit" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg transition-colors" title="تفعيل">
+                                    موافقة
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 @empty
                     <div class="text-center py-8">
-                        <i class="fas fa-envelope text-3xl text-gray-200 mb-2"></i>
-                        <p class="text-sm text-gray-400">لا توجد بيانات اتصال مضافة بعد</p>
+                        <i class="fas fa-star text-3xl text-gray-200 mb-2"></i>
+                        <p class="text-sm text-gray-400">لا توجد تقييمات معلقة</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+
+        {{-- Recent messages --}}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 card-hover">
+            <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-sky-500 to-sky-600 flex items-center justify-center">
+                        <i class="fas fa-envelope-open-text text-white text-sm"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800">آخر رسائل الزوار</h3>
+                    @if($pendingMessagesCount > 0)
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-red-50 text-red-600 font-bold">{{ $pendingMessagesCount }}</span>
+                    @endif
+                </div>
+            </div>
+            <div class="space-y-1">
+                @forelse($recentMessages ?? [] as $msg)
+                    <div class="py-2.5 px-3 rounded-lg hover:bg-gray-50 transition-colors">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-sm font-bold text-gray-700">{{ $msg->label ? explode(' | ', $msg->label)[0] : 'زائر' }}</span>
+                                    @if(!$msg->is_active)
+                                        <span class="text-xs px-1.5 py-0.5 rounded-full bg-red-50 text-red-500 font-bold">جديد</span>
+                                    @endif
+                                </div>
+                                <p class="text-sm text-gray-600 line-clamp-2">{{ $msg->value }}</p>
+                                <p class="text-xs text-gray-400 mt-0.5">{{ $msg->created_at ? $msg->created_at->diffForHumans() : '' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-8">
+                        <i class="fas fa-envelope-open-text text-3xl text-gray-200 mb-2"></i>
+                        <p class="text-sm text-gray-400">لا توجد رسائل من الزوار بعد</p>
                     </div>
                 @endforelse
             </div>

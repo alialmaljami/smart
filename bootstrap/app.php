@@ -16,7 +16,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
-        $middleware->trustProxies(headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR | \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST | \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT | \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO);
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'super-admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
@@ -27,9 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\ContentSecurityPolicy::class,
         ]);
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
-        $middleware->validateCsrfTokens(except: [
-            //
-        ]);
+        $middleware->validateCsrfTokens(except: []);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
