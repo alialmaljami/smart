@@ -109,25 +109,27 @@ Route::get('/sitemap-services.xml', [SitemapController::class, 'services'])->nam
 Route::get('/sitemap-materials.xml', [SitemapController::class, 'materials'])->name('sitemap.materials');
 Route::get('/sitemap-cities.xml', [SitemapController::class, 'cities'])->name('sitemap.cities');
 
-// Fallback route for storage files (when symlink is missing on Railway)
-Route::get('/storage/{path}', function (string $path) {
-    $fullPath = storage_path('app/public/' . $path);
-    if (!file_exists($fullPath)) {
-        abort(404);
-    }
-    $mime = mime_content_type($fullPath);
-    return response()->file($fullPath, ['Content-Type' => $mime]);
-})->where('path', '.*');
-
+// Fallback route for storage files - serves original or WebP with on-the-fly conversion
 Route::get('/storage/{path}', function (string $path) {
     if (str_contains($path, '..')) {
         abort(404);
     }
-    $disk = \Illuminate\Support\Facades\Storage::disk('public');
-    if (!$disk->exists($path)) {
+    $fullPath = storage_path('app/public/' . $path);
+    if (!file_exists($fullPath)) {
         abort(404);
     }
-    return response()->file($disk->path($path));
+    // Serve WebP if browser supports it
+    if (preg_match('/\.(jpg|jpeg|png)$/i', $path) && str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'image/webp')) {
+        $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $fullPath);
+        if (!file_exists($webpPath)) {
+            \App\Services\ImageService::generateWebP($fullPath, $webpPath);
+        }
+        if (file_exists($webpPath)) {
+            return response()->file($webpPath, ['Content-Type' => 'image/webp']);
+        }
+    }
+    $mime = mime_content_type($fullPath);
+    return response()->file($fullPath, ['Content-Type' => $mime]);
 })->where('path', '.*');
 
 

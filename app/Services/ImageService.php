@@ -30,7 +30,7 @@ class ImageService
         return asset(self::webp($path));
     }
 
-    private static function generateWebP(string $source, string $dest): void
+    public static function generateWebP(string $source, string $dest): void
     {
         $dir = dirname($dest);
         if (!is_dir($dir)) {
