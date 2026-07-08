@@ -15,7 +15,7 @@ trait ImageUploadHelper
         'large' => [1600, 1200],
     ];
 
-    protected int $quality = 85;
+    protected int $quality = 70;
 
     public function uploadImage(UploadedFile $file, string $directory = 'images', ?string $oldPath = null): string
     {
@@ -24,7 +24,8 @@ trait ImageUploadHelper
         }
 
         $manager = new ImageManager(new Driver());
-        $filename = uniqid() . '.webp';
+        $counter = (int)(microtime(true) * 10000);
+        $filename = 'ديكورات المصمم الذكي 0541232717 (' . $counter . ').webp';
         $relativePath = $directory . '/' . $filename;
 
         $image = $manager->decodePath($file->getRealPath());

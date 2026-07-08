@@ -27,18 +27,21 @@ class SettingController extends Controller
             'home_meta_title', 'home_meta_description', 'home_meta_keywords',
             'about_meta_title', 'about_meta_description', 'about_meta_keywords',
             'contact_meta_title', 'contact_meta_description', 'contact_meta_keywords',
-            'faq_meta_title', 'faq_meta_description',
-            'privacy_meta_title', 'privacy_meta_description',
-            'terms_meta_title', 'terms_meta_description',
-            'jeddah_meta_title', 'jeddah_meta_description',
-            'mecca_meta_title', 'mecca_meta_description',
+            'faq_meta_title', 'faq_meta_description', 'faq_meta_keywords',
+            'privacy_meta_title', 'privacy_meta_description', 'privacy_meta_keywords',
+            'terms_meta_title', 'terms_meta_description', 'terms_meta_keywords',
+            'jeddah_meta_title', 'jeddah_meta_description', 'jeddah_meta_keywords',
+            'mecca_meta_title', 'mecca_meta_description', 'mecca_meta_keywords',
             'google_search_console', 'google_analytics_id',
         ];
 
         foreach ($keys as $key) {
             if ($request->hasFile($key)) {
                 $request->validate([$key => 'image|mimes:jpeg,png,gif,webp|max:2048']);
-                $path = $request->file($key)->store('settings', 'public');
+                $file = $request->file($key);
+                $counter = (int)(microtime(true) * 10000);
+                $filename = 'ديكورات المصمم الذكي 0541232717 (' . $counter . ').' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('settings', $filename, 'public');
                 Setting::updateOrCreate(['key' => $key], ['value' => $path]);
             } elseif ($request->has($key)) {
                 Setting::updateOrCreate(['key' => $key], ['value' => $request->input($key) ?? '']);

@@ -16,6 +16,30 @@ class GalleryController extends Controller
         return view('frontend.galleries.index', compact('galleries', 'categories'));
     }
 
+    public function videos(): View
+    {
+        $items = Gallery::byType('video')->where('is_active', true)->with('category')->orderBy('sort_order')->orderBy('created_at', 'desc')->get();
+        return view('frontend.galleries.videos', compact('items'));
+    }
+
+    public function tours(): View
+    {
+        $items = Gallery::byType('360')->where('is_active', true)->with('category')->orderBy('sort_order')->orderBy('created_at', 'desc')->get();
+        return view('frontend.galleries.tours', compact('items'));
+    }
+
+    public function beforeAfter(): View
+    {
+        $items = Gallery::byType('before_after')->where('is_active', true)->with('category')->orderBy('sort_order')->orderBy('created_at', 'desc')->get();
+        return view('frontend.galleries.before-after', compact('items'));
+    }
+
+    public function photography(): View
+    {
+        $items = Gallery::byType('photography')->where('is_active', true)->with('category')->orderBy('sort_order')->orderBy('created_at', 'desc')->get();
+        return view('frontend.galleries.photography', compact('items'));
+    }
+
     public function show(int $id, ?string $slug = null): View
     {
         $query = Gallery::where('is_active', true)

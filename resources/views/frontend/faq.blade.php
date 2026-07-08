@@ -98,13 +98,15 @@
             <div class="w-full md:w-1/2" data-aos="fade-up" data-aos-delay="100">
                 <div class="bg-[var(--navy-dark)] rounded-xl p-6 border border-[var(--stone)] shadow-sm">
                     <h3 class="text-xl font-bold text-[var(--text-heading)] mb-4">{{ __('Ask a Question') }}</h3>
-                    <form action="{{ route('questions.store') }}" method="POST">
+                    <form action="{{ route('questions.store') }}" method="POST"
+                          toolname="askQuestion"
+                          tooldescription="Submit a question to Smart Designer Decorations FAQ. Accepts: question (the question text), asked_by (optional name). Returns: confirmation that question was submitted.">
                         @csrf
                         <div class="mb-4">
-                            <textarea name="question" rows="3" required class="w-full border border-[var(--stone)] rounded-xl px-5 py-3 text-sm focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-colors bg-[var(--cream)] text-[var(--text-heading)]" placeholder="{{ __('Write your question here...') }}"></textarea>
+                            <textarea name="question" rows="3" required class="w-full border border-[var(--stone)] rounded-xl px-5 py-3 text-sm focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-colors bg-[var(--cream)] text-[var(--text-heading)]" placeholder="{{ __('Write your question here...') }}" toolparamdescription="The question being asked"></textarea>
                         </div>
                         <div class="mb-4">
-                            <input type="text" name="asked_by" class="w-full border border-[var(--stone)] rounded-xl px-5 py-3 text-sm focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-colors bg-[var(--cream)] text-[var(--text-heading)]" placeholder="{{ __('Your name (optional)') }}">
+                            <input type="text" name="asked_by" class="w-full border border-[var(--stone)] rounded-xl px-5 py-3 text-sm focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)] outline-none transition-colors bg-[var(--cream)] text-[var(--text-heading)]" placeholder="{{ __('Your name (optional)') }}" toolparamdescription="Name of the person asking (optional)">
                         </div>
                         <button type="submit" class="w-full py-3 bg-[var(--gold)] text-[#0F172A] font-bold rounded-xl hover:opacity-90 transition-all text-sm">
                             {{ __('Send Question') }}

@@ -18,6 +18,11 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\VisitorQuestionController;
 use App\Http\Controllers\Admin\AboutPageController;
 use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\GoogleSearchConsoleController;
+use App\Http\Controllers\Admin\GalleryTypeController;
+use App\Http\Controllers\Admin\NeighborhoodController;
+use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\Admin\CityController;
 
 
 Route::middleware('web')->prefix('admin')->group(function () {
@@ -57,6 +62,11 @@ Route::middleware('web')->prefix('admin')->group(function () {
             Route::get('/settings', [SettingController::class, 'index'])->name('admin.settings');
             Route::post('/settings', [SettingController::class, 'update'])->name('admin.settings.update');
 
+            Route::get('/google-search-console', [GoogleSearchConsoleController::class, 'index'])->name('admin.google-search-console');
+            Route::post('/google-search-console', [GoogleSearchConsoleController::class, 'update'])->name('admin.google-search-console.update');
+            Route::get('/google-search-console/check-meta', [GoogleSearchConsoleController::class, 'checkMeta'])->name('admin.google-search-console.check-meta');
+            Route::post('/google-search-console/submit-sitemaps', [GoogleSearchConsoleController::class, 'submitSitemaps'])->name('admin.google-search-console.submit-sitemaps');
+
             Route::get('/about', [AboutPageController::class, 'index'])->name('admin.about.index');
             Route::post('/about', [AboutPageController::class, 'update'])->name('admin.about.update');
 
@@ -78,8 +88,8 @@ Route::middleware('web')->prefix('admin')->group(function () {
         Route::post('/galleries/{gallery}/toggle-active', [GalleryController::class, 'toggleActive'])->name('admin.galleries.toggle-active');
 
         // Reviews
+        Route::any('/reviews/{review}/toggle-active', [ReviewController::class, 'toggleActive'])->name('admin.reviews.toggle-active');
         Route::resource('/reviews', ReviewController::class, ['as' => 'admin']);
-        Route::put('/reviews/{review}/toggle-active', [ReviewController::class, 'toggleActive'])->name('admin.reviews.toggle-active');
 
         // Homepage Sections
         Route::resource('/homepage-sections', HomepageSectionController::class, ['as' => 'admin']);
@@ -94,5 +104,74 @@ Route::middleware('web')->prefix('admin')->group(function () {
         // Visitor Questions (Q&A)
         Route::resource('/visitor-questions', VisitorQuestionController::class, ['as' => 'admin']);
         Route::post('/visitor-questions/{visitorQuestion}/toggle-active', [VisitorQuestionController::class, 'toggleActive'])->name('admin.visitor-questions.toggle-active');
+
+        // Gallery Type: Videos
+        Route::prefix('/videos')->name('admin.videos.')->group(function () {
+            Route::get('/', function () {
+                return app(GalleryTypeController::class)->index('video');
+            })->name('index');
+            Route::get('/create', function () {
+                return app(GalleryTypeController::class)->create('video');
+            })->name('create');
+            Route::post('/', function (\Illuminate\Http\Request $req) {
+                return app(GalleryTypeController::class)->store('video', $req);
+            })->name('store');
+            Route::get('/{gallery}/edit', function (App\Models\Gallery $gallery) {
+                return app(GalleryTypeController::class)->edit('video', $gallery);
+            })->name('edit');
+            Route::put('/{gallery}', function (\Illuminate\Http\Request $req, App\Models\Gallery $gallery) {
+                return app(GalleryTypeController::class)->update('video', $req, $gallery);
+            })->name('update');
+            Route::post('/{gallery}/toggle-active', function (App\Models\Gallery $gallery) {
+                return app(GalleryTypeController::class)->toggleActive('video', $gallery);
+            })->name('toggle-active');
+            Route::delete('/{gallery}', function (App\Models\Gallery $gallery) {
+                return app(GalleryTypeController::class)->destroy('video', $gallery);
+            })->name('destroy');
+        });
+
+        // Gallery Type: 360 Tours
+        Route::prefix('/tours')->name('admin.tours.')->group(function () {
+            Route::get('/', function () { return app(GalleryTypeController::class)->index('360'); })->name('index');
+            Route::get('/create', function () { return app(GalleryTypeController::class)->create('360'); })->name('create');
+            Route::post('/', function (\Illuminate\Http\Request $req) { return app(GalleryTypeController::class)->store('360', $req); })->name('store');
+            Route::get('/{gallery}/edit', function (App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->edit('360', $gallery); })->name('edit');
+            Route::put('/{gallery}', function (\Illuminate\Http\Request $req, App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->update('360', $req, $gallery); })->name('update');
+            Route::post('/{gallery}/toggle-active', function (App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->toggleActive('360', $gallery); })->name('toggle-active');
+            Route::delete('/{gallery}', function (App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->destroy('360', $gallery); })->name('destroy');
+        });
+
+        // Gallery Type: Before/After
+        Route::prefix('/before-after')->name('admin.before-after.')->group(function () {
+            Route::get('/', function () { return app(GalleryTypeController::class)->index('before_after'); })->name('index');
+            Route::get('/create', function () { return app(GalleryTypeController::class)->create('before_after'); })->name('create');
+            Route::post('/', function (\Illuminate\Http\Request $req) { return app(GalleryTypeController::class)->store('before_after', $req); })->name('store');
+            Route::get('/{gallery}/edit', function (App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->edit('before_after', $gallery); })->name('edit');
+            Route::put('/{gallery}', function (\Illuminate\Http\Request $req, App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->update('before_after', $req, $gallery); })->name('update');
+            Route::post('/{gallery}/toggle-active', function (App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->toggleActive('before_after', $gallery); })->name('toggle-active');
+            Route::delete('/{gallery}', function (App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->destroy('before_after', $gallery); })->name('destroy');
+        });
+
+        // Gallery Type: Photography
+        Route::prefix('/photography')->name('admin.photography.')->group(function () {
+            Route::get('/', function () { return app(GalleryTypeController::class)->index('photography'); })->name('index');
+            Route::get('/create', function () { return app(GalleryTypeController::class)->create('photography'); })->name('create');
+            Route::post('/', function (\Illuminate\Http\Request $req) { return app(GalleryTypeController::class)->store('photography', $req); })->name('store');
+            Route::get('/{gallery}/edit', function (App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->edit('photography', $gallery); })->name('edit');
+            Route::put('/{gallery}', function (\Illuminate\Http\Request $req, App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->update('photography', $req, $gallery); })->name('update');
+            Route::post('/{gallery}/toggle-active', function (App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->toggleActive('photography', $gallery); })->name('toggle-active');
+            Route::delete('/{gallery}', function (App\Models\Gallery $gallery) { return app(GalleryTypeController::class)->destroy('photography', $gallery); })->name('destroy');
+        });
+
+        // Neighborhoods
+        Route::resource('/neighborhoods', NeighborhoodController::class, ['as' => 'admin']);
+        Route::post('/neighborhoods/{neighborhood}/toggle-active', [NeighborhoodController::class, 'toggleActive'])->name('admin.neighborhoods.toggle-active');
+
+        // Tags
+        Route::resource('/tags', TagController::class, ['as' => 'admin']);
+
+        // Cities
+        Route::resource('/cities', CityController::class, ['as' => 'admin']);
+        Route::post('/cities/{city}/toggle-active', [CityController::class, 'toggleActive'])->name('admin.cities.toggle-active');
     });
 });

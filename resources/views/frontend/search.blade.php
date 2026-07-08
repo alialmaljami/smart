@@ -24,10 +24,13 @@
 {{-- Search Form --}}
 <section class="py-8 bg-[var(--white)] border-b border-[var(--stone)]">
     <div class="container mx-auto px-4">
-        <form action="{{ route('search') }}" method="GET" class="max-w-xl mx-auto">
+        <form action="{{ route('search') }}" method="GET" class="max-w-xl mx-auto"
+              toolname="searchSite"
+              tooldescription="Search the Smart Designer Decorations website. Accepts: q (search query). Returns: search results page with matching services, projects, materials, and articles.">
             <div class="relative">
                 <input type="text" name="q" value="{{ $q }}" placeholder="{{ __('Search for services, projects, materials, articles...') }}"
-                       class="w-full px-6 py-4 pr-14 text-base bg-[var(--white)] rounded-2xl shadow-md border border-[var(--stone)] outline-none text-[var(--text-heading)] placeholder-[var(--text-muted)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)]">
+                       class="w-full px-6 py-4 pr-14 text-base bg-[var(--white)] rounded-2xl shadow-md border border-[var(--stone)] outline-none text-[var(--text-heading)] placeholder-[var(--text-muted)] focus:border-[var(--gold)] focus:ring-1 focus:ring-[var(--gold)]"
+                       toolparamdescription="Search query text">
                 <button type="submit" class="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--gold)] hover:text-[var(--text-heading)] transition-colors">
                     <i class="fas fa-search"></i>
                 </button>
@@ -61,7 +64,7 @@
                             <div data-aos="fade-up" class="card-elegant group overflow-hidden">
                                 @if($img)
                                     <div class="img-zoom h-48">
-                                        <img src="{{ \App\Services\ImageService::asset($img) }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
+                                        {!! \App\Services\ImageService::picture($img, $item->title, 'w-full h-full object-cover') !!}
                                     </div>
                                 @endif
                                 <div class="p-6">
@@ -79,7 +82,7 @@
                             <div data-aos="fade-up" class="card-elegant group overflow-hidden">
                                 @if($bImg)
                                     <div class="img-zoom h-48">
-                                        <img src="{{ \App\Services\ImageService::asset($bImg) }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
+                                        {!! \App\Services\ImageService::picture($bImg, $item->title, 'w-full h-full object-cover') !!}
                                     </div>
                                 @endif
                                 <div class="p-6">
@@ -96,7 +99,7 @@
                             <div data-aos="fade-up" class="card-elegant group overflow-hidden">
                                 @if($item->image)
                                     <div class="img-zoom h-48">
-                                        <img src="{{ \App\Services\ImageService::asset($item->image) }}" alt="{{ $item->name }}" class="w-full h-full object-cover" loading="lazy">
+                                        {!! \App\Services\ImageService::picture($item->image, $item->name, 'w-full h-full object-cover') !!}
                                     </div>
                                 @endif
                                 <div class="p-6">
@@ -112,7 +115,7 @@
                         @case('gallery')
                             <div data-aos="fade-up" class="card-elegant group overflow-hidden">
                                 <div class="img-zoom h-48">
-                                    <img src="{{ \App\Services\ImageService::asset($item->image) }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
+                                    {!! \App\Services\ImageService::picture($item->image, $item->title, 'w-full h-full object-cover') !!}
                                 </div>
                                 <div class="p-6">
                                     <span class="text-[10px] font-bold tracking-wider text-[var(--gold)] uppercase">{{ __('Gallery') }}</span>

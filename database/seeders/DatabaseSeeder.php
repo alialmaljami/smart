@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             MaterialCategorySeeder::class,
             ReviewSeeder::class,
             HomepageSectionSeeder::class,
+            CitySeeder::class,
         ]);
     }
 }

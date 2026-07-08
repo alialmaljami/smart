@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\TracksViews;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Service extends Model
@@ -33,6 +34,11 @@ class Service extends Model
         'is_active' => 'boolean',
         'sort_order' => 'integer',
     ];
+
+    public function galleries(): HasMany
+    {
+        return $this->hasMany(Gallery::class)->where('is_active', true)->orderBy('sort_order');
+    }
 
     public function projects(): BelongsToMany
     {

@@ -28,7 +28,7 @@ class ProjectController extends Controller
 
     public function show(string $slug): View
     {
-        $project = Project::where('slug', $slug)->where('is_active', true)->with(['services', 'materialCategories'])->firstOrFail();
+        $project = Project::where('slug', $slug)->where('is_active', true)->with(['services', 'materialCategories', 'galleries'])->firstOrFail();
         $project->incrementViews();
         $breadcrumbs = [
             ['name' => __('Home'), 'url' => route('home')],

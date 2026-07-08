@@ -11,6 +11,19 @@
 <meta property="og:description" content="{{ __('Our Works Gallery') }}">
 @endpush
 
+@push('schema')
+@php
+    $items = [];
+    foreach (($galleries ?? []) as $g) {
+        $items[] = ['name' => $g->title, 'url' => route('gallery.show', [$g->id, $g->slug])];
+    }
+    echo \App\Services\SchemaService::renderSchemas([
+        \App\Services\SchemaService::collectionPage(__('Gallery'), __('Our Works Gallery')),
+        \App\Services\SchemaService::itemList(__('Gallery'), $items),
+    ]);
+@endphp
+@endpush
+
 @section('title', __('Gallery') . ' - ' . __('Smart Designer Decorations'))
 
 @section('content')
@@ -29,9 +42,30 @@
     </div>
 </section>
 
+{{-- Type Tabs --}}
+<section class="py-6 bg-[var(--white)] border-b border-[var(--stone)]">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-wrap items-center justify-center gap-3">
+            <a href="{{ route('gallery') }}" class="type-tab active px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-[var(--gold)] text-white">{{ __('All') }}</a>
+            <a href="{{ route('gallery.videos') }}" class="type-tab px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-[var(--cream)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white">
+                <i class="fas fa-video ml-1.5"></i>{{ __('Videos') }}
+            </a>
+            <a href="{{ route('gallery.tours') }}" class="type-tab px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-[var(--cream)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white">
+                <i class="fas fa-vr-cardboard ml-1.5"></i>{{ __('360 Tours') }}
+            </a>
+            <a href="{{ route('gallery.before-after') }}" class="type-tab px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-[var(--cream)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white">
+                <i class="fas fa-not-equal ml-1.5"></i>{{ __('Before & After') }}
+            </a>
+            <a href="{{ route('gallery.photography') }}" class="type-tab px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-[var(--cream)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white">
+                <i class="fas fa-camera ml-1.5"></i>{{ __('Photography') }}
+            </a>
+        </div>
+    </div>
+</section>
+
 {{-- Categories Filter --}}
 @if($categories->count())
-    <section class="py-8 bg-[var(--white)] border-b border-[var(--stone)] sticky top-0 z-30">
+    <section class="py-4 bg-[var(--white)] border-b border-[var(--stone)] md:sticky md:top-0 md:z-30">
         <div class="container mx-auto px-4">
             <div class="flex flex-wrap items-center justify-center gap-3">
                 <button onclick="filterGallery('all')" class="filter-btn active px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 bg-[var(--gold)] text-white" data-filter="all">
@@ -57,7 +91,17 @@
                     <div data-aos="zoom-in" data-aos-delay="{{ $loop->index * 50 }}" class="gallery-item group relative rounded-2xl overflow-hidden img-zoom h-72 cursor-pointer"
                          data-category="{{ $catName }}"
                          onclick="location.href='{{ route('gallery.show', [$gallery->id, $gallery->slug]) }}'">
-                        <img src="{{ \App\Services\ImageService::asset($gallery->image) }}" alt="{{ $gallery->alt_text ?: $gallery->title }}" class="w-full h-full object-cover" loading="lazy">
+                        @if($gallery->isBeforeAfter())
+                            <div class="grid grid-cols-2 w-full h-full">
+                                {!! \App\Services\ImageService::picture($gallery->before_image, $gallery->alt_text ?: $gallery->title . ' - ' . __('Before'), 'w-full h-full object-cover') !!}
+                                <div class="relative">
+                                    {!! \App\Services\ImageService::picture($gallery->after_image, $gallery->alt_text ?: $gallery->title . ' - ' . __('After'), 'w-full h-full object-cover') !!}
+                                </div>
+                            </div>
+                            <div class="absolute top-3 left-1/2 -translate-x-1/2 z-10 px-2 py-0.5 bg-black/70 backdrop-blur-sm rounded-full text-white text-xs font-medium">{{ __('Before & After') }}</div>
+                        @else
+                            {!! \App\Services\ImageService::picture($gallery->getDisplayImage(), $gallery->alt_text ?: $gallery->title, 'w-full h-full object-cover') !!}
+                        @endif
                         <div x-data="{ liked: {{ $gallery->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $gallery->likeCount() }} }" class="absolute top-3 left-3 z-10" @click.stop="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'gallery', id: {{ $gallery->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
                             <button class="flex items-center gap-1 px-2.5 py-1 bg-black/80 backdrop-blur-sm rounded-full text-white hover:bg-black/90 transition-all text-xs pointer-events-none">
                                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="liked ? 'currentColor' : 'none'"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>

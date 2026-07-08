@@ -82,7 +82,7 @@
         <div class="max-w-4xl mx-auto min-w-0 max-w-full">
             @if($post->image)
                 <div class="rounded-2xl overflow-hidden mb-6 md:mb-8 h-48 sm:h-64 md:h-96 w-full relative">
-                    <img src="{{ \App\Services\ImageService::asset($post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover" loading="lazy">
+                    {!! \App\Services\ImageService::picture($post->image, $post->title, 'w-full h-full object-cover') !!}
                     <button type="button" @click.stop="toggleFavorite('blog', {{ $post->id }})"
                             :class="isFavorite('blog', {{ $post->id }}) ? 'text-red-400' : 'text-white'"
                             class="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
@@ -95,10 +95,13 @@
             @if(isset($post->images) && is_array($post->images) && count($post->images))
                 <div class="mb-6 md:mb-10">
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                        @foreach($post->images as $img)
-                            <div class="rounded-xl overflow-hidden h-32 sm:h-40 md:h-48 w-full">
-                                <img src="{{ \App\Services\ImageService::asset($img) }}" alt="{{ $post->title }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
-                            </div>
+                        @foreach($post->images as $idx => $img)
+                            <a href="{{ route('media.show', ['blog', $post->slug, $idx]) }}" class="block rounded-xl overflow-hidden h-32 sm:h-40 md:h-48 w-full group relative">
+                                {!! \App\Services\ImageService::picture($img, $post->title, 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-500') !!}
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                    <i class="fas fa-expand text-white text-lg opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                </div>
+                            </a>
                         @endforeach
                     </div>
                 </div>
@@ -184,7 +187,7 @@
                     <div class="rounded-[var(--radius-lg)] overflow-hidden bg-[var(--navy-dark)] border border-[var(--stone)]">
                         @if($related->image)
                             <div class="h-36 sm:h-40 md:h-44 w-full overflow-hidden">
-                                <img src="{{ \App\Services\ImageService::asset($related->image) }}" alt="{{ $related->title }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy">
+                                {!! \App\Services\ImageService::picture($related->image, $related->title, 'w-full h-full object-cover hover:scale-105 transition-transform duration-500') !!}
                             </div>
                         @endif
                         <div class="p-3 md:p-4">
@@ -215,9 +218,9 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 @foreach($discoverProjects as $project)
-                    @php $img = is_array($project->images) ? ($project->images[0] ?? '') : $project->images; @endphp
+                    @php $img = is_array($project->images) ? ($project->images[0] ?? '') : ($project->images ?? ''); @endphp
                     <div class="group relative rounded-xl overflow-hidden h-48 sm:h-52 md:h-64 w-full">
-                        <img src="{{ \App\Services\ImageService::asset($project->image ?: $img) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                        {!! \App\Services\ImageService::picture($project->image ?: $img, $project->title, 'w-full h-full object-cover') !!}
                         <div class="overlay-gradient absolute inset-0"></div>
                         <div class="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 left-2 sm:left-4">
                             <h3 class="text-white font-bold text-sm sm:text-base md:text-lg break-words">{{ $project->title }}</h3>

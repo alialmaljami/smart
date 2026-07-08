@@ -72,23 +72,25 @@
             <div data-aos="fade-left">
                 <h2 class="text-2xl md:text-3xl font-black text-[var(--gold)] mb-2">{{ __('Send Us a Message') }}</h2>
                 <div class="section-divider mb-6"></div>
-                <form action="{{ route('contact.send') }}" method="POST" class="space-y-5">
+                <form action="{{ route('contact.send') }}" method="POST" class="space-y-5"
+                      toolname="sendMessage"
+                      tooldescription="Send a message to Smart Designer Decorations. Accepts: name (full name), email (email address), phone (mobile number), message (text). Returns: confirmation that message was sent.">
                     @csrf
                     <div>
                         <label for="name" class="block text-sm font-bold text-[var(--text-heading)] mb-1">{{ __('Full Name') }}</label>
-                        <input type="text" name="name" id="name" required class="input-elegant" placeholder="{{ __('Enter your full name') }}">
+                        <input type="text" name="name" id="name" required class="input-elegant" placeholder="{{ __('Enter your full name') }}" toolparamdescription="Full name of the person sending the message">
                     </div>
                     <div>
                         <label for="email" class="block text-sm font-bold text-[var(--text-heading)] mb-1">{{ __('Email') }}</label>
-                        <input type="email" name="email" id="email" required class="input-elegant" placeholder="{{ __('Email') }}" dir="ltr">
+                        <input type="email" name="email" id="email" required class="input-elegant" placeholder="{{ __('Email') }}" dir="ltr" toolparamdescription="Email address for reply">
                     </div>
                     <div>
                         <label for="phone" class="block text-sm font-bold text-[var(--text-heading)] mb-1">{{ __('Mobile Number') }}</label>
-                        <input type="tel" name="phone" id="phone" required class="input-elegant" placeholder="{{ __('Enter your mobile number') }}" dir="ltr">
+                        <input type="tel" name="phone" id="phone" required class="input-elegant" placeholder="{{ __('Enter your mobile number') }}" dir="ltr" toolparamdescription="Contact phone number">
                     </div>
                     <div>
                         <label for="message" class="block text-sm font-bold text-[var(--text-heading)] mb-1">{{ __('Message') }}</label>
-                        <textarea name="message" id="message" rows="5" required class="input-elegant resize-none" placeholder="{{ __('Write your message here...') }}"></textarea>
+                        <textarea name="message" id="message" rows="5" required class="input-elegant resize-none" placeholder="{{ __('Write your message here...') }}" toolparamdescription="The message content"></textarea>
                     </div>
                     <button type="submit" class="btn-primary w-full py-4 rounded-xl font-bold text-lg">
                         <x-icon name="paper_plane" class="w-5 h-5 inline-block ml-2 align-middle" /> {{ __('Send Message') }}

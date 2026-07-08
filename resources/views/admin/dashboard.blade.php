@@ -278,13 +278,9 @@
                                     <i class="fas fa-star text-xs {{ $i <= $review->stars ? 'text-amber-400' : 'text-gray-200' }}"></i>
                                 @endfor
                             </div>
-                            <form action="{{ route('admin.reviews.toggle-active', $review) }}" method="POST" class="inline">
-                                @csrf
-                                @method('PUT')
-                                <button type="submit" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg transition-colors" title="تفعيل">
-                                    موافقة
-                                </button>
-                            </form>
+                            <a href="{{ route('admin.reviews.toggle-active', $review) }}" class="inline-block px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-lg transition-colors" title="تفعيل">
+                                موافقة
+                            </a>
                         </div>
                     </div>
                 @empty

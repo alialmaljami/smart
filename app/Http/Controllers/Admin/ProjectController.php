@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Project;
 use App\Models\Service;
+use App\Models\Tag;
 use App\Traits\ImageUploadHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,7 +28,8 @@ class ProjectController extends Controller
         $services = Service::where('is_active', true)->orderBy('sort_order')->get();
         $materialCategories = Category::where('type', 'material')->where('is_active', true)->orderBy('sort_order')->get();
         $categories = Category::where('type', 'project')->where('is_active', true)->orderBy('sort_order')->get();
-        return view('admin.projects.create', compact('services', 'materialCategories', 'categories'));
+        $allTags = Tag::orderBy('name')->get();
+        return view('admin.projects.create', compact('services', 'materialCategories', 'categories', 'allTags'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -41,7 +43,8 @@ class ProjectController extends Controller
             'images.*' => ['image', 'max:10240'],
             'videos' => ['nullable', 'string'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
-            'tags' => ['nullable', 'string'],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['exists:tags,id'],
             'is_active' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string'],
@@ -57,7 +60,7 @@ class ProjectController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $validated['is_indexed'] = $request->boolean('is_indexed', true);
         $validated['sort_order'] = $request->filled('sort_order') ? (int) $request->sort_order : 0;
-        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
+        $validated['tags'] = [];
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'projects');
@@ -77,6 +80,12 @@ class ProjectController extends Controller
 
         $project = Project::create($validated);
 
+        if ($request->has('tag_ids')) {
+            $project->tagItems()->sync($request->tag_ids);
+            $tagNames = Tag::whereIn('id', $request->tag_ids)->pluck('name')->toArray();
+            $project->update(['tags' => $tagNames]);
+        }
+
         if ($request->has('service_ids')) {
             $project->services()->sync($request->service_ids);
         }
@@ -93,7 +102,8 @@ class ProjectController extends Controller
         $services = Service::where('is_active', true)->orderBy('sort_order')->get();
         $materialCategories = Category::where('type', 'material')->where('is_active', true)->orderBy('sort_order')->get();
         $categories = Category::where('type', 'project')->where('is_active', true)->orderBy('sort_order')->get();
-        return view('admin.projects.edit', compact('project', 'services', 'materialCategories', 'categories'));
+        $allTags = Tag::orderBy('name')->get();
+        return view('admin.projects.edit', compact('project', 'services', 'materialCategories', 'categories', 'allTags'));
     }
 
     public function update(Request $request, Project $project): RedirectResponse
@@ -107,7 +117,8 @@ class ProjectController extends Controller
             'images.*' => ['image', 'max:10240'],
             'videos' => ['nullable', 'string'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
-            'tags' => ['nullable', 'string'],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['exists:tags,id'],
             'category_id' => ['nullable', 'exists:categories,id'],
             'is_active' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
@@ -124,7 +135,7 @@ class ProjectController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $validated['is_indexed'] = $request->boolean('is_indexed', true);
         $validated['sort_order'] = $request->filled('sort_order') ? (int) $request->sort_order : 0;
-        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
+        $validated['tags'] = [];
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'projects', $project->image);
@@ -143,6 +154,14 @@ class ProjectController extends Controller
         }
 
         $project->update($validated);
+
+        if ($request->has('tag_ids')) {
+            $project->tagItems()->sync($request->tag_ids);
+            $tagNames = Tag::whereIn('id', $request->tag_ids)->pluck('name')->toArray();
+            $project->update(['tags' => $tagNames]);
+        } else {
+            $project->tagItems()->detach();
+        }
 
         $project->services()->sync($request->service_ids ?? []);
         $project->materialCategories()->sync($request->material_category_ids ?? []);

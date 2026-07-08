@@ -175,6 +175,76 @@ class SchemaService
         ];
     }
 
+    public static function videoObject(string $title, string $description, string $embedUrl, ?string $thumbnail = null): array
+    {
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'VideoObject',
+            'name' => $title,
+            'description' => $description,
+            'embedUrl' => $embedUrl,
+            'thumbnailUrl' => $thumbnail,
+            'contentUrl' => $embedUrl,
+        ];
+        return $schema;
+    }
+
+    public static function imageGallery(string $name, string $description, array $images): array
+    {
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'ImageGallery',
+            'name' => $name,
+            'description' => $description,
+            'image' => $images,
+        ];
+        return $schema;
+    }
+
+    public static function collectionPage(string $name, string $description): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'CollectionPage',
+            'name' => $name,
+            'description' => $description,
+        ];
+    }
+
+    public static function itemList(string $name, array $items): array
+    {
+        $itemList = [];
+        foreach ($items as $i => $item) {
+            $itemList[] = [
+                '@type' => 'ListItem',
+                'position' => $i + 1,
+                'name' => $item['name'] ?? '',
+                'url' => $item['url'] ?? '',
+            ];
+        }
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'ItemList',
+            'name' => $name,
+            'itemListElement' => $itemList,
+        ];
+    }
+
+    public static function webSite(): array
+    {
+        return [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'name' => config('app.name'),
+            'url' => url('/'),
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => url('/') . '/?s={search_term_string}',
+                'query-input' => 'required name=search_term_string',
+            ],
+        ];
+    }
+
     public static function imageObject(string $url, string $caption, int $width = 1200, int $height = 800): array
     {
         return [

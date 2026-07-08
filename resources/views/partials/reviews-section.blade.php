@@ -17,7 +17,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center gap-3">
                                 @if($review->image)
-                                    <img src="{{ \App\Services\ImageService::asset($review->image) }}" alt="{{ $review->name }}" class="w-10 h-10 rounded-full object-cover border border-[var(--stone)]" loading="lazy">
+                                    {!! \App\Services\ImageService::picture($review->image, $review->name, 'w-10 h-10 rounded-full object-cover border border-[var(--stone)]') !!}
                                 @else
                                     <div class="w-10 h-10 rounded-full bg-[var(--gold)]/10 flex items-center justify-center text-[#E07A5F] font-bold text-sm border border-[var(--stone)]/30">
                                         {{ mb_substr($review->name, 0, 1) }}
@@ -58,7 +58,9 @@
                 </div>
             @endif
 
-            <form action="{{ route('review.submit') }}" method="POST">
+            <form action="{{ route('review.submit') }}" method="POST"
+                  toolname="submitReview"
+                  tooldescription="Submit a customer review for Smart Designer Decorations. Accepts: stars (rating 1-5), name (reviewer name), text (review text). Returns: confirmation that review was submitted.">
                 @csrf
                 <div class="space-y-5">
                     {{-- Stars --}}
@@ -66,14 +68,14 @@
                         <label class="block text-sm font-medium text-[var(--text-light)] mb-2">{{ __('Rating') }}</label>
                         <div class="flex items-center justify-center gap-1">
                             <template x-for="i in 5" :key="i">
-                                <button type="button" @click="stars = i" @mouseenter="hover = i" @mouseleave="hover = 0" class="transition-colors duration-150 focus:outline-none" :style="`color: ${(hover || stars) >= i ? '#EAB308' : '#cbd5e1'}`">
+                                <button type="button" @click="stars = i" @mouseenter="hover = i" @mouseleave="hover = 0" class="transition-colors duration-150 focus:outline-none" :style="`color: ${(hover || stars) >= i ? '#EAB308' : '#cbd5e1'}`" :aria-label="`${i} ${i === 1 ? 'نجمة' : 'نجوم'}`">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 inline-block">
                                       <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
                                     </svg>
                                 </button>
                             </template>
                         </div>
-                        <input type="hidden" name="stars" x-model="stars">
+                        <input type="hidden" name="stars" x-model="stars" toolparamdescription="Rating from 1 to 5 stars">
                         @error('stars') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -81,7 +83,7 @@
                     <div>
                         <label for="review_name" class="block text-sm font-medium text-[var(--text-light)] mb-1.5">{{ __('Name') }}</label>
                         <input type="text" name="name" id="review_name" value="{{ old('name') }}" required
-                               class="input-elegant" placeholder="{{ __('Name') }}">
+                               class="input-elegant" placeholder="{{ __('Name') }}" toolparamdescription="Reviewer full name">
                         @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
@@ -89,7 +91,7 @@
                     <div>
                         <label for="review_text" class="block text-sm font-medium text-[var(--text-light)] mb-1.5">{{ __('Review') }}</label>
                         <textarea name="text" id="review_text" rows="4" required
-                                  class="input-elegant resize-none" placeholder="{{ __('Your Message') }}">{{ old('text') }}</textarea>
+                                  class="input-elegant resize-none" placeholder="{{ __('Your Message') }}" toolparamdescription="Review text content">{{ old('text') }}</textarea>
                         @error('text') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 

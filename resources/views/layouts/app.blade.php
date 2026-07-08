@@ -23,8 +23,12 @@
     <meta name="description" content="@yield('description', __('Smart Designer Decorations - Professional interior design and decoration services in Saudi Arabia'))" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
-    {{-- Canonical --}}
-    <link rel="canonical" href="{{ url()->current() }}" />
+    {{-- Canonical (strip _locale query param) --}}
+    @php
+        $canonicalQuery = array_diff_key(request()->query(), ['_locale' => '']);
+        $canonicalUrl = url()->current() . ($canonicalQuery ? '?' . http_build_query($canonicalQuery) : '');
+    @endphp
+    <link rel="canonical" href="{{ $canonicalUrl }}" />
 
     {{-- Hreflang --}}
     @php
@@ -33,16 +37,16 @@
         $route = request()->route();
         $routeName = $route?->getName();
         $routeParams = $route?->parameters() ?? [];
-        $otherUrl = url()->current();
+        $otherUrl = $canonicalUrl;
         if ($routeName && !str_contains($routeName, 'admin.')) {
             try {
                 $otherUrl = route($routeName, array_merge($routeParams, ['_locale' => $otherLocale]));
             } catch (\Exception $e) {}
         }
     @endphp
-    <link rel="alternate" hreflang="ar" href="{{ $locale === 'ar' ? url()->current() : $otherUrl }}" />
-    <link rel="alternate" hreflang="en" href="{{ $locale === 'en' ? url()->current() : $otherUrl }}" />
-    <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}" />
+    <link rel="alternate" hreflang="ar" href="{{ $locale === 'ar' ? $canonicalUrl : $otherUrl }}" />
+    <link rel="alternate" hreflang="en" href="{{ $locale === 'en' ? $canonicalUrl : $otherUrl }}" />
+    <link rel="alternate" hreflang="x-default" href="{{ $canonicalUrl }}" />
 
     {{-- Open Graph --}}
     <meta property="og:site_name" content="{{ __('Smart Designer Decorations') }}" />
@@ -79,8 +83,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet"></noscript>
 
+    <script src="https://cdn.tailwindcss.com"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
     {{-- Google Search Console --}}
     @php $gsc = App\Models\Setting::getValue('google_search_console', ''); @endphp
     @if($gsc)
@@ -88,6 +92,7 @@
     @endif
 
     {{-- Schema.org structured data --}}
+    @include('partials.schemas')
     @stack('schema')
     <script>
         // Force dark mode for Cyber-Glassmorphism unless explicitly disabled
@@ -882,9 +887,12 @@
             <div class="absolute inset-0 bg-[var(--navy)]/60 backdrop-blur-sm" @@click="searchOpen = false"></div>
             <div class="relative h-full flex items-start justify-center pt-32 px-4">
                 <div class="w-full max-w-xl" @@click.outside="searchOpen = false" x-data="{ query: '' }">
-                    <form action="{{ route('search') }}" method="GET" class="relative">
+                    <form action="{{ route('search') }}" method="GET" class="relative"
+                          toolname="searchSite"
+                          tooldescription="Search the Smart Designer Decorations website. Accepts: q (search query). Returns: search results page with matching services, projects, materials, and articles.">
                         <input type="text" name="q" x-model="query" placeholder="{{ __('Search for services, projects, materials, articles...') }}"
-                               class="input-elegant w-full px-6 py-4 pr-14 text-base shadow-[0_0_30px_rgba(234,179,8,0.1)]">
+                               class="input-elegant w-full px-6 py-4 pr-14 text-base shadow-[0_0_30px_rgba(234,179,8,0.1)]"
+                               toolparamdescription="Search query text">
                         <button type="submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--gold)] hover:text-[var(--text-heading)] transition-colors" aria-label="{{ __('Search') }}">
                             <x-icon name="search" class="w-5 h-5" />
                         </button>
@@ -966,18 +974,18 @@
                     <div>
                         <h3 class="text-xs font-bold mb-6 text-white/50 tracking-[0.2em] uppercase">{{ __('Contact Us') }}</h3>
                         <div class="text-sm text-white/40 space-y-3">
-                            <p class="text-white/60 font-semibold">فريق ديكورات المصمم الذكي في خدمتك</p>
+                            <p class="text-white/60 font-semibold">{{ __('Smart Designer Decorations team is at your service') }}</p>
                             <div class="flex items-start gap-3">
                                 <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background: #E07A5F; color: white;"><x-icon name="location" class="w-3.5 h-3.5" /></span>
                                 <a href="https://maps.google.com/?q=الزاهر+1+الضيافة+مكة+المكرمة" target="_blank" rel="noopener noreferrer" class="hover:text-[var(--gold)] transition-colors">الزاهر 1 – الضيافة، مكة المكرمة، المملكة العربية السعودية</a>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background: #E07A5F; color: white;"><x-icon name="clock" class="w-3.5 h-3.5" /></span>
-                                <span>أوقات الدوام: 24 ساعة/كل الأسبوع</span>
+                                <span>{{ __('Working hours: 24/7') }}</span>
                             </div>
                             <div class="flex items-start gap-3">
                                 <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="background: #E07A5F; color: white;"><x-icon name="location" class="w-3.5 h-3.5" /></span>
-                                <span>عناويننا: مكة، جدة</span>
+                                <span>{{ __('Our addresses: Mecca, Jeddah') }}</span>
                             </div>
                             <div class="flex items-center gap-3">
                                 <a href="tel:0541232717" class="flex items-center gap-3 hover:text-[var(--gold)] transition-colors group w-full">
@@ -1013,7 +1021,7 @@
                         <a href="{{ route('blog.post', $post->slug) }}" class="group flex items-center gap-4 p-3 rounded-xl transition-all duration-300 hover:bg-white/[0.03] hover:scale-[1.02]">
                             <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
                                 @if($post->image)
-                                    <img src="{{ \App\Services\ImageService::asset($post->image) }}" alt="{{ $post->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">
+                                    {!! \App\Services\ImageService::picture($post->image, $post->title, 'w-full h-full object-cover group-hover:scale-110 transition-transform duration-500') !!}
                                 @else
                                     <div class="w-full h-full bg-white/5 flex items-center justify-center text-white/20"><i class="fas fa-newspaper"></i></div>
                                 @endif
@@ -1039,18 +1047,18 @@
         {{-- Floating Buttons --}}
         <div class="fixed bottom-6 left-6 z-[1000] flex flex-col gap-3">
             {{-- Call --}}
-            <a href="tel:{{ preg_replace('/[^0-9]/', '', $settings['phone']) }}"
-               class="call-float flex items-center justify-center">
+            <a href="tel:0541232717"
+               class="call-float flex items-center justify-center" aria-label="اتصال هاتفي">
                 <x-icon name="phone" class="w-6 h-6" />
             </a>
             {{-- WhatsApp --}}
             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $settings['phone']) }}" target="_blank" rel="noopener noreferrer"
-               class="whatsapp-float flex items-center justify-center">
+               class="whatsapp-float flex items-center justify-center" aria-label="واتساب">
                 <x-icon name="whatsapp" class="w-6 h-6" />
             </a>
             {{-- Search --}}
             <button type="button" @@click="searchOpen = true"
-                    class="search-float flex items-center justify-center">
+                    class="search-float flex items-center justify-center" aria-label="بحث">
                 <x-icon name="search" class="w-5 h-5" />
             </button>
         </div>

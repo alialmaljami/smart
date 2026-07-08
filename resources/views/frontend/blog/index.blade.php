@@ -7,6 +7,19 @@
 <meta property="og:description" content="{{ __('Latest articles and tips in the world of decoration and interior design') }}">
 @endpush
 
+@push('schema')
+@php
+    $items = [];
+    foreach (($posts ?? []) as $p) {
+        $items[] = ['name' => $p->title, 'url' => route('blog.post', $p->slug)];
+    }
+    echo \App\Services\SchemaService::renderSchemas([
+        \App\Services\SchemaService::collectionPage(__('Blog'), __('Latest articles and tips in the world of decoration and interior design')),
+        \App\Services\SchemaService::itemList(__('Blog Posts'), $items),
+    ]);
+@endphp
+@endpush
+
 @section('title', __('Blog') . ' - ' . __('Smart Designer Decorations'))
 
 @section('content')
@@ -22,7 +35,7 @@
 </section>
 
 {{-- Category Chips --}}
-<section class="py-4 bg-[var(--white)] border-b border-[var(--stone)] sticky top-20 z-30">
+<section class="py-4 bg-[var(--white)] border-b border-[var(--stone)] md:sticky md:top-20 md:z-30">
     <div class="container mx-auto px-4">
         <div class="flex flex-wrap justify-center gap-2">
             <a href="{{ route('blog') }}"
@@ -75,10 +88,7 @@
                             </button>
                             @if(count($postImages) > 1)
                                 @foreach($postImages as $bi => $bImg)
-                                <img src="{{ \App\Services\ImageService::asset($bImg) }}" alt="{{ $post->title }}"
-                                     class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out"
-                                     :class="s === {{ $bi }} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'"
-                                     loading="lazy">
+                                {!! \App\Services\ImageService::picture($bImg, $post->title, 'absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out', [':class' => "s === {$bi} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'"]) !!}
                                 @endforeach
                                 <div class="absolute top-2 right-2 z-20 flex gap-1">
                                     @foreach($postImages as $bi => $bImg)
@@ -88,7 +98,7 @@
                                     @endforeach
                                 </div>
                             @else
-                                <img src="{{ \App\Services\ImageService::asset($singleImage) }}" alt="{{ $post->title }}" class="w-full h-full object-cover" loading="lazy">
+                                {!! \App\Services\ImageService::picture($singleImage, $post->title, 'w-full h-full object-cover') !!}
                             @endif
                         </div>
                     @else

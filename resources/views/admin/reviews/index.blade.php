@@ -51,13 +51,9 @@
                                 <a href="{{ route('admin.reviews.edit', $review) }}" class="w-9 h-9 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-blue-600 hover:bg-blue-50 hover:border-blue-200 transition-all" title="تعديل">
                                     <i class="fas fa-edit text-sm"></i>
                                 </a>
-                                <form action="{{ route('admin.reviews.toggle-active', $review) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="w-9 h-9 bg-white border border-gray-200 rounded-lg flex items-center justify-center {{ $review->is_active ? 'text-red-500 hover:bg-red-50 hover:border-red-200' : 'text-emerald-500 hover:bg-emerald-50 hover:border-emerald-200' }} transition-all" title="{{ $review->is_active ? 'إيقاف' : 'تفعيل' }}">
-                                        <i class="fas {{ $review->is_active ? 'fa-toggle-on' : 'fa-toggle-off' }} text-sm"></i>
-                                    </button>
-                                </form>
+                                <a href="{{ route('admin.reviews.toggle-active', $review) }}" class="w-9 h-9 bg-white border border-gray-200 rounded-lg flex items-center justify-center {{ $review->is_active ? 'text-amber-500 hover:bg-amber-50 hover:border-amber-200' : 'text-emerald-500 hover:bg-emerald-50 hover:border-emerald-200' }} transition-all" title="{{ $review->is_active ? 'إيقاف' : 'تفعيل' }}">
+                                    <i class="fas {{ $review->is_active ? 'fa-toggle-on' : 'fa-toggle-off' }} text-sm"></i>
+                                </a>
                                 <form action="{{ route('admin.reviews.destroy', $review) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا التقييم؟')">
                                     @csrf
                                     @method('DELETE')

@@ -34,7 +34,10 @@ class AboutPageController extends Controller
         foreach ($keys as $key) {
             if ($request->hasFile($key)) {
                 $request->validate([$key => 'image|mimes:jpeg,png,gif,webp|max:2048']);
-                $path = $request->file($key)->store('about', 'public');
+                $file = $request->file($key);
+                $counter = (int)(microtime(true) * 10000);
+                $filename = 'ديكورات المصمم الذكي 0541232717 (' . $counter . ').' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('about', $filename, 'public');
                 Setting::updateOrCreate(['key' => $key], ['value' => $path]);
             } elseif ($request->has($key)) {
                 $value = $request->input($key) ?? '';

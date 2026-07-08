@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\TracksViews;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class BlogPost extends Model
 {
@@ -36,5 +37,10 @@ class BlogPost extends Model
     public function blogCategory(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'blog_category_id');
+    }
+
+    public function tagItems(): MorphToMany
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
     }
 }

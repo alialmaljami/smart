@@ -211,16 +211,18 @@
                 @php $imgs = array_values(array_filter(array_merge([$s->image], $s->images ?? []))); @endphp
                 <a href="{{ route('service.show', $s->slug) }}" class="card-elegant group overflow-hidden rounded-2xl">
                     @if($imgs)
+                        @php $pimgs = array_map(fn($i) => asset('storage/' . \App\Services\ImageService::webp('storage/' . $i)), $imgs); @endphp
                         <div class="aspect-[16/10] overflow-hidden relative"
-                             x-data="{ imgs: @js($imgs), idx: 0 }"
+                             x-data="{ imgs: @js($pimgs), idx: 0 }"
                              x-init="if(imgs.length>1) setInterval(() => idx=(idx+1)%imgs.length, 3500)">
                             <template x-for="(img, i) in imgs" :key="i">
-                                <img :src="'/storage/' + img"
+                                <img :src="img"
                                      x-show="idx === i"
                                      x-transition:enter="transition ease-in-out duration-700"
                                      x-transition:enter-start="opacity-0"
                                      x-transition:enter-end="opacity-100"
-                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                     loading="lazy" decoding="async" width="800" height="500">
                             </template>
                         </div>
                     @endif
@@ -238,6 +240,27 @@
 </section>
 @endif
 
+@if($neighborhoods->count())
+<section class="py-12 md:py-16 bg-[var(--white)] overflow-x-hidden">
+    <div class="container mx-auto px-4 max-w-6xl">
+        <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
+            <h2 class="section-title text-[var(--text-heading)]">{{ __('Neighborhoods We Serve in Mecca') }}</h2>
+            <div class="section-divider"></div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            @foreach($neighborhoods as $n)
+                <a href="{{ route('area.show', $n->slug) }}" class="group bg-[var(--navy)]/5 hover:bg-[var(--gold)]/10 rounded-xl p-4 text-center transition-all">
+                    <div class="w-10 h-10 mx-auto mb-2 rounded-full bg-[var(--gold)]/10 flex items-center justify-center">
+                        <i class="fas fa-map-pin text-[var(--gold)]"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-[var(--text-heading)] group-hover:text-[var(--gold)] transition-colors">{{ $n->name }}</h3>
+                </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
 @if($galleries->count())
 <section class="py-12 md:py-16 bg-[var(--navy)] overflow-x-hidden">
     <div class="container mx-auto px-4 max-w-6xl">
@@ -248,7 +271,7 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             @foreach($galleries as $g)
                 <a href="{{ route('gallery.show', [$g->id, $g->slug]) }}" class="group aspect-square overflow-hidden rounded-xl">
-                    <img src="{{ \App\Services\ImageService::asset($g->image) }}" alt="{{ $g->title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy">
+                    {!! \App\Services\ImageService::picture($g->image, $g->title, 'w-full h-full object-cover group-hover:scale-110 transition-transform duration-700') !!}
                 </a>
             @endforeach
         </div>
@@ -271,16 +294,18 @@
                 @php $imgs = array_values(array_filter(array_merge([$p->image], $p->images ?? []))); @endphp
                 <a href="{{ route('project.show', $p->slug) }}" class="card-elegant group overflow-hidden">
                     @if($imgs)
+                        @php $pimgs = array_map(fn($i) => asset('storage/' . \App\Services\ImageService::webp('storage/' . $i)), $imgs); @endphp
                         <div class="aspect-[16/10] overflow-hidden relative"
-                             x-data="{ imgs: @js($imgs), idx: 0 }"
+                             x-data="{ imgs: @js($pimgs), idx: 0 }"
                              x-init="if(imgs.length>1) setInterval(() => idx=(idx+1)%imgs.length, 3500)">
                             <template x-for="(img, i) in imgs" :key="i">
-                                <img :src="'/storage/' + img"
+                                <img :src="img"
                                      x-show="idx === i"
                                      x-transition:enter="transition ease-in-out duration-700"
                                      x-transition:enter-start="opacity-0"
                                      x-transition:enter-end="opacity-100"
-                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                     loading="lazy" decoding="async" width="800" height="500">
                             </template>
                         </div>
                     @endif

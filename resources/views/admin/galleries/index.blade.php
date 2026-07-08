@@ -4,6 +4,18 @@
 
 @section('content')
 <div class="space-y-6">
+    {{-- Gallery Type Tabs --}}
+    @php $galleryTypes = [['route' => 'admin.galleries.index', 'label' => 'الكل', 'icon' => 'fa-th-large'], ['route' => 'admin.videos.index', 'label' => 'الفيديوهات', 'icon' => 'fa-video'], ['route' => 'admin.tours.index', 'label' => 'جولات 360', 'icon' => 'fa-vr-cardboard'], ['route' => 'admin.before-after.index', 'label' => 'قبل وبعد', 'icon' => 'fa-not-equal'], ['route' => 'admin.photography.index', 'label' => 'التصوير', 'icon' => 'fa-camera']]; @endphp
+    <div class="bg-gradient-to-l from-[#E07A5F]/10 to-[#D4694C]/5 rounded-xl p-1.5 border border-[#E07A5F]/20 shadow-sm flex flex-wrap gap-1">
+        @foreach($galleryTypes as $gt)
+            <a href="{{ route($gt['route']) }}"
+               class="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 {{ request()->routeIs($gt['route']) ? 'bg-white text-[#D4694C] shadow-sm ring-1 ring-[#E07A5F]/20' : 'text-gray-600 hover:bg-white/60 hover:text-gray-800' }}">
+                <i class="fas {{ $gt['icon'] }} {{ request()->routeIs($gt['route']) ? 'text-[#D4694C]' : 'text-gray-400' }}"></i>
+                <span>{{ $gt['label'] }}</span>
+            </a>
+        @endforeach
+    </div>
+
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
             <h1 class="text-lg sm:text-2xl font-bold text-gray-800">معرض الصور</h1>

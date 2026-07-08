@@ -40,16 +40,18 @@
                 @php $imgs = array_values(array_filter(array_merge([$project->image], $project->images ?? []))); @endphp
                 <a href="{{ route('project.show', $project->slug) }}" data-aos="fade-up" class="card-elegant group overflow-hidden">
                     @if($imgs)
+                        @php $pimgs = array_map(fn($i) => asset('storage/' . \App\Services\ImageService::webp('storage/' . $i)), $imgs); @endphp
                         <div class="aspect-[16/10] overflow-hidden relative"
-                             x-data="{ imgs: @js($imgs), idx: 0 }"
+                             x-data="{ imgs: @js($pimgs), idx: 0 }"
                              x-init="if(imgs.length>1) setInterval(() => idx=(idx+1)%imgs.length, 3500)">
                             <template x-for="(img, i) in imgs" :key="i">
-                                <img :src="'/storage/' + img"
+                                <img :src="img"
                                      x-show="idx === i"
                                      x-transition:enter="transition ease-in-out duration-700"
                                      x-transition:enter-start="opacity-0"
                                      x-transition:enter-end="opacity-100"
-                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                     loading="lazy" decoding="async" width="800" height="500">
                             </template>
                         </div>
                     @endif
@@ -76,16 +78,18 @@
                 @php $imgs = array_values(array_filter(array_merge([$post->image], $post->images ?? []))); @endphp
                 <a href="{{ route('blog.post', $post->slug) }}" data-aos="fade-up" class="card-elegant group overflow-hidden">
                     @if($imgs)
+                        @php $pimgs = array_map(fn($i) => asset('storage/' . \App\Services\ImageService::webp('storage/' . $i)), $imgs); @endphp
                         <div class="aspect-[16/10] overflow-hidden relative"
-                             x-data="{ imgs: @js($imgs), idx: 0 }"
+                             x-data="{ imgs: @js($pimgs), idx: 0 }"
                              x-init="if(imgs.length>1) setInterval(() => idx=(idx+1)%imgs.length, 3500)">
                             <template x-for="(img, i) in imgs" :key="i">
-                                <img :src="'/storage/' + img"
+                                <img :src="img"
                                      x-show="idx === i"
                                      x-transition:enter="transition ease-in-out duration-700"
                                      x-transition:enter-start="opacity-0"
                                      x-transition:enter-end="opacity-100"
-                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                     loading="lazy" decoding="async" width="800" height="500">
                             </template>
                         </div>
                     @endif
@@ -112,16 +116,18 @@
                 @php $imgs = array_values(array_filter(array_merge([$service->image], $service->images ?? []))); @endphp
                 <a href="{{ route('service.show', $service->slug) }}" data-aos="fade-up" class="card-elegant group overflow-hidden">
                     @if($imgs)
+                        @php $pimgs = array_map(fn($i) => asset('storage/' . \App\Services\ImageService::webp('storage/' . $i)), $imgs); @endphp
                         <div class="aspect-[16/10] overflow-hidden relative"
-                             x-data="{ imgs: @js($imgs), idx: 0 }"
+                             x-data="{ imgs: @js($pimgs), idx: 0 }"
                              x-init="if(imgs.length>1) setInterval(() => idx=(idx+1)%imgs.length, 3500)">
                             <template x-for="(img, i) in imgs" :key="i">
-                                <img :src="'/storage/' + img"
+                                <img :src="img"
                                      x-show="idx === i"
                                      x-transition:enter="transition ease-in-out duration-700"
                                      x-transition:enter-start="opacity-0"
                                      x-transition:enter-end="opacity-100"
-                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                     loading="lazy" decoding="async" width="800" height="500">
                             </template>
                         </div>
                     @endif
@@ -148,7 +154,7 @@
                 <a href="{{ route('gallery.show', [$gallery->id, $gallery->slug]) }}" data-aos="fade-up" class="card-elegant group overflow-hidden">
                     @if($gallery->image)
                         <div class="aspect-square">
-                            <img src="{{ \App\Services\ImageService::asset($gallery->image) }}" alt="{{ $gallery->alt_text ?? $gallery->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
+                            {!! \App\Services\ImageService::picture($gallery->image, $gallery->alt_text ?? $gallery->title, 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-700') !!}
                         </div>
                     @endif
                     <div class="p-3">
@@ -174,16 +180,18 @@
                 @php $imgs = array_values(array_filter(array_merge([$material->image], $material->images ?? []))); @endphp
                 <a href="{{ route('material.show', $material->slug) }}" data-aos="fade-up" class="card-elegant group overflow-hidden">
                     @if($imgs)
+                        @php $pimgs = array_map(fn($i) => asset('storage/' . \App\Services\ImageService::webp('storage/' . $i)), $imgs); @endphp
                         <div class="aspect-[16/10] overflow-hidden relative"
-                             x-data="{ imgs: @js($imgs), idx: 0 }"
+                             x-data="{ imgs: @js($pimgs), idx: 0 }"
                              x-init="if(imgs.length>1) setInterval(() => idx=(idx+1)%imgs.length, 3500)">
                             <template x-for="(img, i) in imgs" :key="i">
-                                <img :src="'/storage/' + img"
+                                <img :src="img"
                                      x-show="idx === i"
                                      x-transition:enter="transition ease-in-out duration-700"
                                      x-transition:enter-start="opacity-0"
                                      x-transition:enter-end="opacity-100"
-                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                     loading="lazy" decoding="async" width="800" height="500">
                             </template>
                         </div>
                     @endif

@@ -94,11 +94,17 @@
                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                     </div>
                     <div>
-                        <label for="tags" class="block text-sm font-medium text-gray-700 mb-1.5">الوسوم (tags)</label>
-                        <input type="text" name="tags" id="tags"
-                               value="{{ old('tags', isset($project) && is_array($project->tags) ? implode(', ', $project->tags) : '') }}"
-                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
-                               placeholder="وسم1, وسم2, وسم3">
+                        <label for="tag_ids" class="block text-sm font-medium text-gray-700 mb-1.5">الوسوم (Tags)</label>
+                        <select name="tag_ids[]" id="tag_ids" multiple
+                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm h-32">
+                            @foreach($allTags ?? [] as $t)
+                                <option value="{{ $t->id }}"
+                                    {{ (old('tag_ids') && in_array($t->id, old('tag_ids'))) || (isset($project) && $project->tagItems->contains($t->id)) ? 'selected' : '' }}>
+                                    {{ $t->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <p class="text-xs text-gray-400 mt-1">اضغط Ctrl (أو Cmd) لاختيار متعدد. إدارة الوسوم من <a href="{{ route('admin.tags.index') }}" class="text-gold-600 hover:underline">هنا</a></p>
                     </div>
                 </div>
 

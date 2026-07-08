@@ -94,7 +94,7 @@
 
     <div class="relative z-10 h-full flex items-center justify-center">
         <div class="text-center px-4 max-w-4xl mx-auto">
-            <span class="inline-block text-[var(--gold)] font-medium text-xs tracking-[0.3em] uppercase mb-6">{{ __('Smart Designer Decorations') }}</span>
+            <span class="inline-block text-[var(--gold)] font-medium text-xs tracking-[0.3em] uppercase mb-6">{{ $hero->extra['brand_name'] ?? __('Smart Designer Decorations') }}</span>
             @if($hero->title)
             <h1 class="hero-title font-black text-white mb-6">
                 {!! nl2br(e($hero->title)) !!}
@@ -170,7 +170,7 @@
                     <div class="flex-shrink-0 w-[300px] snap-start card-elegant group">
                         @if($service->image)
                             <div class="img-zoom h-48">
-                                <img src="{{ \App\Services\ImageService::asset($service->image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover" loading="lazy">
+                                {!! \App\Services\ImageService::picture($service->image, $service->name, 'w-full h-full object-cover') !!}
                             </div>
                         @endif
                         <div class="p-6">
@@ -251,10 +251,11 @@
                     >
                         @if(count($projImages) > 1)
                             @foreach($projImages as $pi => $pimg)
-                            <img src="{{ \App\Services\ImageService::asset($pimg) }}" alt="{{ $project->title }}"
+                            <img src="{{ \App\Services\ImageService::sized($pimg, 'medium') }}" alt="{{ $project->title }}"
                                  class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out"
                                  :class="si === {{ $pi }} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'"
-                                 loading="lazy">
+                                 loading="lazy" decoding="async"
+                                 srcset="{{ \App\Services\ImageService::srcset($pimg) }}" sizes="(max-width: 768px) 100vw, 400px">
                             @endforeach
                             <div class="absolute top-3 right-3 z-20 flex gap-1">
                                 @foreach($projImages as $pi => $pimg)
@@ -265,7 +266,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <img src="{{ $projImg ? \App\Services\ImageService::asset($projImg) : '' }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                            <img src="{{ $projImg ? \App\Services\ImageService::sized($projImg, 'medium') : '' }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                         @endif
                         <div class="overlay-gradient absolute inset-0"></div>
                         <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-4 left-4 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">

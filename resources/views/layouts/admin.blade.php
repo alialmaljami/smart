@@ -32,7 +32,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     @stack('styles')
     <style>
         .sidebar-link { position: relative; overflow: hidden; }
@@ -61,6 +62,14 @@
 
         [x-cloak] { display: none !important; }
 
+        .mobile-bottom-nav { display: none; }
+        @media (max-width: 1023px) {
+            .mobile-bottom-nav { display: flex; }
+            .admin-content { padding-bottom: 5rem !important; }
+            .admin-sidebar { padding-bottom: 4.5rem !important; }
+        }
+        .mobile-bottom-nav a.active { color: #E07A5F; background: rgba(224,122,95,0.1); }
+
         .dark {
             --dark-bg: #080C18;
             --dark-card: #111A2A;
@@ -79,10 +88,11 @@
             .admin-sidebar { width: 100% !important; max-width: 320px !important; }
         }
 
-        @media (max-width: 480px) {
-            .admin-action-btn { width: 2rem !important; height: 2rem !important; }
-            .admin-action-btn i { font-size: 0.625rem !important; }
-            .admin-content { padding: 0.75rem !important; }
+        @media (max-width: 768px) {
+            .admin-action-btn, .admin-table td:last-child a, .admin-table td:last-child button { width: 2.25rem !important; height: 2.25rem !important; border-color: transparent !important; }
+            .admin-action-btn i, .admin-table td:last-child a i, .admin-table td:last-child button i { font-size: 0.75rem !important; }
+            .admin-table td:last-child { min-width: 140px; }
+            .admin-content { padding: 0.75rem 0.75rem 5rem !important; }
             .admin-card { padding: 1rem !important; }
             .admin-hide-mobile { display: none !important; }
         }
@@ -109,7 +119,7 @@
     <aside x-show="sidebarOpen || mobileSidebar"
            x-cloak
            :class="mobileSidebar ? 'translate-x-0 fixed' : ''"
-           class="admin-sidebar fixed inset-y-0 right-0 z-50 w-72 bg-gradient-to-b from-[#0F1A2E] via-[#0F1A2E] to-[#070C14] text-white shadow-2xl lg:relative lg:translate-x-0 lg:flex lg:flex-col lg:shrink-0 transition-all duration-300">
+           class="admin-sidebar fixed inset-y-0 right-0 z-[60] w-72 bg-gradient-to-b from-[#0F1A2E] via-[#0F1A2E] to-[#070C14] text-white shadow-2xl flex flex-col lg:relative lg:translate-x-0 lg:shrink-0 transition-all duration-300">
 
         {{-- Brand --}}
         <div class="flex items-center justify-between h-14 sm:h-16 px-4 sm:px-5 border-b border-white/[0.06]">
@@ -157,11 +167,49 @@
                 <span>التصنيفات</span>
             </a>
 
-            <a href="{{ route('admin.galleries.index') }}"
-               class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.galleries.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
-                <i class="fas fa-images w-5 text-center text-base"></i>
-                <span>معرض الصور</span>
+            <a href="{{ route('admin.tags.index') }}"
+               class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.tags.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
+                <i class="fas fa-tag w-5 text-center text-base"></i>
+                <span>الوسوم</span>
             </a>
+
+            {{-- Gallery Section --}}
+            <div x-data="{ open: {{ request()->routeIs('admin.galleries.*') || request()->routeIs('admin.videos.*') || request()->routeIs('admin.tours.*') || request()->routeIs('admin.before-after.*') || request()->routeIs('admin.photography.*') ? 'true' : 'false' }} }">
+                <button @click="open = !open" class="sidebar-link w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 text-gray-300 hover:text-white hover:bg-white/5">
+                    <span class="flex items-center gap-3">
+                        <i class="fas fa-images w-5 text-center text-base"></i>
+                        <span>المعرض</span>
+                    </span>
+                    <i class="fas fa-chevron-down text-xs transition-transform" :class="open ? 'rotate-0' : '-rotate-90'"></i>
+                </button>
+                <div x-show="open" x-cloak class="mr-5 space-y-0.5 mt-0.5">
+                    <a href="{{ route('admin.galleries.index') }}"
+                       class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.galleries.*') && !request()->routeIs('admin.videos.*') && !request()->routeIs('admin.tours.*') && !request()->routeIs('admin.before-after.*') && !request()->routeIs('admin.photography.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
+                        <i class="fas fa-image w-5 text-center text-sm"></i>
+                        <span>الصور</span>
+                    </a>
+                    <a href="{{ route('admin.videos.index') }}"
+                       class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.videos.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
+                        <i class="fas fa-video w-5 text-center text-sm"></i>
+                        <span>الفيديوهات</span>
+                    </a>
+                    <a href="{{ route('admin.tours.index') }}"
+                       class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.tours.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
+                        <i class="fas fa-vr-cardboard w-5 text-center text-sm"></i>
+                        <span>جولات 360</span>
+                    </a>
+                    <a href="{{ route('admin.before-after.index') }}"
+                       class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.before-after.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
+                        <i class="fas fa-not-equal w-5 text-center text-sm"></i>
+                        <span>قبل وبعد</span>
+                    </a>
+                    <a href="{{ route('admin.photography.index') }}"
+                       class="sidebar-link flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.photography.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
+                        <i class="fas fa-camera w-5 text-center text-sm"></i>
+                        <span>التصوير</span>
+                    </a>
+                </div>
+            </div>
 
             <a href="{{ route('admin.reviews.index') }}"
                class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.reviews.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
@@ -221,6 +269,18 @@
                 <span>الروابط الاجتماعية</span>
             </a>
 
+            <a href="{{ route('admin.cities.index') }}"
+               class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.cities.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
+                <i class="fas fa-city w-5 text-center text-base"></i>
+                <span>المدن</span>
+            </a>
+
+            <a href="{{ route('admin.neighborhoods.index') }}"
+               class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.neighborhoods.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
+                <i class="fas fa-map-marker-alt w-5 text-center text-base"></i>
+                <span>الأحياء</span>
+            </a>
+
             <a href="{{ route('admin.contacts.index') }}"
                class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.contacts.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
                 <i class="fas fa-address-card w-5 text-center text-base"></i>
@@ -232,6 +292,12 @@
                class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.settings.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
                 <i class="fas fa-cog w-5 text-center text-base"></i>
                 <span>الإعدادات العامة</span>
+            </a>
+
+            <a href="{{ route('admin.google-search-console') }}"
+               class="sidebar-link flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 @if(request()->routeIs('admin.google-search-console.*')) active text-[#E07A5F] bg-[#E07A5F]/10 @else text-gray-300 hover:text-white hover:bg-white/5 @endif">
+                <i class="fab fa-google w-5 text-center text-base"></i>
+                <span>Google Search Console</span>
             </a>
             @endif
         </nav>
@@ -273,7 +339,7 @@
         {{-- Top bar --}}
         <header class="admin-topbar h-14 sm:h-16 bg-white border-b border-gray-200 flex items-center justify-between px-3 sm:px-4 lg:px-6 shadow-sm">
             <div class="flex items-center gap-2 sm:gap-4">
-                <button @@click="mobileSidebar = true" class="p-1.5 sm:p-2 text-gray-500 hover:text-gray-700 lg:hidden rounded-lg hover:bg-gray-100 transition-colors">
+                <button id="mobile-sidebar-toggle" @@click="mobileSidebar = true" class="p-1.5 sm:p-2 text-gray-500 hover:text-gray-700 lg:hidden rounded-lg hover:bg-gray-100 transition-colors">
                     <i class="fas fa-bars text-lg sm:text-xl"></i>
                 </button>
                 <button @@click="sidebarOpen = !sidebarOpen" class="p-1.5 text-gray-400 hover:text-gray-600 hidden lg:block transition-colors rounded-lg hover:bg-gray-100">
@@ -363,6 +429,38 @@
 </div>
 
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+{{-- Mobile Bottom Navigation --}}
+<nav class="mobile-bottom-nav fixed bottom-0 right-0 left-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] lg:hidden">
+    <div class="flex items-center justify-around h-16 px-2">
+        <a href="{{ route('admin.dashboard') }}"
+           class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{ request()->routeIs('admin.dashboard') ? 'active text-[#E07A5F]' : 'text-gray-500' }}">
+            <i class="fas fa-chart-pie text-lg"></i>
+            <span>الرئيسية</span>
+        </a>
+        <a href="{{ route('admin.projects.index') }}"
+           class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{ request()->routeIs('admin.projects.*') ? 'active text-[#E07A5F]' : 'text-gray-500' }}">
+            <i class="fas fa-briefcase text-lg"></i>
+            <span>المشاريع</span>
+        </a>
+        <button onclick="document.getElementById('mobile-sidebar-toggle').click()"
+                class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[#E07A5F]">
+            <i class="fas fa-bars text-xl"></i>
+            <span>القائمة</span>
+        </button>
+        <a href="{{ route('admin.blog-posts.index') }}"
+           class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{ request()->routeIs('admin.blog-posts.*') ? 'active text-[#E07A5F]' : 'text-gray-500' }}">
+            <i class="fas fa-newspaper text-lg"></i>
+            <span>المقالات</span>
+        </a>
+        <a href="{{ route('admin.galleries.index') }}"
+           class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{ request()->routeIs('admin.galleries.*') ? 'active text-[#E07A5F]' : 'text-gray-500' }}">
+            <i class="fas fa-images text-lg"></i>
+            <span>المعرض</span>
+        </a>
+    </div>
+</nav>
+
 @stack('scripts')
 </body>
 </html>

@@ -13,6 +13,19 @@
 <meta property="og:description" content="{{ __('Browse our latest projects and get inspired for your next project') }}">
 @endpush
 
+@push('schema')
+@php
+    $items = [];
+    foreach (($projects ?? []) as $p) {
+        $items[] = ['name' => $p->title, 'url' => route('project.show', $p->slug)];
+    }
+    echo \App\Services\SchemaService::renderSchemas([
+        \App\Services\SchemaService::collectionPage(__('Our Projects'), __('Browse our latest projects and get inspired for your next project')),
+        \App\Services\SchemaService::itemList(__('Our Projects'), $items),
+    ]);
+@endphp
+@endpush
+
 @section('title', __('Our Projects') . ' - ' . __('Smart Designer Decorations'))
 
 @section('content')
@@ -28,7 +41,7 @@
 </section>
 
 {{-- Category Chips --}}
-<section class="py-6 bg-[var(--white)] border-b border-[var(--stone)] sticky top-20 z-30">
+<section class="py-6 bg-[var(--white)] border-b border-[var(--stone)] md:sticky md:top-20 md:z-30">
     <div class="container mx-auto px-4">
         <div class="flex flex-wrap justify-center gap-2 mb-4">
             <a href="{{ route('projects') }}"
@@ -95,12 +108,10 @@
                 >
                     @if(count($projectImages) > 1)
                         @foreach($projectImages as $pi => $img)
-                        <img src="{{ \App\Services\ImageService::asset($img) }}" alt="{{ $project->title }}" class="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out"
-                             :class="slide === {{ $pi }} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'"
-                             loading="lazy">
+                        {!! \App\Services\ImageService::picture($img, $project->title, 'absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out', [':class' => "slide === {$pi} ? 'opacity-100 z-[1]' : 'opacity-0 z-0'"]) !!}
                         @endforeach
                     @else
-                        <img src="{{ \App\Services\ImageService::asset($image) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                        {!! \App\Services\ImageService::picture($image, $project->title, 'w-full h-full object-cover') !!}
                     @endif
                     <div class="overlay-gradient absolute inset-0 z-[2]"></div>
                     {{-- Dots for multi-image --}}

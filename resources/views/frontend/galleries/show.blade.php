@@ -7,7 +7,7 @@
 @endif
 <meta property="og:title" content="{{ $item->meta_title ?: $item->title }}">
 <meta property="og:description" content="{{ $item->meta_description ?: ($item->description ?? '') }}">
-<meta property="og:image" content="{{ asset('storage/' . $item->image) }}">
+<meta property="og:image" content="{{ $item->getDisplayImage() ? asset('storage/' . $item->getDisplayImage()) : '' }}">
 <meta property="og:type" content="article">
 @endpush
 
@@ -23,8 +23,8 @@
             ['name' => $item->title, 'url' => route('gallery.show', [$item->id, $item->slug])],
         ]),
     ];
-    if ($item->image) {
-        $schemaItems[] = \App\Services\SchemaService::imageObject(asset('storage/' . $item->image), $item->alt_text ?? $item->title);
+    if ($displayImg = $item->getDisplayImage()) {
+        $schemaItems[] = \App\Services\SchemaService::imageObject(asset('storage/' . $displayImg), $item->alt_text ?? $item->title);
     }
     echo \App\Services\SchemaService::renderSchemas($schemaItems);
 @endphp
@@ -40,6 +40,13 @@
             <i class="fas fa-chevron-left text-[9px] text-[var(--text-muted)] mx-0.5"></i>
             <a href="{{ route('gallery') }}" class="text-[var(--text-muted)] hover:text-[var(--gold)] whitespace-nowrap">{{ __('Gallery') }}</a>
             <i class="fas fa-chevron-left text-[9px] text-[var(--text-muted)] mx-0.5"></i>
+            @if($item->type !== 'image')
+                <a href="{{ $item->isVideo() ? route('gallery.videos') : ($item->isTour() ? route('gallery.tours') : ($item->isBeforeAfter() ? route('gallery.before-after') : route('gallery.photography'))) }}"
+                   class="text-[var(--text-muted)] hover:text-[var(--gold)] whitespace-nowrap">
+                    {{ $item->isVideo() ? __('Videos') : ($item->isTour() ? __('360 Tours') : ($item->isBeforeAfter() ? __('Before & After') : __('Photography'))) }}
+                </a>
+                <i class="fas fa-chevron-left text-[9px] text-[var(--text-muted)] mx-0.5"></i>
+            @endif
             @if($item->category)
                 <span class="text-[var(--text-light)] truncate max-w-[80px] sm:max-w-[150px]">{{ $item->category }}</span>
                 <i class="fas fa-chevron-left text-[9px] text-[var(--text-muted)] mx-0.5"></i>
@@ -55,7 +62,36 @@
         <div class="max-w-5xl mx-auto min-w-0 max-w-full">
             {{-- Main Image --}}
             <div class="rounded-2xl overflow-hidden bg-[var(--navy-dark)] mb-6 md:mb-8 relative">
-                <img src="{{ \App\Services\ImageService::asset($item->image) }}" alt="{{ $item->alt_text ?: $item->title }}" class="w-full h-auto max-h-[50vh] sm:max-h-[70vh] md:max-h-[80vh] object-contain" loading="lazy">
+                @if($item->isBeforeAfter())
+                    @if($item->show_comparison)
+                        <div x-data="{ pos: 50 }" class="relative select-none">
+                            {!! \App\Services\ImageService::picture($item->after_image, $item->title . ' - ' . __('After'), 'w-full h-64 sm:h-96 md:h-[70vh] object-cover') !!}
+                            <div class="absolute inset-0 overflow-hidden" :style="'clip-path: inset(0 ' + (100 - pos) + '% 0 0)'">
+                                {!! \App\Services\ImageService::picture($item->before_image, $item->title . ' - ' . __('Before'), 'w-full h-64 sm:h-96 md:h-[70vh] object-cover') !!}
+                            </div>
+                            <input type="range" min="0" max="100" x-model="pos" class="absolute bottom-4 left-4 right-4 z-10 w-[calc(100%-2rem)] accent-[var(--gold)]">
+                        </div>
+                    @else
+                        <div class="grid grid-cols-2">
+                            <div class="relative">
+                                <span class="absolute top-3 right-3 bg-black/60 text-white text-xs px-2 py-0.5 rounded z-10">{{ __('Before') }}</span>
+                                {!! \App\Services\ImageService::picture($item->before_image, $item->title . ' - ' . __('Before'), 'w-full h-64 sm:h-96 md:h-[70vh] object-cover') !!}
+                            </div>
+                            <div class="relative">
+                                <span class="absolute top-3 right-3 bg-[var(--gold)]/80 text-white text-xs px-2 py-0.5 rounded z-10">{{ __('After') }}</span>
+                                {!! \App\Services\ImageService::picture($item->after_image, $item->title . ' - ' . __('After'), 'w-full h-64 sm:h-96 md:h-[70vh] object-cover') !!}
+                            </div>
+                        </div>
+                    @endif
+                @elseif($item->isVideo() && $item->getVideoEmbedUrl())
+                    <div class="aspect-video relative">
+                        @include('partials.video-embed', ['url' => $item->getVideoEmbedUrl()])
+                    </div>
+                @elseif($item->isTour() && $item->tour_url)
+                    @include('partials.tour-embed', ['url' => $item->tour_url, 'title' => $item->title, 'image' => $item->getDisplayImage()])
+                @else
+                    {!! \App\Services\ImageService::picture($item->getDisplayImage(), $item->alt_text ?: $item->title, 'w-full h-auto max-h-[50vh] sm:max-h-[70vh] md:max-h-[80vh] object-contain') !!}
+                @endif
                 <button type="button" @click.stop="toggleFavorite('gallery', {{ $item->id }})"
                         :class="isFavorite('gallery', {{ $item->id }}) ? 'text-red-400' : 'text-white'"
                         class="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
@@ -137,7 +173,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
                 @foreach($related as $rel)
                     <a href="{{ route('gallery.show', [$rel->id, $rel->slug]) }}" class="group relative rounded-xl overflow-hidden h-32 sm:h-40 md:h-48 block w-full">
-                        <img src="{{ \App\Services\ImageService::asset($rel->image) }}" alt="{{ $rel->alt_text ?: $rel->title }}" class="w-full h-full object-cover" loading="lazy">
+                        {!! \App\Services\ImageService::picture($rel->getDisplayImage(), $rel->alt_text ?: $rel->title, 'w-full h-full object-cover') !!}
                         <div class="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
                             <i class="fas fa-search-plus text-white text-lg md:text-2xl"></i>
                         </div>

@@ -6,6 +6,7 @@ use App\Traits\TracksViews;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Material extends Model
 {
@@ -58,5 +59,10 @@ class Material extends Model
     public function isLikedByCurrentUser(): bool
     {
         return $this->likes()->where('ip_address', request()->ip())->exists();
+    }
+
+    public function tagItems(): MorphToMany
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
     }
 }

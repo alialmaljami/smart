@@ -1,0 +1,48 @@
+# Smart Designer Decorations - ديكورات المصمم الذكي
+
+> Professional decoration and interior design services in Makkah and Jeddah, Saudi Arabia.
+
+## Core Pages
+- [Home](https://smartdecorat.com) - Main site with hero, services, projects, blog, gallery
+- [About](https://smartdecorat.com/about) - About the company
+- [Services](https://smartdecorat.com/services) - Decoration services list
+- [Projects](https://smartdecorat.com/projects) - Portfolio of decoration projects
+- [Blog](https://smartdecorat.com/blog) - Articles about interior design
+- [Gallery](https://smartdecorat.com/gallery) - Photo gallery of completed work
+- [Decoration Materials](https://smartdecorat.com/materials) - Material categories and products
+- [FAQ](https://smartdecorat.com/faq) - Frequently asked questions
+- [Contact](https://smartdecorat.com/contact) - Contact information and form
+- [Privacy Policy](https://smartdecorat.com/privacy) - Privacy policy
+- [Terms of Service](https://smartdecorat.com/terms) - Terms and conditions
+
+## Services
+- Interior design and decoration
+- Exterior design and facade decoration
+- Wall decoration solutions (wallpaper, foam, steel)
+- Gypsum ceilings and false ceilings with integrated lighting
+- Flooring and parquet installation
+- Decorative lighting and mirrors
+- Luxury curtains and upholstery
+- Stone and marble cladding
+- Landscape and garden design
+- Custom furniture manufacturing
+- Full project finishing
+- Renovation and maintenance
+
+## Location-Specific Pages
+- Decoration services in [Makkah](https://smartdecorat.com/mecca-decoration)
+- Decoration services in [Jeddah](https://smartdecorat.com/jeddah-decoration)
+
+## Sitemaps
+- [Main Sitemap](https://smartdecorat.com/sitemap.xml)
+- [Projects Sitemap](https://smartdecorat.com/sitemap-projects.xml)
+- [Blog Sitemap](https://smartdecorat.com/sitemap-blog.xml)
+- [Materials Sitemap](https://smartdecorat.com/sitemap-materials.xml)
+
+## Preferred Language
+- Primary: Arabic (ar)
+- Secondary: English (en)
+
+## Contact
+- Phone: 0541232717
+- Location: Makkah and Jeddah, Saudi Arabia

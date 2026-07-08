@@ -79,7 +79,7 @@
                                 title="{{ __('Add to Favorites') }}">
                             <svg class="w-5 h-5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="isFavorite('service', {{ $service->id }}) ? 'currentColor' : 'none'"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                         </button>
-                        <img src="{{ \App\Services\ImageService::asset($service->image) }}" alt="{{ $service->name }}" class="w-full h-80 object-cover" loading="lazy">
+                        {!! \App\Services\ImageService::picture($service->image, $service->name, 'w-full h-80 object-cover') !!}
                     </div>
                     <div class="absolute -bottom-4 -left-4 w-24 h-24 bg-[var(--gold)] rounded-2xl -z-10"></div>
                 </div>
@@ -97,10 +97,13 @@
                 <div class="section-divider"></div>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                @foreach($images as $image)
-                    <div data-aos="zoom-in" data-aos-delay="{{ $loop->index * 50 }}" class="img-zoom rounded-xl overflow-hidden h-48">
-                        <img src="{{ \App\Services\ImageService::asset($image) }}" alt="{{ $service->name }}" class="w-full h-full object-cover" loading="lazy">
-                    </div>
+                @foreach($images as $idx => $image)
+                    <a href="{{ route('media.show', ['service', $service->slug, $idx]) }}" data-aos="zoom-in" data-aos-delay="{{ $idx * 50 }}" class="img-zoom rounded-xl overflow-hidden h-48 group relative block">
+                        {!! \App\Services\ImageService::picture($image, $service->name, 'w-full h-full object-cover') !!}
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                            <i class="fas fa-expand text-white text-lg opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                        </div>
+                    </a>
                 @endforeach
             </div>
         </div>
@@ -117,10 +120,99 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($videos as $video)
-                    <div data-aos="fade-up" class="rounded-xl overflow-hidden">
-                        <video controls class="w-full h-64 object-cover">
-                            <source src="{{ $video }}" type="video/mp4">
-                        </video>
+                    <div data-aos="fade-up" class="rounded-xl overflow-hidden bg-black aspect-video relative">
+                        @include('partials.video-embed', ['url' => $video, 'title' => $service->name])
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+@endif
+
+{{-- Gallery type sections --}}
+@php
+    $videoGalleries = $service->galleries->where('type', 'video');
+    $tourGalleries = $service->galleries->where('type', '360');
+    $baGalleries = $service->galleries->where('type', 'before_after');
+@endphp
+
+@if($videoGalleries->count())
+    <section class="py-16 bg-[var(--navy)]">
+        <div class="container mx-auto px-4">
+            <div data-aos="fade-up" class="text-center mb-12">
+                <h2 class="text-3xl font-black text-[var(--text-heading)]">{{ __('Video Gallery') }}</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($videoGalleries as $g)
+                    <div data-aos="fade-up" class="aspect-video bg-black rounded-xl overflow-hidden relative">
+                        @if($g->getVideoEmbedUrl())
+                            <iframe src="{{ $g->getVideoEmbedUrl() }}" title="{{ $g->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full absolute inset-0"></iframe>
+                        @elseif($g->image)
+                            {!! \App\Services\ImageService::picture($g->image, $g->title, 'w-full h-full object-cover') !!}
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+@endif
+
+@if($tourGalleries->count())
+    <section class="py-16 bg-[var(--white)]">
+        <div class="container mx-auto px-4">
+            <div data-aos="fade-up" class="text-center mb-12">
+                <h2 class="text-3xl font-black text-[var(--text-heading)]">{{ __('360 Virtual Tours') }}</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                @foreach($tourGalleries as $g)
+                    <div data-aos="fade-up" class="aspect-square bg-black rounded-xl overflow-hidden relative">
+                        @if($g->tour_url)
+                            <iframe src="{{ $g->tour_url }}" title="{{ $g->title }}" frameborder="0" allowfullscreen class="w-full h-full absolute inset-0"></iframe>
+                        @elseif($g->image)
+                            {!! \App\Services\ImageService::picture($g->image, $g->title, 'w-full h-full object-cover') !!}
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+@endif
+
+@if($baGalleries->count())
+    <section class="py-16 bg-[var(--navy)]">
+        <div class="container mx-auto px-4">
+            <div data-aos="fade-up" class="text-center mb-12">
+                <h2 class="text-3xl font-black text-[var(--text-heading)]">{{ __('Before & After') }}</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($baGalleries as $g)
+                    <div data-aos="fade-up" class="rounded-xl overflow-hidden bg-[var(--navy-dark)]">
+                        @if($g->show_comparison)
+                            <div x-data="{ pos: 50 }" class="relative select-none">
+                                {!! \App\Services\ImageService::picture($g->after_image, $g->title . ' - ' . __('After'), 'w-full h-64 object-cover') !!}
+                                <div class="absolute inset-0 overflow-hidden" :style="'clip-path: inset(0 ' + (100 - pos) + '% 0 0)'">
+                                    {!! \App\Services\ImageService::picture($g->before_image, $g->title . ' - ' . __('Before'), 'w-full h-64 object-cover') !!}
+                                </div>
+                                <input type="range" min="0" max="100" x-model="pos" class="absolute bottom-2 left-2 right-2 z-10 w-[calc(100%-1rem)]">
+                            </div>
+                        @else
+                            <div class="grid grid-cols-2">
+                                <div class="relative">
+                                <span class="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded">{{ __('Before') }}</span>
+                                {!! \App\Services\ImageService::picture($g->before_image, $g->title . ' - ' . __('Before'), 'w-full h-64 object-cover') !!}
+                            </div>
+                            <div class="relative">
+                                <span class="absolute top-2 right-2 bg-[var(--gold)]/80 text-white text-xs px-2 py-0.5 rounded">{{ __('After') }}</span>
+                                {!! \App\Services\ImageService::picture($g->after_image, $g->title . ' - ' . __('After'), 'w-full h-64 object-cover') !!}
+                                </div>
+                            </div>
+                        @endif
+                        @if($g->title)
+                            <div class="p-2 text-center text-sm text-[var(--text-light)]">{{ $g->title }}</div>
+                        @endif
                     </div>
                 @endforeach
             </div>
@@ -140,7 +232,7 @@
                 @foreach($relatedProjects as $project)
                     @php $img = is_array($project->images) ? ($project->images[0] ?? '') : $project->images; @endphp
                     <div data-aos="fade-up" class="group relative rounded-xl overflow-hidden img-zoom h-64">
-                        <img src="{{ \App\Services\ImageService::asset($img) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                        {!! \App\Services\ImageService::picture($img, $project->title, 'w-full h-full object-cover') !!}
                         <div class="overlay-gradient absolute inset-0"></div>
                         <div class="absolute bottom-4 right-4">
                             <h3 class="text-white font-bold text-lg">{{ $project->title }}</h3>
@@ -168,7 +260,7 @@
                     <div data-aos="fade-up" class="card-elegant bg-[var(--white)] rounded-xl overflow-hidden">
                         @if($category->image)
                             <div class="img-zoom h-40">
-                                <img src="{{ \App\Services\ImageService::asset($category->image) }}" alt="{{ $category->name }}" class="w-full h-full object-cover" loading="lazy">
+                                {!! \App\Services\ImageService::picture($category->image, $category->name, 'w-full h-full object-cover') !!}
                             </div>
                         @endif
                         <div class="p-4">
@@ -183,6 +275,9 @@
         </div>
     </section>
 @endif
+
+{{-- Reviews --}}
+@include('partials.reviews-section')
 
 {{-- Social Share --}}
 @php $shareSocialLinks = App\Models\SocialLink::where('is_active', true)->orderBy('sort_order')->get(); @endphp

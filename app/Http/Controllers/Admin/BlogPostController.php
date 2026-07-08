@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\BlogPost;
 use App\Models\Category;
+use App\Models\Tag;
 use App\Traits\ImageUploadHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,7 +24,8 @@ class BlogPostController extends Controller
     public function create(): View
     {
         $blogCategories = Category::where('type', 'blog')->where('is_active', true)->orderBy('name')->get();
-        return view('admin.blog-posts.create', compact('blogCategories'));
+        $allTags = Tag::orderBy('name')->get();
+        return view('admin.blog-posts.create', compact('blogCategories', 'allTags'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -38,7 +40,8 @@ class BlogPostController extends Controller
             'image' => ['nullable', 'image', 'max:10240'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'max:10240'],
-            'tags' => ['nullable', 'string'],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['exists:tags,id'],
             'is_active' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string'],
@@ -50,7 +53,7 @@ class BlogPostController extends Controller
         }
 
         $validated['is_active'] = $request->boolean('is_active');
-        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
+        $validated['tags'] = [];
 
         if ($request->filled('blog_category_id')) {
             $cat = Category::find($validated['blog_category_id']);
@@ -69,7 +72,13 @@ class BlogPostController extends Controller
             $validated['images'] = $paths;
         }
 
-        BlogPost::create($validated);
+        $post = BlogPost::create($validated);
+
+        if ($request->has('tag_ids')) {
+            $post->tagItems()->sync($request->tag_ids);
+            $tagNames = Tag::whereIn('id', $request->tag_ids)->pluck('name')->toArray();
+            $post->update(['tags' => $tagNames]);
+        }
 
         return redirect()->route('admin.blog-posts.index')->with('success', 'تم إضافة المقال بنجاح');
     }
@@ -77,7 +86,8 @@ class BlogPostController extends Controller
     public function edit(BlogPost $blogPost): View
     {
         $blogCategories = Category::where('type', 'blog')->where('is_active', true)->orderBy('name')->get();
-        return view('admin.blog-posts.edit', compact('blogPost', 'blogCategories'));
+        $allTags = Tag::orderBy('name')->get();
+        return view('admin.blog-posts.edit', compact('blogPost', 'blogCategories', 'allTags'));
     }
 
     public function update(Request $request, BlogPost $blogPost): RedirectResponse
@@ -92,7 +102,8 @@ class BlogPostController extends Controller
             'image' => ['nullable', 'image', 'max:10240'],
             'images' => ['nullable', 'array'],
             'images.*' => ['image', 'max:10240'],
-            'tags' => ['nullable', 'string'],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['exists:tags,id'],
             'is_active' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string'],
@@ -104,7 +115,6 @@ class BlogPostController extends Controller
         }
 
         $validated['is_active'] = $request->boolean('is_active');
-        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
 
         if ($request->filled('blog_category_id')) {
             $cat = Category::find($validated['blog_category_id']);
@@ -127,7 +137,16 @@ class BlogPostController extends Controller
             $validated['images'] = $paths;
         }
 
+        $validated['tags'] = [];
         $blogPost->update($validated);
+
+        if ($request->has('tag_ids')) {
+            $blogPost->tagItems()->sync($request->tag_ids);
+            $tagNames = Tag::whereIn('id', $request->tag_ids)->pluck('name')->toArray();
+            $blogPost->update(['tags' => $tagNames]);
+        } else {
+            $blogPost->tagItems()->detach();
+        }
 
         return redirect()->route('admin.blog-posts.index')->with('success', 'تم تحديث المقال بنجاح');
     }

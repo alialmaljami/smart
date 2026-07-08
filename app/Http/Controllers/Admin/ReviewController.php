@@ -35,7 +35,10 @@ class ReviewController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('reviews', 'public');
+            $file = $request->file('image');
+            $counter = (int)(microtime(true) * 10000);
+            $filename = 'ديكورات المصمم الذكي 0541232717 (' . $counter . ').' . $file->getClientOriginalExtension();
+            $validated['image'] = $file->storeAs('reviews', $filename, 'public');
         }
 
         Review::create($validated);
@@ -62,7 +65,10 @@ class ReviewController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('reviews', 'public');
+            $file = $request->file('image');
+            $counter = (int)(microtime(true) * 10000);
+            $filename = 'ديكورات المصمم الذكي 0541232717 (' . $counter . ').' . $file->getClientOriginalExtension();
+            $validated['image'] = $file->storeAs('reviews', $filename, 'public');
         }
 
         $review->update($validated);

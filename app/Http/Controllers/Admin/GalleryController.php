@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Gallery;
 use App\Models\Project;
 use App\Models\Service;
+use App\Models\Tag;
 use App\Traits\ImageUploadHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,7 +28,8 @@ class GalleryController extends Controller
         $categories = Category::where('type', 'gallery')->where('is_active', true)->orderBy('sort_order')->get();
         $services = Service::where('is_active', true)->orderBy('name')->get();
         $projects = Project::where('is_active', true)->orderBy('title')->get();
-        return view('admin.galleries.create', compact('categories', 'services', 'projects'));
+        $allTags = Tag::orderBy('name')->get();
+        return view('admin.galleries.create', compact('categories', 'services', 'projects', 'allTags'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -40,7 +42,8 @@ class GalleryController extends Controller
             'image' => ['required', 'image', 'max:10240'],
             'category_id' => ['nullable', 'exists:categories,id'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
-            'tags' => ['nullable', 'string', 'max:500'],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['exists:tags,id'],
             'service_id' => ['nullable', 'exists:services,id'],
             'project_id' => ['nullable', 'exists:projects,id'],
             'meta_title' => ['nullable', 'string', 'max:255'],
@@ -49,7 +52,7 @@ class GalleryController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
-        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
+        $validated['tags'] = [];
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['title']);
@@ -59,7 +62,13 @@ class GalleryController extends Controller
             $validated['image'] = $this->uploadImage($request->file('image'), 'galleries');
         }
 
-        Gallery::create($validated);
+        $gallery = Gallery::create($validated);
+
+        if ($request->has('tag_ids')) {
+            $gallery->tagItems()->sync($request->tag_ids);
+            $tagNames = Tag::whereIn('id', $request->tag_ids)->pluck('name')->toArray();
+            $gallery->update(['tags' => $tagNames]);
+        }
 
         return redirect()->route('admin.galleries.index')->with('success', 'تم إضافة الصورة إلى المعرض بنجاح');
     }
@@ -69,7 +78,8 @@ class GalleryController extends Controller
         $categories = Category::where('type', 'gallery')->where('is_active', true)->orderBy('sort_order')->get();
         $services = Service::where('is_active', true)->orderBy('name')->get();
         $projects = Project::where('is_active', true)->orderBy('title')->get();
-        return view('admin.galleries.edit', compact('gallery', 'categories', 'services', 'projects'));
+        $allTags = Tag::orderBy('name')->get();
+        return view('admin.galleries.edit', compact('gallery', 'categories', 'services', 'projects', 'allTags'));
     }
 
     public function update(Request $request, Gallery $gallery): RedirectResponse
@@ -82,7 +92,8 @@ class GalleryController extends Controller
             'image' => ['nullable', 'image', 'max:10240'],
             'category_id' => ['nullable', 'exists:categories,id'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
-            'tags' => ['nullable', 'string', 'max:500'],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['exists:tags,id'],
             'service_id' => ['nullable', 'exists:services,id'],
             'project_id' => ['nullable', 'exists:projects,id'],
             'meta_title' => ['nullable', 'string', 'max:255'],
@@ -91,7 +102,7 @@ class GalleryController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
-        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
+        $validated['tags'] = [];
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['title']);
@@ -102,6 +113,14 @@ class GalleryController extends Controller
         }
 
         $gallery->update($validated);
+
+        if ($request->has('tag_ids')) {
+            $gallery->tagItems()->sync($request->tag_ids);
+            $tagNames = Tag::whereIn('id', $request->tag_ids)->pluck('name')->toArray();
+            $gallery->update(['tags' => $tagNames]);
+        } else {
+            $gallery->tagItems()->detach();
+        }
 
         return redirect()->route('admin.galleries.index')->with('success', 'تم تحديث الصورة بنجاح');
     }

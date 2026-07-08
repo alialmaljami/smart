@@ -96,6 +96,15 @@
                     </div>
                 </div>
 
+                <div class="mt-5">
+                    <label for="extra.brand_name" class="block text-sm font-medium text-gray-700 mb-1.5">الاسم العلامة التجارية (النص الذهبي) <span class="text-xs text-gray-400">- خاص بـ Hero</span></label>
+                    <input type="text" name="extra[brand_name]" id="extra.brand_name"
+                           value="{{ old('extra.brand_name', $homepageSection->extra['brand_name'] ?? '') }}"
+                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm"
+                           placeholder="ديكورات المصمم الذكي">
+                    <p class="mt-1.5 text-xs text-gray-400">يظهر باللون الذهبي أعلى العنوان الرئيسي في الشريط الأول</p>
+                </div>
+
                 <div>
                     <label for="content" class="block text-sm font-medium text-gray-700 mb-1.5">المحتوى</label>
                     <textarea name="content" id="content" rows="4"

@@ -239,6 +239,9 @@
                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                         <textarea name="faq_meta_description" placeholder="الوصف" rows="2"
                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('faq_meta_description', $settings['faq_meta_description'] ?? '') }}</textarea>
+                        <input type="text" name="faq_meta_keywords" placeholder="الكلمات المفتاحية"
+                               value="{{ old('faq_meta_keywords', $settings['faq_meta_keywords'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                     </div>
                 </div>
 
@@ -251,6 +254,9 @@
                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                         <textarea name="privacy_meta_description" placeholder="الوصف" rows="2"
                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('privacy_meta_description', $settings['privacy_meta_description'] ?? '') }}</textarea>
+                        <input type="text" name="privacy_meta_keywords" placeholder="الكلمات المفتاحية"
+                               value="{{ old('privacy_meta_keywords', $settings['privacy_meta_keywords'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                     </div>
                 </div>
 
@@ -263,6 +269,9 @@
                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                         <textarea name="terms_meta_description" placeholder="الوصف" rows="2"
                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('terms_meta_description', $settings['terms_meta_description'] ?? '') }}</textarea>
+                        <input type="text" name="terms_meta_keywords" placeholder="الكلمات المفتاحية"
+                               value="{{ old('terms_meta_keywords', $settings['terms_meta_keywords'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                     </div>
                 </div>
 
@@ -275,6 +284,9 @@
                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                         <textarea name="jeddah_meta_description" placeholder="الوصف" rows="2"
                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('jeddah_meta_description', $settings['jeddah_meta_description'] ?? '') }}</textarea>
+                        <input type="text" name="jeddah_meta_keywords" placeholder="الكلمات المفتاحية"
+                               value="{{ old('jeddah_meta_keywords', $settings['jeddah_meta_keywords'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                     </div>
                 </div>
 
@@ -287,6 +299,9 @@
                                class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                         <textarea name="mecca_meta_description" placeholder="الوصف" rows="2"
                                   class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">{{ old('mecca_meta_description', $settings['mecca_meta_description'] ?? '') }}</textarea>
+                        <input type="text" name="mecca_meta_keywords" placeholder="الكلمات المفتاحية"
+                               value="{{ old('mecca_meta_keywords', $settings['mecca_meta_keywords'] ?? '') }}"
+                               class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500/30 focus:border-gold-500 outline-none transition-all duration-200 text-sm">
                     </div>
                 </div>
 
@@ -304,6 +319,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="flex items-center gap-3 bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+            <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-l from-gold-600 to-gold-500 hover:from-gold-500 hover:to-gold-400 text-gray-900 font-bold rounded-lg text-sm transition-all duration-300 shadow-sm hover:shadow-md">
+                <i class="fas fa-save"></i>
+                حفظ التغييرات
+            </button>
         </div>
 
     </form>

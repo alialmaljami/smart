@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Material;
+use App\Models\Tag;
 use App\Traits\ImageUploadHelper;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,7 +30,8 @@ class MaterialController extends Controller
     public function create(): View
     {
         $categories = Category::where('type', 'material')->orderBy('sort_order')->get();
-        return view('admin.materials.create', compact('categories'));
+        $allTags = Tag::orderBy('name')->get();
+        return view('admin.materials.create', compact('categories', 'allTags'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -44,7 +46,8 @@ class MaterialController extends Controller
             'images.*' => ['image', 'max:10240'],
             'price' => ['nullable', 'numeric', 'min:0'],
             'specifications' => ['nullable', 'string'],
-            'tags' => ['nullable', 'string'],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['exists:tags,id'],
             'is_active' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string'],
@@ -52,7 +55,7 @@ class MaterialController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
-        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
+        $validated['tags'] = [];
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'materials');
@@ -62,7 +65,13 @@ class MaterialController extends Controller
             $validated['images'] = $this->uploadImagesArray($request->file('images'), 'materials');
         }
 
-        Material::create($validated);
+        $material = Material::create($validated);
+
+        if ($request->has('tag_ids')) {
+            $material->tagItems()->sync($request->tag_ids);
+            $tagNames = Tag::whereIn('id', $request->tag_ids)->pluck('name')->toArray();
+            $material->update(['tags' => $tagNames]);
+        }
 
         return redirect()->route('admin.materials.index')
             ->with('success', 'تم إضافة المادة بنجاح');
@@ -71,7 +80,8 @@ class MaterialController extends Controller
     public function edit(Material $material): View
     {
         $categories = Category::where('type', 'material')->orderBy('sort_order')->get();
-        return view('admin.materials.edit', compact('material', 'categories'));
+        $allTags = Tag::orderBy('name')->get();
+        return view('admin.materials.edit', compact('material', 'categories', 'allTags'));
     }
 
     public function update(Request $request, Material $material): RedirectResponse
@@ -86,7 +96,8 @@ class MaterialController extends Controller
             'images.*' => ['image', 'max:10240'],
             'price' => ['nullable', 'numeric', 'min:0'],
             'specifications' => ['nullable', 'string'],
-            'tags' => ['nullable', 'string'],
+            'tag_ids' => ['nullable', 'array'],
+            'tag_ids.*' => ['exists:tags,id'],
             'is_active' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string'],
@@ -94,7 +105,7 @@ class MaterialController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
-        $validated['tags'] = $request->filled('tags') ? array_map('trim', explode(',', $request->tags)) : [];
+        $validated['tags'] = [];
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->uploadImage($request->file('image'), 'materials', $material->image);
@@ -106,6 +117,14 @@ class MaterialController extends Controller
         }
 
         $material->update($validated);
+
+        if ($request->has('tag_ids')) {
+            $material->tagItems()->sync($request->tag_ids);
+            $tagNames = Tag::whereIn('id', $request->tag_ids)->pluck('name')->toArray();
+            $material->update(['tags' => $tagNames]);
+        } else {
+            $material->tagItems()->detach();
+        }
 
         return redirect()->route('admin.materials.index')
             ->with('success', 'تم تحديث المادة بنجاح');

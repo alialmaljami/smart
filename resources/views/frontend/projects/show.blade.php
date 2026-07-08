@@ -1,14 +1,13 @@
 @php
-    $images = collect(is_array($project->images) ? $project->images : [])->map(fn($i) => \App\Services\ImageService::asset($i))->values()->toArray();
-    $videos = is_array($project->videos) ? $project->videos : [];
+    $images = is_array($project->images) ? $project->images : [];
     $totalImages = count($images);
+    $videos = is_array($project->videos) ? $project->videos : [];
     $totalVideos = count($videos);
     $relatedProjects = App\Models\Project::where('is_active', true)
         ->where('id', '!=', $project->id)
         ->orderBy('sort_order', 'desc')
         ->take(3)
         ->get();
-    $descLines = preg_split('/\n\s*\n/', trim($project->description));
 @endphp
 
 @extends('layouts.app')
@@ -75,11 +74,14 @@
                         <div class="relative rounded-[var(--radius-lg)] overflow-hidden bg-[var(--navy-dark)] h-56 sm:h-72 md:h-96 mb-3 sm:mb-4 w-full">
                             @foreach($images as $idx => $img)
                                 <div x-show="activeImage === {{ $idx }}" x-cloak class="absolute inset-0 w-full h-full">
-                                    <img src="{{ $img }}" alt="{{ $project->title }}" class="w-full h-full object-cover">
+                                    <img src="{{ \App\Services\ImageService::sized($img, 'large') }}" alt="{{ $project->title }}" class="w-full h-full object-cover" srcset="{{ \App\Services\ImageService::srcset($img) }}" sizes="(max-width: 768px) 100vw, 800px" loading="{{ $idx === 0 ? 'eager' : 'lazy' }}" decoding="async">
                                 </div>
                             @endforeach
 
-                            <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-2 sm:top-3 left-2 sm:left-3 md:top-4 md:left-4 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
+                            <a :href="`/media/project/{{ $project->slug }}/${activeImage}`" class="absolute top-2 sm:top-3 left-2 sm:left-3 md:top-4 md:left-4 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-[var(--gold)] transition-all" title="{{ __('View Image Details') }}">
+                                <i class="fas fa-expand text-xs text-white"></i>
+                            </a>
+                            <div x-data="{ liked: {{ $project->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $project->likeCount() }} }" class="absolute top-2 sm:top-3 left-10 sm:left-12 md:top-4 md:left-14 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $project->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
                                 <button type="button" class="flex items-center gap-1 px-2 py-1 md:gap-1.5 md:px-3 md:py-1.5 bg-black/80 backdrop-blur-sm rounded-full text-white hover:bg-black/90 transition-all">
                                     <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :fill="liked ? 'currentColor' : 'none'"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
                                     <span class="text-[10px] md:text-xs font-medium" x-text="count">0</span>
@@ -111,7 +113,7 @@
                             <div class="flex gap-2 overflow-x-auto pb-2" dir="ltr" style="scrollbar-width:none;-ms-overflow-style:none;">
                                 @foreach($images as $idx => $img)
                                     <button type="button" @click="activeImage = {{ $idx }}" class="flex-shrink-0 w-16 h-12 sm:w-14 sm:h-10 md:w-20 md:h-16 rounded-lg overflow-hidden border-2 transition-all" :class="activeImage === {{ $idx }} ? 'border-[var(--gold)]' : 'border-transparent'">
-                                        <img src="{{ $img }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy">
+                                        <img src="{{ \App\Services\ImageService::sized($img, 'thumb') }}" alt="{{ $project->title }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                                     </button>
                                 @endforeach
                             </div>
@@ -122,10 +124,18 @@
                 <h1 class="text-xl sm:text-3xl md:text-4xl font-black text-[var(--text-heading)] mb-3 md:mb-4 break-words max-w-full">{{ $project->title }}</h1>
 
                 {{-- Description collapsible on mobile --}}
-                @php $descFull = strip_tags($project->description); $isLong = mb_strlen($descFull) > 300; @endphp
+                @php
+                    $descFull = strip_tags($project->description);
+                    $isLong = mb_strlen($descFull) > 300;
+                    $descLines = preg_split('/\n\s*\n/', trim($project->description));
+                @endphp
                 <div x-data="{ expanded: false }" class="text-[13px] sm:text-sm md:text-base text-[var(--text-secondary)] leading-relaxed break-words max-w-full">
                     <div :class="expanded || !$isLong ? '' : 'desc-preview'">
-                        {!! nl2br(e($project->description)) !!}
+                        @foreach($descLines as $descLine)
+                            @if(trim($descLine))
+                                <p class="mb-4 last:mb-0">{{ trim($descLine) }}</p>
+                            @endif
+                        @endforeach
                     </div>
                     @if($isLong)
                         <button type="button" @click="expanded = !expanded" class="mt-2 text-[var(--gold)] hover:text-[var(--gold)]/80 font-bold text-xs sm:text-sm">
@@ -141,10 +151,8 @@
                         <h2 class="text-lg md:text-2xl font-bold text-[var(--text-heading)] mb-3 md:mb-6">{{ __('Project Videos') }} ({{ $totalVideos }})</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                             @foreach($videos as $i => $video)
-                                <div x-show="showAll || {{ $i < 2 ? 'true' : 'false' }}" x-cloak class="max-w-full w-full">
-                                    <video controls class="w-full rounded-[var(--radius-lg)] max-h-48 md:max-h-72 bg-black">
-                                        <source src="{{ $video }}" type="video/mp4">
-                                    </video>
+                                <div x-show="showAll || {{ $i < 2 ? 'true' : 'false' }}" x-cloak class="max-w-full w-full aspect-video bg-black rounded-[var(--radius-lg)] overflow-hidden relative">
+                                    @include('partials.video-embed', ['url' => $video, 'title' => $project->title])
                                 </div>
                             @endforeach
                         </div>
@@ -154,6 +162,81 @@
                                 <span x-show="showAll" x-cloak>{{ __('Show Less') }} <i class="fas fa-chevron-up text-[10px] mr-1"></i></span>
                             </button>
                         @endif
+                    </div>
+                @endif
+
+                {{-- Video Galleries (from Gallery model) --}}
+                @php $videoGalleries = $project->galleries->where('type', 'video'); @endphp
+                @if($videoGalleries->count())
+                    <div class="mt-6 md:mt-12">
+                        <h2 class="text-lg md:text-2xl font-bold text-[var(--text-heading)] mb-3 md:mb-6">{{ __('Video Gallery') }} ({{ $videoGalleries->count() }})</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                            @foreach($videoGalleries as $g)
+                                <div class="aspect-video bg-black rounded-[var(--radius-lg)] overflow-hidden relative">
+                                    @if($g->getVideoEmbedUrl())
+                                        <iframe src="{{ $g->getVideoEmbedUrl() }}" title="{{ $g->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full absolute inset-0"></iframe>
+                                    @elseif($g->image)
+                                        {!! \App\Services\ImageService::picture($g->image, $g->title, 'w-full h-full object-cover') !!}
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                {{-- 360 Tours --}}
+                @php $tourGalleries = $project->galleries->where('type', '360'); @endphp
+                @if($tourGalleries->count())
+                    <div class="mt-6 md:mt-12">
+                        <h2 class="text-lg md:text-2xl font-bold text-[var(--text-heading)] mb-3 md:mb-6">{{ __('360 Virtual Tours') }} ({{ $tourGalleries->count() }})</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                            @foreach($tourGalleries as $g)
+                                <div class="aspect-square bg-black rounded-[var(--radius-lg)] overflow-hidden relative">
+                                    @if($g->tour_url)
+                                        <iframe src="{{ $g->tour_url }}" title="{{ $g->title }}" frameborder="0" allowfullscreen class="w-full h-full absolute inset-0"></iframe>
+                                    @elseif($g->image)
+                                        {!! \App\Services\ImageService::picture($g->image, $g->title, 'w-full h-full object-cover') !!}
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Before / After --}}
+                @php $baGalleries = $project->galleries->where('type', 'before_after'); @endphp
+                @if($baGalleries->count())
+                    <div class="mt-6 md:mt-12">
+                        <h2 class="text-lg md:text-2xl font-bold text-[var(--text-heading)] mb-3 md:mb-6">{{ __('Before & After') }} ({{ $baGalleries->count() }})</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                            @foreach($baGalleries as $g)
+                                <div class="relative rounded-[var(--radius-lg)] overflow-hidden bg-[var(--navy-dark)]">
+                                    @if($g->show_comparison)
+                                        <div x-data="{ pos: 50 }" class="relative select-none">
+                                            {!! \App\Services\ImageService::picture($g->after_image, $g->title . ' - ' . __('After'), 'w-full h-64 object-cover') !!}
+                                            <div class="absolute inset-0 overflow-hidden" :style="'clip-path: inset(0 ' + (100 - pos) + '% 0 0)'">
+                                                {!! \App\Services\ImageService::picture($g->before_image, $g->title . ' - ' . __('Before'), 'w-full h-64 object-cover') !!}
+                                            </div>
+                                            <input type="range" min="0" max="100" x-model="pos" class="absolute bottom-2 left-2 right-2 z-10 w-[calc(100%-1rem)]">
+                                        </div>
+                                    @else
+                                        <div class="grid grid-cols-2">
+                                            <div class="relative">
+                                                <span class="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded">{{ __('Before') }}</span>
+                                                {!! \App\Services\ImageService::picture($g->before_image, $g->title . ' - ' . __('Before'), 'w-full h-64 object-cover') !!}
+                                            </div>
+                                            <div class="relative">
+                                                <span class="absolute top-2 right-2 bg-[var(--gold)]/80 text-white text-xs px-2 py-0.5 rounded">{{ __('After') }}</span>
+                                                {!! \App\Services\ImageService::picture($g->after_image, $g->title . ' - ' . __('After'), 'w-full h-64 object-cover') !!}
+                                            </div>
+                                        </div>
+                                    @endif
+                                    @if($g->title)
+                                        <div class="p-2 text-center text-sm text-[var(--text-light)]">{{ $g->title }}</div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
             </div>
@@ -226,10 +309,10 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 @foreach($relatedProjects as $related)
-                    @php $rImg = is_array($related->images) ? ($related->images[0] ?? '') : $related->images; @endphp
+                    @php $rImg = is_array($related->images) ? ($related->images[0] ?? '') : ($related->images ?? ''); @endphp
                     <div class="group relative rounded-[var(--radius-lg)] overflow-hidden shadow-lg bg-[var(--navy-dark)]">
                         <div class="h-44 sm:h-52 md:h-64 w-full">
-                            <img src="{{ \App\Services\ImageService::asset($rImg) }}" alt="{{ $related->title }}" class="w-full h-full object-cover" loading="lazy">
+                            {!! \App\Services\ImageService::picture($rImg, $related->title, 'w-full h-full object-cover') !!}
                         </div>
                         <div class="overlay-gradient absolute inset-0"></div>
                         <div x-data="{ liked: {{ $related->isLikedByCurrentUser() ? 'true' : 'false' }}, count: {{ $related->likeCount() }} }" class="absolute top-2 sm:top-3 left-2 sm:left-3 z-10" @click="fetch('{{ route('like.toggle') }}', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' }, body: JSON.stringify({ type: 'project', id: {{ $related->id }} }) }).then(r => r.json()).then(d => { liked = d.liked; count = d.count; })">
@@ -256,6 +339,9 @@
         </div>
     </section>
 @endif
+
+{{-- Reviews --}}
+@include('partials.reviews-section')
 
 {{-- Social Share --}}
 @php $shareSocialLinks = App\Models\SocialLink::where('is_active', true)->orderBy('sort_order')->get(); @endphp

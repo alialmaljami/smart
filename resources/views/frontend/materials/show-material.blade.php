@@ -39,7 +39,7 @@
             <div data-aos="fade-left">
                 @if($material->image)
                     <div class="rounded-2xl overflow-hidden h-96 card-elegant relative">
-                        <img src="{{ \App\Services\ImageService::asset($material->image) }}" alt="{{ $material->name }}" class="w-full h-full object-cover" loading="lazy">
+                        {!! \App\Services\ImageService::picture($material->image, $material->name, 'w-full h-full object-cover') !!}
                         <button type="button" @click.stop="toggleFavorite('material', {{ $material->id }})"
                                 :class="isFavorite('material', {{ $material->id }}) ? 'text-red-400' : 'text-white'"
                                 class="absolute top-3 left-3 z-10 w-8 h-8 rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center hover:bg-black/90 transition-all"
@@ -51,10 +51,13 @@
                 {{-- Extra images --}}
                 @if(is_array($material->images) && count($material->images))
                     <div class="grid grid-cols-4 gap-3 mt-4">
-                        @foreach($material->images as $img)
-                            <div class="rounded-xl overflow-hidden h-24">
-                                <img src="{{ \App\Services\ImageService::asset($img) }}" alt="{{ $material->name }}" class="w-full h-full object-cover" loading="lazy">
-                            </div>
+                        @foreach($material->images as $idx => $img)
+                            <a href="{{ route('media.show', ['material', $material->slug, $idx]) }}" class="rounded-xl overflow-hidden h-24 group relative block">
+                                {!! \App\Services\ImageService::picture($img, $material->name, 'w-full h-full object-cover') !!}
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                    <i class="fas fa-expand text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                </div>
+                            </a>
                         @endforeach
                     </div>
                 @endif
@@ -79,7 +82,16 @@
                 @if($material->specifications)
                     <div class="mb-6">
                         <h3 class="text-xl font-bold text-[var(--text-heading)] mb-3">{{ __('Specifications') }}</h3>
-                        <p class="text-[var(--text-light)]">{{ $material->specifications }}</p>
+                        <div class="text-[var(--text-light)] space-y-1.5">
+                            @foreach(preg_split('/\r\n|\r|\n/', trim($material->specifications)) as $spec)
+                                @if(trim($spec))
+                                    <div class="flex items-start gap-2">
+                                        <i class="fas fa-check-circle text-[var(--gold)] mt-1 text-sm shrink-0"></i>
+                                        <span>{{ trim(ltrim($spec, '* ')) }}</span>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
                     </div>
                 @endif
 
@@ -129,7 +141,7 @@
                     <div data-aos="fade-up" class="card-elegant overflow-hidden">
                         @if($rel->image)
                             <div class="img-zoom h-44">
-                                <img src="{{ \App\Services\ImageService::asset($rel->image) }}" alt="{{ $rel->name }}" class="w-full h-full object-cover" loading="lazy">
+                                {!! \App\Services\ImageService::picture($rel->image, $rel->name, 'w-full h-full object-cover') !!}
                             </div>
                         @else
                             <div class="h-44 flex items-center justify-center bg-[var(--stone)]">

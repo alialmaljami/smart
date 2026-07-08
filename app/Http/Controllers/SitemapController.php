@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\BlogPost;
 use App\Models\Gallery;
 use App\Models\Material;
+use App\Models\City;
+use App\Models\Neighborhood;
 use App\Models\Project;
 use App\Models\Service;
 use App\Models\VisitorQuestion;
@@ -23,12 +25,14 @@ class SitemapController extends Controller
     public function index(): Response
     {
         $sitemaps = [
+            ['loc' => route('sitemap.pages'), 'lastmod' => now()],
             ['loc' => route('sitemap.projects'), 'lastmod' => $this->lastMod(Project::class)],
             ['loc' => route('sitemap.images'), 'lastmod' => $this->lastMod(Gallery::class)],
             ['loc' => route('sitemap.blog'), 'lastmod' => $this->lastMod(BlogPost::class)],
             ['loc' => route('sitemap.services'), 'lastmod' => $this->lastMod(Service::class)],
             ['loc' => route('sitemap.materials'), 'lastmod' => $this->lastMod(Material::class)],
-            ['loc' => route('sitemap.cities'), 'lastmod' => $this->lastMod(VisitorQuestion::class)],
+            ['loc' => route('sitemap.cities'), 'lastmod' => $this->lastMod(City::class)],
+            ['loc' => route('sitemap.neighborhoods'), 'lastmod' => $this->lastMod(Neighborhood::class)],
         ];
 
         return response()
@@ -76,12 +80,46 @@ class SitemapController extends Controller
             ->header('Content-Type', 'application/xml');
     }
 
+    public function neighborhoods(): Response
+    {
+        $items = Neighborhood::where('is_active', true)->latest('updated_at')->get(['slug', 'updated_at']);
+        return response()
+            ->view('sitemap.items', ['items' => $items, 'route' => 'area.show', 'changefreq' => 'monthly', 'priority' => '0.7'])
+            ->header('Content-Type', 'application/xml');
+    }
+
+    public function pages(): Response
+    {
+        $pages = [
+            ['loc' => route('home'), 'changefreq' => 'weekly', 'priority' => '1.0'],
+            ['loc' => route('about'), 'changefreq' => 'monthly', 'priority' => '0.8'],
+            ['loc' => route('services'), 'changefreq' => 'weekly', 'priority' => '0.9'],
+            ['loc' => route('projects'), 'changefreq' => 'weekly', 'priority' => '0.8'],
+            ['loc' => route('gallery'), 'changefreq' => 'weekly', 'priority' => '0.7'],
+            ['loc' => route('blog'), 'changefreq' => 'weekly', 'priority' => '0.8'],
+            ['loc' => route('blog', ['category' => 'blog-decor-tips']), 'changefreq' => 'weekly', 'priority' => '0.7'],
+            ['loc' => route('blog', ['category' => 'blog-design-ideas']), 'changefreq' => 'weekly', 'priority' => '0.7'],
+            ['loc' => route('materials'), 'changefreq' => 'weekly', 'priority' => '0.8'],
+            ['loc' => route('contact'), 'changefreq' => 'monthly', 'priority' => '0.7'],
+            ['loc' => route('faq'), 'changefreq' => 'monthly', 'priority' => '0.6'],
+            ['loc' => route('privacy'), 'changefreq' => 'yearly', 'priority' => '0.3'],
+            ['loc' => route('terms'), 'changefreq' => 'yearly', 'priority' => '0.3'],
+            ['loc' => route('areas.we.serve'), 'changefreq' => 'monthly', 'priority' => '0.7'],
+            ['loc' => route('questions'), 'changefreq' => 'weekly', 'priority' => '0.6'],
+        ];
+        return response()
+            ->view('sitemap.pages', compact('pages'))
+            ->header('Content-Type', 'application/xml');
+    }
+
     public function cities(): Response
     {
-        $staticCities = [
-            ['loc' => route('city.jeddah'), 'lastmod' => now(), 'changefreq' => 'monthly', 'priority' => '0.8'],
-            ['loc' => route('city.mecca'), 'lastmod' => now(), 'changefreq' => 'monthly', 'priority' => '0.8'],
-        ];
+        $staticCities = City::where('is_active', true)->orderBy('sort_order')->get()->map(fn($c) => [
+            'loc' => route('city.show', $c->slug),
+            'lastmod' => $c->updated_at ?: now(),
+            'changefreq' => 'monthly',
+            'priority' => '0.8',
+        ])->toArray();
         $questions = VisitorQuestion::where('is_active', true)->latest('updated_at')->get(['slug', 'updated_at']);
         return response()
             ->view('sitemap.cities', compact('staticCities', 'questions'))

@@ -36,12 +36,17 @@ class HomepageSectionController extends Controller
             'button_url_2' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],
+            'extra' => ['nullable', 'array'],
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['extra'] = $request->input('extra', []);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('homepage', 'public');
+            $file = $request->file('image');
+            $counter = (int)(microtime(true) * 10000);
+            $filename = 'ديكورات المصمم الذكي 0541232717 (' . $counter . ').' . $file->getClientOriginalExtension();
+            $validated['image'] = $file->storeAs('homepage', $filename, 'public');
         }
 
         HomepageSection::create($validated);
@@ -69,12 +74,17 @@ class HomepageSectionController extends Controller
             'button_url_2' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['boolean'],
+            'extra' => ['nullable', 'array'],
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['extra'] = $request->input('extra', []);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('homepage', 'public');
+            $file = $request->file('image');
+            $counter = (int)(microtime(true) * 10000);
+            $filename = 'ديكورات المصمم الذكي 0541232717 (' . $counter . ').' . $file->getClientOriginalExtension();
+            $validated['image'] = $file->storeAs('homepage', $filename, 'public');
         }
 
         $homepageSection->update($validated);

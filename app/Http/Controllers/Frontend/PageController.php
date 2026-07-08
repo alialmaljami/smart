@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\BlogPost;
 use App\Models\Category;
+use App\Models\City;
 use App\Models\Faq;
 use App\Models\Gallery;
 use App\Models\Material;
+use App\Models\Neighborhood;
 use App\Models\Project;
 use App\Models\Service;
-use App\Models\Setting;
 use Illuminate\View\View;
 
 class PageController extends Controller
@@ -86,11 +87,12 @@ class PageController extends Controller
         $projects = Project::where('is_active', true)->orderBy('sort_order', 'desc')->take(6)->get();
         $services = Service::where('is_active', true)->get();
         $galleries = Gallery::where('is_active', true)->latest()->take(8)->get();
+        $neighborhoods = Neighborhood::active()->byCity('jeddah')->orderBy('sort_order')->get();
         $breadcrumbs = [
             ['name' => __('Home'), 'url' => route('home')],
             ['name' => __('Jeddah Decorations'), 'url' => route('city.jeddah')],
         ];
-        return view('frontend.city-jeddah', compact('projects', 'services', 'galleries', 'breadcrumbs'));
+        return view('frontend.city-jeddah', compact('projects', 'services', 'galleries', 'neighborhoods', 'breadcrumbs'));
     }
 
     public function cityMecca(): View
@@ -98,11 +100,12 @@ class PageController extends Controller
         $projects = Project::where('is_active', true)->orderBy('sort_order', 'desc')->take(6)->get();
         $services = Service::where('is_active', true)->get();
         $galleries = Gallery::where('is_active', true)->latest()->take(8)->get();
+        $neighborhoods = Neighborhood::active()->byCity('mecca')->orderBy('sort_order')->get();
         $breadcrumbs = [
             ['name' => __('Home'), 'url' => route('home')],
             ['name' => __('Mecca Decorations'), 'url' => route('city.mecca')],
         ];
-        return view('frontend.city-mecca', compact('projects', 'services', 'galleries', 'breadcrumbs'));
+        return view('frontend.city-mecca', compact('projects', 'services', 'galleries', 'neighborhoods', 'breadcrumbs'));
     }
 
     public function areasWeServe(): View
@@ -127,11 +130,14 @@ class PageController extends Controller
                 $q->where('name', 'like', '%مكة%')->orWhere('name', 'like', '%Mecca%')
                   ->orWhere('description', 'like', '%مكة%')->orWhere('description', 'like', '%Mecca%');
             })->get();
+        $meccaNeighborhoods = Neighborhood::active()->byCity('mecca')->orderBy('sort_order')->get();
+        $jeddahNeighborhoods = Neighborhood::active()->byCity('jeddah')->orderBy('sort_order')->get();
+        $cities = City::where('is_active', true)->orderBy('sort_order')->get();
         $breadcrumbs = [
             ['name' => __('Home'), 'url' => route('home')],
             ['name' => __('Areas We Serve'), 'url' => route('areas.we.serve')],
         ];
-        return view('frontend.areas-we-serve', compact('jeddahProjects', 'meccaProjects', 'jeddahServices', 'meccaServices', 'breadcrumbs'));
+        return view('frontend.areas-we-serve', compact('jeddahProjects', 'meccaProjects', 'jeddahServices', 'meccaServices', 'meccaNeighborhoods', 'jeddahNeighborhoods', 'cities', 'breadcrumbs'));
     }
 
     public function mostViewed(): View
@@ -150,6 +156,8 @@ class PageController extends Controller
 
     public function tag(string $tag): View
     {
+        $tagSlug = \Illuminate\Support\Str::slug($tag);
+
         $services = Service::where('is_active', true)
             ->where(function ($q) use ($tag) {
                 $q->where('name', 'like', "%{$tag}%")
@@ -157,31 +165,35 @@ class PageController extends Controller
             })->orderBy('sort_order')->get();
 
         $projects = Project::where('is_active', true)
-            ->where(function ($q) use ($tag) {
+            ->where(function ($q) use ($tag, $tagSlug) {
                 $q->whereJsonContains('tags', $tag)
                   ->orWhere('title', 'like', "%{$tag}%")
-                  ->orWhere('description', 'like', "%{$tag}%");
+                  ->orWhere('description', 'like', "%{$tag}%")
+                  ->orWhereHas('tagItems', fn($t) => $t->where('name', 'like', "%{$tag}%")->orWhere('slug', 'like', "%{$tagSlug}%"));
             })->orderBy('sort_order', 'desc')->take(6)->get();
 
         $posts = BlogPost::where('is_active', true)
-            ->where(function ($q) use ($tag) {
+            ->where(function ($q) use ($tag, $tagSlug) {
                 $q->whereJsonContains('tags', $tag)
                   ->orWhere('title', 'like', "%{$tag}%")
-                  ->orWhere('content', 'like', "%{$tag}%");
+                  ->orWhere('content', 'like', "%{$tag}%")
+                  ->orWhereHas('tagItems', fn($t) => $t->where('name', 'like', "%{$tag}%")->orWhere('slug', 'like', "%{$tagSlug}%"));
             })->latest()->take(6)->get();
 
         $galleries = Gallery::where('is_active', true)
-            ->where(function ($q) use ($tag) {
+            ->where(function ($q) use ($tag, $tagSlug) {
                 $q->whereJsonContains('tags', $tag)
                   ->orWhere('title', 'like', "%{$tag}%")
-                  ->orWhere('description', 'like', "%{$tag}%");
+                  ->orWhere('description', 'like', "%{$tag}%")
+                  ->orWhereHas('tagItems', fn($t) => $t->where('name', 'like', "%{$tag}%")->orWhere('slug', 'like', "%{$tagSlug}%"));
             })->latest()->take(8)->get();
 
         $materials = Material::where('is_active', true)
-            ->where(function ($q) use ($tag) {
+            ->where(function ($q) use ($tag, $tagSlug) {
                 $q->whereJsonContains('tags', $tag)
                   ->orWhere('name', 'like', "%{$tag}%")
-                  ->orWhere('description', 'like', "%{$tag}%");
+                  ->orWhere('description', 'like', "%{$tag}%")
+                  ->orWhereHas('tagItems', fn($t) => $t->where('name', 'like', "%{$tag}%")->orWhere('slug', 'like', "%{$tagSlug}%"));
             })->get();
 
         $breadcrumbs = [

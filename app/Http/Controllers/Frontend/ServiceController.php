@@ -16,7 +16,7 @@ class ServiceController extends Controller
 
     public function show(string $slug): View
     {
-        $service = Service::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $service = Service::where('slug', $slug)->where('is_active', true)->with('galleries')->firstOrFail();
         $service->incrementViews();
         $projects = $service->projects()->where('is_active', true)->latest()->get();
         $materialCategories = $service->materialCategories()->where('is_active', true)->orderBy('sort_order')->get();
