@@ -356,3 +356,5 @@ Route::get('/storage/{path}', function (string $path) {
     return response()->file($disk->path($path));
 })->where('path', '.*');
 
+
+
