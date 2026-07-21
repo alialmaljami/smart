@@ -335,16 +335,64 @@ Route::get('/sitemap-materials.xml', [SitemapController::class, 'materials'])->n
 Route::get('/sitemap-cities.xml', [SitemapController::class, 'cities'])->name('sitemap.cities');
 Route::get('/sitemap-neighborhoods.xml', [SitemapController::class, 'neighborhoods'])->name('sitemap.neighborhoods');
 
-// Fallback route for storage files (when symlink is missing on Railway)
-Route::get('/storage/{path}', function (string $path) {
-    $fullPath = storage_path('app/public/' . $path);
-    if (!file_exists($fullPath)) {
-        abort(404);
+// Fix slugs with spaces/special chars (run once then remove this route)
+Route::get('/fix-slugs', function () {
+    $secret = request('secret');
+    if ($secret !== env('APP_KEY')) {
+        abort(403);
     }
-    $mime = mime_content_type($fullPath);
-    return response()->file($fullPath, ['Content-Type' => $mime]);
-})->where('path', '.*');
 
+    $models = [
+        'projects' => \App\Models\Project::class,
+        'blog_posts' => \App\Models\BlogPost::class,
+        'services' => \App\Models\Service::class,
+        'materials' => \App\Models\Material::class,
+        'neighborhoods' => \App\Models\Neighborhood::class,
+        'galleries' => \App\Models\Gallery::class,
+        'tags' => \App\Models\Tag::class,
+        'visitor_questions' => \App\Models\VisitorQuestion::class,
+    ];
+
+    $log = [];
+    $totalFixed = 0;
+
+    foreach ($models as $table => $modelClass) {
+        $model = new $modelClass;
+        $items = $model->where('slug', 'like', '% %')
+            ->orWhere('slug', 'like', '%(%')
+            ->orWhereRaw("slug != LOWER(slug)")
+            ->get();
+
+        if ($items->isEmpty()) continue;
+        $log[] = "<b>{$table}:</b> Found " . $items->count() . " slugs to fix";
+
+        foreach ($items as $item) {
+            $oldSlug = $item->slug;
+            $newSlug = \Illuminate\Support\Str::slug($oldSlug);
+            $newSlug = preg_replace('/-+/', '-', $newSlug);
+            $newSlug = trim($newSlug, '-');
+
+            if ($newSlug === $oldSlug || empty($newSlug)) continue;
+
+            $original = $newSlug;
+            $counter = 2;
+            while ($model->where('slug', $newSlug)->where('id', '!=', $item->id)->exists()) {
+                $newSlug = $original . '-' . $counter;
+                $counter++;
+            }
+
+            $item->slug = $newSlug;
+            $item->save();
+            $log[] = "  \"{$oldSlug}\" → \"{$newSlug}\"";
+            $totalFixed++;
+        }
+    }
+
+    $log[] = "<br><b>Total: {$totalFixed} slugs fixed.</b>";
+    return "<pre dir='ltr'>" . implode("\n", $log) . "</pre>";
+});
+
+// Fallback route for storage files (when symlink is missing on Railway)
 Route::get('/storage/{path}', function (string $path) {
     if (str_contains($path, '..')) {
         abort(404);
