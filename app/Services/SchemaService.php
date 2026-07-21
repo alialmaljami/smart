@@ -42,16 +42,26 @@ class SchemaService
         ];
 
         $avgRating = self::getAverageRating();
-        if ($avgRating !== null) {
+        $reviewCount = self::getReviewCount();
+        if ($avgRating !== null && $reviewCount > 0) {
             $schema['aggregateRating'] = [
                 '@type' => 'AggregateRating',
                 'ratingValue' => $avgRating,
                 'bestRating' => 5,
-                'ratingCount' => Setting::getValue('review_count', 5),
+                'ratingCount' => $reviewCount,
             ];
         }
 
         return $schema;
+    }
+
+    private static function getReviewCount(): int
+    {
+        try {
+            return \App\Models\Review::where('is_active', true)->count();
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
 
     private static function getAverageRating(): ?float

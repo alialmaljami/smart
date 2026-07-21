@@ -357,4 +357,3 @@ Route::get('/storage/{path}', function (string $path) {
 })->where('path', '.*');
 
 
-

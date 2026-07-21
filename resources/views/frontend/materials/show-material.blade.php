@@ -96,28 +96,31 @@
                 @endif
 
                 {{-- Tags --}}
-                @if($material->tags && is_array($material->tags))
-                    @php
-                        $allTags = [];
-                        foreach($material->tags as $tag) {
-                            foreach(explode('،', $tag) as $part) {
-                                foreach(explode(',', $part) as $p) {
-                                    $t = trim($p);
-                                    if($t !== '') $allTags[] = $t;
+                @php
+                    $materialTags = [];
+                    foreach ($material->tagItems as $t) {
+                        $materialTags[] = ['name' => $t->name, 'slug' => $t->slug, 'isMaster' => true];
+                    }
+                    if (is_array($material->tags)) {
+                        foreach ($material->tags as $tag) {
+                            foreach (explode('،', $tag) as $part) {
+                                foreach (explode(',', $part) as $p) {
+                                    $trimmed = trim($p);
+                                    if ($trimmed !== '') $materialTags[] = ['name' => $trimmed, 'slug' => null, 'isMaster' => false];
                                 }
                             }
                         }
-                        $allTags = array_unique($allTags);
-                    @endphp
-                    @if(count($allTags))
-                        <div class="mb-6">
-                            <div class="flex flex-wrap gap-2">
-                                @foreach($allTags as $tag)
-                                    <a href="{{ route('tag', urlencode($tag)) }}" class="px-3 py-1 rounded-full text-sm bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white transition-colors">#{{ $tag }}</a>
-                                @endforeach
-                            </div>
+                    }
+                    $materialTags = collect($materialTags)->unique('name')->all();
+                @endphp
+                @if(count($materialTags))
+                    <div class="mb-6">
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($materialTags as $tag)
+                                <a href="{{ $tag['isMaster'] ? route('tag.slug', $tag['slug']) : route('tag', urlencode($tag['name'])) }}" class="px-3 py-1 rounded-full text-sm {{ $tag['isMaster'] ? 'bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)] hover:text-white' : 'bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white' }} transition-colors">#{{ $tag['name'] }}</a>
+                            @endforeach
                         </div>
-                    @endif
+                    </div>
                 @endif
 
                 <a href="{{ route('contact') }}" class="btn-primary inline-flex items-center px-8 py-4 rounded-xl font-bold text-lg">

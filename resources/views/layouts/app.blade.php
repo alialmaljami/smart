@@ -50,7 +50,7 @@
 
     {{-- Open Graph --}}
     <meta property="og:site_name" content="{{ __('Smart Designer Decorations') }}" />
-    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:url" content="{{ $canonicalUrl }}" />
     <meta property="og:title" content="@yield('title', __('Smart Designer Decorations'))" />
     <meta property="og:description" content="@yield('description', __('Smart Designer Decorations - Professional interior design and decoration services in Saudi Arabia'))" />
     <meta property="og:image" content="@yield('image', url('/storage/settings/og-default.jpg'))" />

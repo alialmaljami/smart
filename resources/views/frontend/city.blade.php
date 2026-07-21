@@ -15,7 +15,6 @@
 @push('schema')
 @php
     $schemaItems = [
-        \App\Services\SchemaService::localBusiness(),
         \App\Services\SchemaService::breadcrumbList($breadcrumbs),
     ];
     echo \App\Services\SchemaService::renderSchemas($schemaItems);

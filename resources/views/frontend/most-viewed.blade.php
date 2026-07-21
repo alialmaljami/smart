@@ -15,7 +15,6 @@
         $items[] = ['name' => $b['label'], 'url' => $b['url']];
     }
     echo \App\Services\SchemaService::renderSchemas([
-        \App\Services\SchemaService::localBusiness(),
         \App\Services\SchemaService::breadcrumbList($items),
     ]);
 @endphp

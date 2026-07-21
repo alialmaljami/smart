@@ -49,8 +49,12 @@
                                     {{ $usages[$tag->id] ?? 0 }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4">
+                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-2 justify-end">
+                                    <a href="{{ route('tag.slug', $tag->slug) }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gold-600 bg-white border border-gold-300 rounded-lg hover:bg-gold-50 transition-colors" title="{{ __('View Page') }}">
+                                        <i class="fas fa-external-link-alt"></i>
+                                        عرض
+                                    </a>
                                     <a href="{{ route('admin.tags.edit', $tag) }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                                         <i class="fas fa-edit"></i>
                                         تعديل

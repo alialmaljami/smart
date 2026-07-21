@@ -16,7 +16,6 @@
 @push('schema')
 @php
     $schemaItems = [
-        \App\Services\SchemaService::localBusiness(),
         \App\Services\SchemaService::breadcrumbList($breadcrumbs ?? [
             ['name' => __('Home'), 'url' => route('home')],
             ['name' => __('Gallery'), 'url' => route('gallery')],
@@ -107,26 +106,29 @@
                     <p class="text-[var(--text-light)] text-sm sm:text-base md:text-lg leading-relaxed mb-4 md:mb-6 break-words">{{ $item->description }}</p>
                 @endif
 
-                @if($item->tags && is_array($item->tags))
-                    @php
-                        $allTags = [];
-                        foreach($item->tags as $tag) {
-                            foreach(explode('،', $tag) as $part) {
-                                foreach(explode(',', $part) as $p) {
-                                    $t = trim($p);
-                                    if($t !== '') $allTags[] = $t;
+                @php
+                    $galleryTags = [];
+                    foreach ($item->tagItems as $t) {
+                        $galleryTags[] = ['name' => $t->name, 'slug' => $t->slug, 'isMaster' => true];
+                    }
+                    if (is_array($item->tags)) {
+                        foreach ($item->tags as $tag) {
+                            foreach (explode('،', $tag) as $part) {
+                                foreach (explode(',', $part) as $p) {
+                                    $trimmed = trim($p);
+                                    if ($trimmed !== '') $galleryTags[] = ['name' => $trimmed, 'slug' => null, 'isMaster' => false];
                                 }
                             }
                         }
-                        $allTags = array_unique($allTags);
-                    @endphp
-                    @if(count($allTags))
-                        <div class="flex flex-wrap justify-center gap-1.5 md:gap-2 mb-4 md:mb-6">
-                            @foreach($allTags as $tag)
-                                <a href="{{ route('tag', urlencode($tag)) }}" class="px-2.5 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-medium bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20 hover:bg-[var(--gold)] hover:text-white transition-colors">{{ $tag }}</a>
-                            @endforeach
-                        </div>
-                    @endif
+                    }
+                    $galleryTags = collect($galleryTags)->unique('name')->all();
+                @endphp
+                @if(count($galleryTags))
+                    <div class="flex flex-wrap justify-center gap-1.5 md:gap-2 mb-4 md:mb-6">
+                        @foreach($galleryTags as $tag)
+                            <a href="{{ $tag['isMaster'] ? route('tag.slug', $tag['slug']) : route('tag', urlencode($tag['name'])) }}" class="px-2.5 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-medium {{ $tag['isMaster'] ? 'bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20' : 'bg-[var(--stone)] text-[var(--text-light)] border border-[var(--stone)]/50' }} hover:bg-[var(--gold)] hover:text-white transition-colors">{{ $tag['name'] }}</a>
+                        @endforeach
+                    </div>
                 @endif
 
                 @if($item->service || $item->project)

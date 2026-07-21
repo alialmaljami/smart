@@ -42,7 +42,10 @@ class SitemapController extends Controller
 
     public function projects(): Response
     {
-        $items = Project::where('is_active', true)->where('is_indexed', true)->latest('updated_at')->get(['slug', 'updated_at']);
+        $items = Project::where('is_active', true)->where('is_indexed', true)
+            ->where('slug', 'not like', '% %')
+            ->distinct('slug')
+            ->latest('updated_at')->get(['slug', 'updated_at']);
         return response()
             ->view('sitemap.items', ['items' => $items, 'route' => 'project.show', 'changefreq' => 'weekly', 'priority' => '0.8'])
             ->header('Content-Type', 'application/xml');
@@ -50,7 +53,10 @@ class SitemapController extends Controller
 
     public function images(): Response
     {
-        $items = Gallery::where('is_active', true)->where('is_indexed', true)->latest('updated_at')->get(['id', 'slug', 'updated_at']);
+        $items = Gallery::where('is_active', true)->where('is_indexed', true)
+            ->where('slug', 'not like', '% %')
+            ->distinct('slug')
+            ->latest('updated_at')->get(['id', 'slug', 'updated_at']);
         return response()
             ->view('sitemap.items', ['items' => $items, 'route' => 'gallery.show', 'params' => ['id' => 'id', 'slug' => 'slug'], 'changefreq' => 'weekly', 'priority' => '0.6'])
             ->header('Content-Type', 'application/xml');
@@ -58,7 +64,10 @@ class SitemapController extends Controller
 
     public function blog(): Response
     {
-        $items = BlogPost::where('is_active', true)->where('is_indexed', true)->latest('updated_at')->get(['slug', 'updated_at']);
+        $items = BlogPost::where('is_active', true)->where('is_indexed', true)
+            ->where('slug', 'not like', '% %')
+            ->distinct('slug')
+            ->latest('updated_at')->get(['slug', 'updated_at']);
         return response()
             ->view('sitemap.items', ['items' => $items, 'route' => 'blog.post', 'changefreq' => 'monthly', 'priority' => '0.7'])
             ->header('Content-Type', 'application/xml');
@@ -66,7 +75,9 @@ class SitemapController extends Controller
 
     public function services(): Response
     {
-        $items = Service::where('is_active', true)->where('is_indexed', true)->latest('updated_at')->get(['slug', 'updated_at']);
+        $items = Service::where('is_active', true)->where('is_indexed', true)
+            ->where('slug', 'not like', '% %')
+            ->latest('updated_at')->get(['slug', 'updated_at']);
         return response()
             ->view('sitemap.items', ['items' => $items, 'route' => 'service.show', 'changefreq' => 'monthly', 'priority' => '0.9'])
             ->header('Content-Type', 'application/xml');
@@ -74,7 +85,9 @@ class SitemapController extends Controller
 
     public function materials(): Response
     {
-        $items = Material::where('is_active', true)->where('is_indexed', true)->latest('updated_at')->get(['slug', 'updated_at']);
+        $items = Material::where('is_active', true)->where('is_indexed', true)
+            ->where('slug', 'not like', '% %')
+            ->latest('updated_at')->get(['slug', 'updated_at']);
         return response()
             ->view('sitemap.items', ['items' => $items, 'route' => 'material.show', 'changefreq' => 'monthly', 'priority' => '0.7'])
             ->header('Content-Type', 'application/xml');
@@ -82,7 +95,9 @@ class SitemapController extends Controller
 
     public function neighborhoods(): Response
     {
-        $items = Neighborhood::where('is_active', true)->latest('updated_at')->get(['slug', 'updated_at']);
+        $items = Neighborhood::where('is_active', true)->where('is_indexed', true)
+            ->where('slug', 'not like', '% %')
+            ->latest('updated_at')->get(['slug', 'updated_at']);
         return response()
             ->view('sitemap.items', ['items' => $items, 'route' => 'area.show', 'changefreq' => 'monthly', 'priority' => '0.7'])
             ->header('Content-Type', 'application/xml');
@@ -91,21 +106,19 @@ class SitemapController extends Controller
     public function pages(): Response
     {
         $pages = [
-            ['loc' => route('home'), 'changefreq' => 'weekly', 'priority' => '1.0'],
-            ['loc' => route('about'), 'changefreq' => 'monthly', 'priority' => '0.8'],
-            ['loc' => route('services'), 'changefreq' => 'weekly', 'priority' => '0.9'],
-            ['loc' => route('projects'), 'changefreq' => 'weekly', 'priority' => '0.8'],
-            ['loc' => route('gallery'), 'changefreq' => 'weekly', 'priority' => '0.7'],
-            ['loc' => route('blog'), 'changefreq' => 'weekly', 'priority' => '0.8'],
-            ['loc' => route('blog', ['category' => 'blog-decor-tips']), 'changefreq' => 'weekly', 'priority' => '0.7'],
-            ['loc' => route('blog', ['category' => 'blog-design-ideas']), 'changefreq' => 'weekly', 'priority' => '0.7'],
-            ['loc' => route('materials'), 'changefreq' => 'weekly', 'priority' => '0.8'],
-            ['loc' => route('contact'), 'changefreq' => 'monthly', 'priority' => '0.7'],
-            ['loc' => route('faq'), 'changefreq' => 'monthly', 'priority' => '0.6'],
-            ['loc' => route('privacy'), 'changefreq' => 'yearly', 'priority' => '0.3'],
-            ['loc' => route('terms'), 'changefreq' => 'yearly', 'priority' => '0.3'],
-            ['loc' => route('areas.we.serve'), 'changefreq' => 'monthly', 'priority' => '0.7'],
-            ['loc' => route('questions'), 'changefreq' => 'weekly', 'priority' => '0.6'],
+            ['loc' => route('home'), 'changefreq' => 'weekly', 'priority' => '1.0', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('about'), 'changefreq' => 'monthly', 'priority' => '0.8', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('services'), 'changefreq' => 'weekly', 'priority' => '0.9', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('projects'), 'changefreq' => 'weekly', 'priority' => '0.8', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('gallery'), 'changefreq' => 'weekly', 'priority' => '0.7', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('blog'), 'changefreq' => 'weekly', 'priority' => '0.8', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('materials'), 'changefreq' => 'weekly', 'priority' => '0.8', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('contact'), 'changefreq' => 'monthly', 'priority' => '0.7', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('faq'), 'changefreq' => 'monthly', 'priority' => '0.6', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('privacy'), 'changefreq' => 'yearly', 'priority' => '0.3', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('terms'), 'changefreq' => 'yearly', 'priority' => '0.3', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('areas.we.serve'), 'changefreq' => 'monthly', 'priority' => '0.7', 'lastmod' => now()->toIso8601String()],
+            ['loc' => route('questions'), 'changefreq' => 'weekly', 'priority' => '0.6', 'lastmod' => now()->toIso8601String()],
         ];
         return response()
             ->view('sitemap.pages', compact('pages'))

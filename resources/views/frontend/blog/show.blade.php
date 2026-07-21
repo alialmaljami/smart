@@ -25,7 +25,6 @@
 @push('schema')
 @php
     echo \App\Services\SchemaService::renderSchemas([
-        \App\Services\SchemaService::localBusiness(),
         \App\Services\SchemaService::breadcrumbList($breadcrumbs ?? [
             ['name' => __('Home'), 'url' => route('home')],
             ['name' => __('Blog'), 'url' => route('blog')],
@@ -132,28 +131,31 @@
             </div>
 
             {{-- Tags --}}
-            @if($post->tags && is_array($post->tags))
-                @php
-                    $allTags = [];
-                    foreach($post->tags as $tag) {
-                        foreach(explode('،', $tag) as $part) {
-                            foreach(explode(',', $part) as $p) {
-                                $t = trim($p);
-                                if($t !== '') $allTags[] = $t;
+            @php
+                $displayTags = [];
+                foreach ($post->tagItems as $t) {
+                    $displayTags[] = ['name' => $t->name, 'slug' => $t->slug, 'isMaster' => true];
+                }
+                if (is_array($post->tags)) {
+                    foreach ($post->tags as $tag) {
+                        foreach (explode('،', $tag) as $part) {
+                            foreach (explode(',', $part) as $p) {
+                                $trimmed = trim($p);
+                                if ($trimmed !== '') $displayTags[] = ['name' => $trimmed, 'slug' => null, 'isMaster' => false];
                             }
                         }
                     }
-                    $allTags = array_unique($allTags);
-                @endphp
-                @if(count($allTags))
-                    <div class="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-[var(--stone)]">
-                        <div class="flex flex-wrap gap-1.5 md:gap-2">
-                            @foreach($allTags as $tag)
-                                <a href="{{ route('tag', urlencode($tag)) }}" class="px-3 md:px-4 py-1 rounded-full text-[11px] md:text-sm bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white transition-colors">#{{ $tag }}</a>
-                            @endforeach
-                        </div>
+                }
+                $displayTags = collect($displayTags)->unique('name')->all();
+            @endphp
+            @if(count($displayTags))
+                <div class="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-[var(--stone)]">
+                    <div class="flex flex-wrap gap-1.5 md:gap-2">
+                        @foreach($displayTags as $tag)
+                            <a href="{{ $tag['isMaster'] ? route('tag.slug', $tag['slug']) : route('tag', urlencode($tag['name'])) }}" class="px-3 md:px-4 py-1 rounded-full text-[11px] md:text-sm {{ $tag['isMaster'] ? 'bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)] hover:text-white' : 'bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white' }} transition-colors">#{{ $tag['name'] }}</a>
+                        @endforeach
                     </div>
-                @endif
+                </div>
             @endif
         </div>
     </div>

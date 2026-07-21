@@ -10,13 +10,7 @@ Disallow: /api/
 Disallow: /storage/thumb/
 Disallow: /storage/*/thumb/
 Disallow: /_debugbar/
+Disallow: /webp-convert
+Disallow: /submit-google-sitemaps
 
 Sitemap: https://smartdecorat.com/sitemap.xml
-Sitemap: https://smartdecorat.com/sitemap-pages.xml
-Sitemap: https://smartdecorat.com/sitemap-projects.xml
-Sitemap: https://smartdecorat.com/sitemap-images.xml
-Sitemap: https://smartdecorat.com/sitemap-blog.xml
-Sitemap: https://smartdecorat.com/sitemap-services.xml
-Sitemap: https://smartdecorat.com/sitemap-materials.xml
-Sitemap: https://smartdecorat.com/sitemap-cities.xml
-Sitemap: https://smartdecorat.com/sitemap-neighborhoods.xml

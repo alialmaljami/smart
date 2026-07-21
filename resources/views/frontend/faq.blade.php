@@ -18,7 +18,6 @@
         }
     }
     echo \App\Services\SchemaService::renderSchemas([
-        \App\Services\SchemaService::localBusiness(),
         \App\Services\SchemaService::breadcrumbList([
             ['name' => __('Home'), 'url' => route('home')],
             ['name' => __('FAQ'), 'url' => route('faq')],

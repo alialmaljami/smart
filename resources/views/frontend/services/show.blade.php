@@ -20,7 +20,6 @@
 @push('schema')
 @php
     echo \App\Services\SchemaService::renderSchemas([
-        \App\Services\SchemaService::localBusiness(),
         \App\Services\SchemaService::breadcrumbList($breadcrumbs ?? [
             ['name' => __('Home'), 'url' => route('home')],
             ['name' => __('Our Services'), 'url' => route('services')],

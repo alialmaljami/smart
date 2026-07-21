@@ -9,7 +9,7 @@
     <url>
         <loc>{{ $url }}</loc>
         <xhtml:link rel="alternate" hreflang="ar" href="{{ $url }}" />
-        <xhtml:link rel="alternate" hreflang="en" href="{{ $url }}?_locale=en" />
+        <xhtml:link rel="alternate" hreflang="en" href="{{ str_contains($url, '?') ? $url . '&_locale=en' : $url . '?_locale=en' }}" />
         <xhtml:link rel="alternate" hreflang="x-default" href="{{ $url }}" />
         <lastmod>{{ $item->updated_at->toIso8601String() }}</lastmod>
         <changefreq>{{ $changefreq }}</changefreq>

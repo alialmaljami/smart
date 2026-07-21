@@ -154,9 +154,17 @@ class PageController extends Controller
         return view('frontend.most-viewed', compact('projects', 'posts', 'galleries', 'materials', 'services', 'breadcrumbs'));
     }
 
+    public function tagBySlug(string $slug): View
+    {
+        $tagModel = \App\Models\Tag::where('slug', $slug)->first();
+        $tag = $tagModel ? $tagModel->name : str_replace('-', ' ', $slug);
+        return $this->tag($tag);
+    }
+
     public function tag(string $tag): View
     {
         $tagSlug = \Illuminate\Support\Str::slug($tag);
+        $tagModel = \App\Models\Tag::where('slug', $tagSlug)->orWhere('name', $tag)->first();
 
         $services = Service::where('is_active', true)
             ->where(function ($q) use ($tag) {
@@ -201,6 +209,6 @@ class PageController extends Controller
             ['name' => __('Tag') . ': ' . $tag, 'url' => route('tag', $tag)],
         ];
 
-        return view('frontend.tag', compact('tag', 'services', 'projects', 'posts', 'galleries', 'materials', 'breadcrumbs'));
+        return view('frontend.tag', compact('tag', 'tagModel', 'services', 'projects', 'posts', 'galleries', 'materials', 'breadcrumbs'));
     }
 }

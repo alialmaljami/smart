@@ -36,7 +36,6 @@
 @push('schema')
 @php
     echo \App\Services\SchemaService::renderSchemas([
-        \App\Services\SchemaService::localBusiness(),
         \App\Services\SchemaService::breadcrumbList($breadcrumbs ?? [
             ['name' => __('Home'), 'url' => route('home')],
             ['name' => __('Our Projects'), 'url' => route('projects')],
@@ -246,7 +245,7 @@
                 <div class="bg-[var(--cream)] rounded-[var(--radius-lg)] p-4 md:p-6 lg:sticky top-28 border border-[var(--stone)]">
                     <h3 class="text-base md:text-xl font-bold text-[var(--gold)] mb-3 md:mb-6">{{ __('Project Information') }}</h3>
                     <div class="space-y-2 md:space-y-4">
-                        @if(is_array($project->tags) && count($project->tags))
+                        @if($project->tagItems->count() || (is_array($project->tags) && count($project->tags)))
                             <div class="flex items-start gap-2 md:gap-3">
                                 <div class="w-7 h-7 md:w-10 md:h-10 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center shrink-0 mt-0.5">
                                     <x-icon name="tag" class="w-3.5 h-3.5 md:w-5 md:h-5 text-[var(--gold)]" />
@@ -254,9 +253,14 @@
                                 <div class="min-w-0 max-w-full">
                                     <span class="text-[11px] md:text-sm text-[var(--text-light)]">{{ __('Tags') }}</span>
                                     <div class="flex flex-wrap gap-1 mt-1">
-                                        @foreach($project->tags as $tag)
-                                            <a href="{{ route('tag', urlencode($tag)) }}" class="text-[11px] font-bold text-[var(--gold)] bg-[var(--gold)]/5 hover:bg-[var(--gold)]/20 px-2 py-0.5 rounded-full truncate max-w-full transition-colors">{{ $tag }}</a>
+                                        @foreach($project->tagItems as $t)
+                                            <a href="{{ route('tag.slug', $t->slug) }}" class="text-[11px] font-bold text-[var(--gold)] bg-[var(--gold)]/5 hover:bg-[var(--gold)]/20 px-2 py-0.5 rounded-full truncate max-w-full transition-colors">{{ $t->name }}</a>
                                         @endforeach
+                                        @if(is_array($project->tags))
+                                            @foreach($project->tags as $tag)
+                                                <a href="{{ route('tag', urlencode($tag)) }}" class="text-[11px] font-bold text-[var(--text-light)] bg-[var(--stone)]/50 hover:bg-[var(--gold)]/20 px-2 py-0.5 rounded-full truncate max-w-full transition-colors">{{ $tag }}</a>
+                                            @endforeach
+                                        @endif
                                     </div>
                                 </div>
                             </div>
