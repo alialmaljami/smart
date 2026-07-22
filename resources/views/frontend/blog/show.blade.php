@@ -8,19 +8,20 @@
 
 @extends('layouts.app')
 
-@push('meta')
-<meta name="description" content="{{ $post->meta_description ?? $post->excerpt ?? Str::limit(strip_tags($post->content), 160) }}">
-<meta name="keywords" content="{{ $post->meta_keywords ?? '' }}">
-<meta property="og:title" content="{{ $post->meta_title ?? $post->title }}">
-<meta property="og:description" content="{{ $post->meta_description ?? $post->excerpt ?? Str::limit(strip_tags($post->content), 160) }}">
-@if($post->image)
-    <meta property="og:image" content="{{ asset('storage/' . $post->image) }}">
-@endif
-<meta property="og:type" content="article">
-<meta name="twitter:card" content="summary_large_image">
-@endpush
+@php
+    $metaDesc = $post->meta_description ?? $post->excerpt ?? Str::limit(strip_tags($post->content), 160);
+    $metaImage = $post->image ? asset('storage/' . $post->image) : '';
+@endphp
 
 @section('title', ($post->meta_title ?? $post->title) . ' - ' . __('Blog') . ' - ' . __('Smart Designer Decorations'))
+@section('description', $metaDesc)
+@section('image', $metaImage)
+@section('og_type', 'article')
+
+@push('meta')
+<meta property="article:published_time" content="{{ $post->created_at?->toIso8601String() }}">
+<meta property="article:modified_time" content="{{ $post->updated_at?->toIso8601String() }}">
+@endpush
 
 @push('schema')
 @php
@@ -36,7 +37,8 @@
             $post->image,
             $post->created_at?->toIso8601String(),
             config('app.name'),
-            $post->updated_at?->toIso8601String()
+            $post->updated_at?->toIso8601String(),
+            route('blog.post', $post->slug)
         ),
     ]);
 @endphp

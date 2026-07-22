@@ -92,7 +92,7 @@ class SchemaService
         ];
     }
 
-    public static function article(string $title, string $description, ?string $image = null, ?string $datePublished = null, ?string $author = null, ?string $dateModified = null): array
+    public static function article(string $title, string $description, ?string $image = null, ?string $datePublished = null, ?string $author = null, ?string $dateModified = null, ?string $url = null): array
     {
         $schema = [
             '@context' => 'https://schema.org',
@@ -111,8 +111,9 @@ class SchemaService
         if ($image) $schema['image'] = asset('storage/' . $image);
         if ($datePublished) $schema['datePublished'] = $datePublished;
         if ($dateModified) $schema['dateModified'] = $dateModified;
-        if ($author) $schema['author'] = ['@type' => 'Person', 'name' => $author];
-        return ['@context' => 'https://schema.org', ...$schema];
+        if ($author) $schema['author'] = ['@type' => 'Organization', 'name' => $author];
+        if ($url) $schema['url'] = $url;
+        return $schema;
     }
 
     public static function service(array $service): array
