@@ -258,7 +258,7 @@
                                         @endforeach
                                         @if(is_array($project->tags))
                                             @foreach($project->tags as $tag)
-                                                <a href="{{ route('tag', urlencode($tag)) }}" class="text-[11px] font-bold text-[var(--text-light)] bg-[var(--stone)]/50 hover:bg-[var(--gold)]/20 px-2 py-0.5 rounded-full truncate max-w-full transition-colors">{{ $tag }}</a>
+                                                <a href="{{ route('tag.slug', \Illuminate\Support\Str::slug($tag)) }}" class="text-[11px] font-bold text-[var(--text-light)] bg-[var(--stone)]/50 hover:bg-[var(--gold)]/20 px-2 py-0.5 rounded-full truncate max-w-full transition-colors">{{ $tag }}</a>
                                             @endforeach
                                         @endif
                                     </div>

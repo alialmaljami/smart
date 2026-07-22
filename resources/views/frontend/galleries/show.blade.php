@@ -126,7 +126,7 @@
                 @if(count($galleryTags))
                     <div class="flex flex-wrap justify-center gap-1.5 md:gap-2 mb-4 md:mb-6">
                         @foreach($galleryTags as $tag)
-                            <a href="{{ $tag['isMaster'] ? route('tag.slug', $tag['slug']) : route('tag', urlencode($tag['name'])) }}" class="px-2.5 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-medium {{ $tag['isMaster'] ? 'bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20' : 'bg-[var(--stone)] text-[var(--text-light)] border border-[var(--stone)]/50' }} hover:bg-[var(--gold)] hover:text-white transition-colors">{{ $tag['name'] }}</a>
+                            <a href="{{ $tag['isMaster'] ? route('tag.slug', $tag['slug']) : route('tag.slug', \Illuminate\Support\Str::slug($tag['name'])) }}" class="px-2.5 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-medium {{ $tag['isMaster'] ? 'bg-[var(--gold)]/10 text-[var(--gold)] border border-[var(--gold)]/20' : 'bg-[var(--stone)] text-[var(--text-light)] border border-[var(--stone)]/50' }} hover:bg-[var(--gold)] hover:text-white transition-colors">{{ $tag['name'] }}</a>
                         @endforeach
                     </div>
                 @endif

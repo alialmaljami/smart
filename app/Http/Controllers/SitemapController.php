@@ -9,6 +9,7 @@ use App\Models\City;
 use App\Models\Neighborhood;
 use App\Models\Project;
 use App\Models\Service;
+use App\Models\Tag;
 use App\Models\VisitorQuestion;
 use Carbon\Carbon;
 use Illuminate\Http\Response;
@@ -33,6 +34,7 @@ class SitemapController extends Controller
             ['loc' => route('sitemap.materials'), 'lastmod' => $this->lastMod(Material::class)],
             ['loc' => route('sitemap.cities'), 'lastmod' => $this->lastMod(City::class)],
             ['loc' => route('sitemap.neighborhoods'), 'lastmod' => $this->lastMod(Neighborhood::class)],
+            ['loc' => route('sitemap.tags'), 'lastmod' => $this->lastMod(Tag::class)],
         ];
 
         return response()
@@ -125,6 +127,15 @@ class SitemapController extends Controller
         ];
         return response()
             ->view('sitemap.pages', compact('pages'))
+            ->header('Content-Type', 'application/xml');
+    }
+
+    public function tags(): Response
+    {
+        $tags = Tag::where('is_active', true)->orderBy('name')
+            ->get(['slug', 'updated_at']);
+        return response()
+            ->view('sitemap.items', ['items' => $tags, 'route' => 'tag.slug', 'changefreq' => 'monthly', 'priority' => '0.6'])
             ->header('Content-Type', 'application/xml');
     }
 

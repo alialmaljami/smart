@@ -334,6 +334,7 @@ Route::get('/sitemap-services.xml', [SitemapController::class, 'services'])->nam
 Route::get('/sitemap-materials.xml', [SitemapController::class, 'materials'])->name('sitemap.materials');
 Route::get('/sitemap-cities.xml', [SitemapController::class, 'cities'])->name('sitemap.cities');
 Route::get('/sitemap-neighborhoods.xml', [SitemapController::class, 'neighborhoods'])->name('sitemap.neighborhoods');
+Route::get('/sitemap-tags.xml', [SitemapController::class, 'tags'])->name('sitemap.tags');
 
 // Fallback route for storage files (when symlink is missing)
 Route::get('/storage/{path}', function (string $path) {

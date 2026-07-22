@@ -23,3 +23,4 @@ Sitemap: https://smartdecorat.com/sitemap-services.xml
 Sitemap: https://smartdecorat.com/sitemap-materials.xml
 Sitemap: https://smartdecorat.com/sitemap-cities.xml
 Sitemap: https://smartdecorat.com/sitemap-neighborhoods.xml
+Sitemap: https://smartdecorat.com/sitemap-tags.xml

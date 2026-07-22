@@ -117,7 +117,7 @@
                     <div class="mb-6">
                         <div class="flex flex-wrap gap-2">
                             @foreach($materialTags as $tag)
-                                <a href="{{ $tag['isMaster'] ? route('tag.slug', $tag['slug']) : route('tag', urlencode($tag['name'])) }}" class="px-3 py-1 rounded-full text-sm {{ $tag['isMaster'] ? 'bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)] hover:text-white' : 'bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white' }} transition-colors">#{{ $tag['name'] }}</a>
+                                <a href="{{ $tag['isMaster'] ? route('tag.slug', $tag['slug']) : route('tag.slug', \Illuminate\Support\Str::slug($tag['name'])) }}" class="px-3 py-1 rounded-full text-sm {{ $tag['isMaster'] ? 'bg-[var(--gold)]/10 text-[var(--gold)] hover:bg-[var(--gold)] hover:text-white' : 'bg-[var(--stone)] text-[var(--text-light)] hover:bg-[var(--gold)] hover:text-white' }} transition-colors">#{{ $tag['name'] }}</a>
                             @endforeach
                         </div>
                     </div>

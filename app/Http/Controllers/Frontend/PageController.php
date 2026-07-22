@@ -165,6 +165,9 @@ class PageController extends Controller
     public function tag(string $tag): View
     {
         $tagSlug = \Illuminate\Support\Str::slug($tag);
+        if (str_contains($tag, ' ') || str_contains($tag, '+')) {
+            return redirect()->route('tag.slug', $tagSlug, 301);
+        }
         $tagModel = \App\Models\Tag::where('slug', $tagSlug)->orWhere('name', $tag)->first();
 
         $services = Service::where('is_active', true)
@@ -207,7 +210,7 @@ class PageController extends Controller
 
         $breadcrumbs = [
             ['name' => __('Home'), 'url' => route('home')],
-            ['name' => __('Tag') . ': ' . $tag, 'url' => route('tag', $tag)],
+            ['name' => __('Tag') . ': ' . $tag, 'url' => route('tag.slug', $tagSlug)],
         ];
 
         return view('frontend.tag', compact('tag', 'tagModel', 'services', 'projects', 'posts', 'galleries', 'materials', 'breadcrumbs'));

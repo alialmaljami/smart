@@ -148,7 +148,7 @@
                         @if(is_array($project->tags) && count($project->tags))
                             <div class="flex flex-wrap gap-1 mt-1">
                                 @foreach(array_slice($project->tags, 0, 3) as $tag)
-                                    <a href="{{ route('tag', urlencode($tag)) }}" class="text-[10px] font-bold text-[var(--gold)] bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20 px-2 py-0.5 rounded-full transition-colors">{{ $tag }}</a>
+                                    <a href="{{ route('tag.slug', \Illuminate\Support\Str::slug($tag)) }}" class="text-[10px] font-bold text-[var(--gold)] bg-[var(--gold)]/10 hover:bg-[var(--gold)]/20 px-2 py-0.5 rounded-full transition-colors">{{ $tag }}</a>
                                 @endforeach
                             </div>
                         @endif
