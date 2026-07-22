@@ -159,7 +159,7 @@ class PageController extends Controller
     {
         $tagModel = \App\Models\Tag::where('slug', $slug)->first();
         $tag = $tagModel ? $tagModel->name : str_replace('-', ' ', $slug);
-        return $this->tag($tag);
+        return $this->renderTag($tag, $tagModel);
     }
 
     public function tag(string $tag): View
@@ -169,6 +169,11 @@ class PageController extends Controller
             return redirect()->route('tag.slug', $tagSlug, 301);
         }
         $tagModel = \App\Models\Tag::where('slug', $tagSlug)->orWhere('name', $tag)->first();
+        return $this->renderTag($tag, $tagModel);
+    }
+
+    private function renderTag(string $tag, $tagModel = null): View
+    {
 
         $services = Service::where('is_active', true)
             ->where(function ($q) use ($tag) {
