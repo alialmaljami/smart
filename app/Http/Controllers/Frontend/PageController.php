@@ -174,6 +174,7 @@ class PageController extends Controller
 
     private function renderTag(string $tag, $tagModel = null): View
     {
+        $tagSlug = \Illuminate\Support\Str::slug($tag);
 
         $services = Service::where('is_active', true)
             ->where(function ($q) use ($tag) {
