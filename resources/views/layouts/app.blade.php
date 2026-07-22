@@ -1076,19 +1076,6 @@
 
     </div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <script defer>
-        document.addEventListener('DOMContentLoaded', function() {
-            AOS.init({
-                duration: 800,
-                once: true,
-                offset: 80,
-                easing: 'ease-out-cubic',
-            });
-        });
-    </script>
-
     {{-- Global Lightbox --}}
     <div id="lightbox-overlay" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-black/90 backdrop-blur-sm" onclick="lightboxClose(event)">
         <button onclick="lightboxClose()" class="absolute top-4 left-4 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all z-10 text-xl">
