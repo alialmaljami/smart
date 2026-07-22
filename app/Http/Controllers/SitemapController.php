@@ -34,7 +34,7 @@ class SitemapController extends Controller
             ['loc' => route('sitemap.materials'), 'lastmod' => $this->lastMod(Material::class)],
             ['loc' => route('sitemap.cities'), 'lastmod' => $this->lastMod(City::class)],
             ['loc' => route('sitemap.neighborhoods'), 'lastmod' => $this->lastMod(Neighborhood::class)],
-            ['loc' => route('sitemap.tags'), 'lastmod' => $this->lastMod(Tag::class)],
+            ['loc' => route('sitemap.tags'), 'lastmod' => Tag::max('updated_at') ? Carbon::parse(Tag::max('updated_at')) : now()],
         ];
 
         return response()
@@ -132,7 +132,7 @@ class SitemapController extends Controller
 
     public function tags(): Response
     {
-        $tags = Tag::where('is_active', true)->orderBy('name')
+        $tags = Tag::orderBy('name')
             ->get(['slug', 'updated_at']);
         return response()
             ->view('sitemap.items', ['items' => $tags, 'route' => 'tag.slug', 'changefreq' => 'monthly', 'priority' => '0.6'])
