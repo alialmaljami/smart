@@ -392,6 +392,94 @@ Route::get('/fix-slugs', function () {
     return "<pre dir='ltr'>" . implode("\n", $log) . "</pre>";
 });
 
+// Seed 20 blog articles (run once then remove this route)
+Route::get('/seed-20-articles', function () {
+    $secret = request('secret');
+    if ($secret !== env('APP_KEY')) {
+        abort(403);
+    }
+
+    $blogCatIds = DB::table('categories')->where('type', 'blog')->pluck('id', 'slug')->toArray();
+    if (empty($blogCatIds)) {
+        return 'ERROR: No blog categories found. Run php artisan blog:create-categories first.';
+    }
+
+    $articles = require __DIR__ . '/../data/blog_articles.php';
+    $log = [];
+    $created = 0;
+    $skipped = 0;
+
+    foreach ($articles as $article) {
+        $exists = DB::table('blog_posts')->where('slug', $article['slug'])->exists();
+        if ($exists) {
+            $log[] = "SKIP: {$article['slug']}";
+            $skipped++;
+            continue;
+        }
+
+        $catId = $blogCatIds[$article['cat_slug']] ?? null;
+
+        $postId = DB::table('blog_posts')->insertGetId([
+            'title' => $article['title'],
+            'slug' => $article['slug'],
+            'content' => $article['content'],
+            'excerpt' => $article['excerpt'],
+            'blog_category_id' => $catId,
+            'category' => $article['cat_slug'],
+            'is_active' => 1,
+            'views' => 0,
+            'meta_title' => $article['meta_title'],
+            'meta_description' => $article['meta_description'],
+            'meta_keywords' => $article['meta_keywords'],
+            'tags' => json_encode($article['tags'], JSON_UNESCAPED_UNICODE),
+            'created_at' => now()->toDateTimeString(),
+            'updated_at' => now()->toDateTimeString(),
+        ]);
+
+        // Attach tags via taggable pivot
+        foreach ($article['tags'] as $tagName) {
+            $tagSlug = \Illuminate\Support\Str::slug($tagName);
+            $tag = DB::table('tags')->where('slug', $tagSlug)->first();
+            if (!$tag) {
+                $tagId = DB::table('tags')->insertGetId([
+                    'name' => $tagName,
+                    'slug' => $tagSlug,
+                    'created_at' => now()->toDateTimeString(),
+                    'updated_at' => now()->toDateTimeString(),
+                ]);
+            } else {
+                $tagId = $tag->id;
+            }
+
+            $existsTag = DB::table('taggables')
+                ->where('tag_id', $tagId)
+                ->where('taggable_id', $postId)
+                ->where('taggable_type', 'App\Models\BlogPost')
+                ->exists();
+
+            if (!$existsTag) {
+                DB::table('taggables')->insert([
+                    'tag_id' => $tagId,
+                    'taggable_id' => $postId,
+                    'taggable_type' => 'App\Models\BlogPost',
+                    'created_at' => now()->toDateTimeString(),
+                    'updated_at' => now()->toDateTimeString(),
+                ]);
+            }
+        }
+
+        $log[] = "CREATED: {$article['title']}";
+        $created++;
+    }
+
+    $log[] = "";
+    $log[] = "Total created: {$created}";
+    $log[] = "Total skipped: {$skipped}";
+    $log[] = "Total articles in data file: " . count($articles);
+
+    return "<pre dir='ltr'>" . htmlspecialchars(implode("\n", $log)) . "</pre>";
+});
+
 // Fallback route for storage files (when symlink is missing on Railway)
 Route::get('/storage/{path}', function (string $path) {
     if (str_contains($path, '..')) {
