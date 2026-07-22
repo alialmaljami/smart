@@ -12,6 +12,7 @@ use App\Models\Material;
 use App\Models\Neighborhood;
 use App\Models\Project;
 use App\Models\Service;
+use App\Models\Setting;
 use Illuminate\View\View;
 
 class PageController extends Controller

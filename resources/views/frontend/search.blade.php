@@ -1,11 +1,8 @@
 @extends('layouts.app')
 
-@push('meta')
-<meta name="description" content="{{ __('Search') . ' - ' . __('Smart Designer Decorations') }}">
-<meta name="robots" content="noindex">
-@endpush
-
 @section('title', __('Search') . ' - ' . __('Smart Designer Decorations'))
+@section('meta_description', __('Search') . ' - ' . __('Smart Designer Decorations'))
+@section('robots', 'noindex')
 
 @section('content')
 
