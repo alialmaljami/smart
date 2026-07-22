@@ -394,11 +394,6 @@ Route::get('/fix-slugs', function () {
 
 // Seed 20 blog articles (run once then remove this route)
 Route::get('/seed-20-articles', function () {
-    $secret = request('secret');
-    if ($secret !== env('APP_KEY')) {
-        abort(403);
-    }
-
     $blogCatIds = DB::table('categories')->where('type', 'blog')->pluck('id', 'slug')->toArray();
     if (empty($blogCatIds)) {
         return 'ERROR: No blog categories found. Run php artisan blog:create-categories first.';
