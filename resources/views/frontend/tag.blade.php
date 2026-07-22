@@ -2,19 +2,14 @@
 
 @php
     $tagName = $tag ?? '';
-    $slugged = \Illuminate\Support\Str::slug($tagName);
-    $canonicalUrl = $slugged ? route('tag.slug', $slugged) : url()->current();
     $totalCount = $projects->count() + $posts->count() + $galleries->count() + $materials->count();
     $metaDesc = app()->getLocale() === 'ar'
         ? "جميع المحتويات المتعلقة بـ \"{$tagName}\" في ديكورات المصمم الذكي - {$totalCount} نتيجة"
         : "All content related to \"{$tagName}\" at Smart Designer Decorations - {$totalCount} result" . ($totalCount !== 1 ? 's' : '');
 @endphp
 
-@push('meta')
-<meta name="description" content="{{ $metaDesc }}">
-<link rel="canonical" href="{{ $canonicalUrl }}">
-<meta name="robots" content="index, follow">
-@endpush
+@section('meta_description', $metaDesc)
+@section('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')
 
 @push('schema')
 <script type="application/ld+json">
@@ -23,7 +18,7 @@
     "@@type": "CollectionPage",
     "name": "{{ $tagName }}",
     "description": "{{ $metaDesc }}",
-    "url": "{{ $canonicalUrl }}"
+    "url": "{{ url()->current() }}"
 }
 </script>
 @endpush

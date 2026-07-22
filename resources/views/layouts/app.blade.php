@@ -20,15 +20,27 @@
     @stack('meta')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', __('Smart Designer Decorations'))</title>
-    <meta name="description" content="@yield('description', __('Smart Designer Decorations - Professional interior design and decoration services in Saudi Arabia'))" />
+    @hasSection('meta_description')
+    <meta name="description" content="@yield('meta_description')" />
+    @else
+    <meta name="description" content="{{ __('Smart Designer Decorations - Professional interior design and decoration services in Saudi Arabia') }}" />
+    @endif
+    @hasSection('robots')
+    <meta name="robots" content="@yield('robots')" />
+    @else
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    @endif
 
     {{-- Canonical (strip _locale query param) --}}
     @php
         $canonicalQuery = array_diff_key(request()->query(), ['_locale' => '']);
         $canonicalUrl = url()->current() . ($canonicalQuery ? '?' . http_build_query($canonicalQuery) : '');
     @endphp
+    @hasSection('canonical')
+    <link rel="canonical" href="@yield('canonical')" />
+    @else
     <link rel="canonical" href="{{ $canonicalUrl }}" />
+    @endif
 
     {{-- Hreflang --}}
     @php
