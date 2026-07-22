@@ -162,7 +162,7 @@ class PageController extends Controller
         return $this->renderTag($tag, $tagModel);
     }
 
-    public function tag(string $tag): View
+    public function tag(string $tag): \Illuminate\Http\RedirectResponse|View
     {
         $tagSlug = \Illuminate\Support\Str::slug($tag);
         if (str_contains($tag, ' ') || str_contains($tag, '+')) {
