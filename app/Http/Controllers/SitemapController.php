@@ -44,8 +44,9 @@ class SitemapController extends Controller
     {
         $items = Project::where('is_active', true)->where('is_indexed', true)
             ->where('slug', 'not like', '% %')
-            ->distinct('slug')
-            ->latest('updated_at')->get(['slug', 'updated_at']);
+            ->select('slug', \DB::raw('MAX(updated_at) as updated_at'))
+            ->groupBy('slug')
+            ->orderByDesc('updated_at')->get();
         return response()
             ->view('sitemap.items', ['items' => $items, 'route' => 'project.show', 'changefreq' => 'weekly', 'priority' => '0.8'])
             ->header('Content-Type', 'application/xml');
@@ -55,8 +56,9 @@ class SitemapController extends Controller
     {
         $items = Gallery::where('is_active', true)->where('is_indexed', true)
             ->where('slug', 'not like', '% %')
-            ->distinct('slug')
-            ->latest('updated_at')->get(['id', 'slug', 'updated_at']);
+            ->select('id', 'slug', \DB::raw('MAX(updated_at) as updated_at'))
+            ->groupBy('slug', 'id')
+            ->orderByDesc('updated_at')->get();
         return response()
             ->view('sitemap.items', ['items' => $items, 'route' => 'gallery.show', 'params' => ['id' => 'id', 'slug' => 'slug'], 'changefreq' => 'weekly', 'priority' => '0.6'])
             ->header('Content-Type', 'application/xml');
@@ -66,8 +68,9 @@ class SitemapController extends Controller
     {
         $items = BlogPost::where('is_active', true)->where('is_indexed', true)
             ->where('slug', 'not like', '% %')
-            ->distinct('slug')
-            ->latest('updated_at')->get(['slug', 'updated_at']);
+            ->select('slug', \DB::raw('MAX(updated_at) as updated_at'))
+            ->groupBy('slug')
+            ->orderByDesc('updated_at')->get();
         return response()
             ->view('sitemap.items', ['items' => $items, 'route' => 'blog.post', 'changefreq' => 'monthly', 'priority' => '0.7'])
             ->header('Content-Type', 'application/xml');
