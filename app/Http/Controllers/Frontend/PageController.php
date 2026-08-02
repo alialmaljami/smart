@@ -36,7 +36,7 @@ class PageController extends Controller
                     $q->where('category', $s);
                 }
             })
-            ->latest()->paginate(9);
+            ->withImagesFirst()->paginate(9);
 
         $categories = Category::where('type', 'blog')->where('is_active', true)->orderBy('name')->get();
 
@@ -196,7 +196,7 @@ class PageController extends Controller
                   ->orWhere('title', 'like', "%{$tag}%")
                   ->orWhere('content', 'like', "%{$tag}%")
                   ->orWhereHas('tagItems', fn($t) => $t->where('name', 'like', "%{$tag}%")->orWhere('slug', 'like', "%{$tagSlug}%"));
-            })->latest()->take(6)->get();
+            })->withImagesFirst()->take(6)->get();
 
         $galleries = Gallery::where('is_active', true)
             ->where(function ($q) use ($tag, $tagSlug) {
